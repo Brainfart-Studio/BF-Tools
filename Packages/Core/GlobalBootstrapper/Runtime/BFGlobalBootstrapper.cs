@@ -15,7 +15,7 @@ namespace BFTools.Core.Bootstrapper
                 return;
             }
 
-            foreach (GameObject prefab in config.systemPrefabs)
+            foreach (GameObject prefab in config.SystemPrefabs)
             {
                 if (prefab == null)
                     continue;
