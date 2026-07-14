@@ -4,7 +4,7 @@ namespace BFTools.Core.Bootstrapper.Editor
 {
     public static class BFLevelBootstrapperVariantCreator
     {
-        private const string BasePrefabPath = "Packages/com.bftools.core/Prefabs/LevelBootstrapper.prefab";
+        private const string BasePrefabPath = "Packages/com.bftools.core/LevelBootstrapper/Prefabs/LevelBootstrapper.prefab";
         private const string TargetPath = "Assets/Prefabs/Core";
         private const string AssetName = "LevelBootstrapper.prefab";
         [MenuItem("Assets/Create/BFTools/Prefabs/Level Bootstrapper")]
