@@ -1,0 +1,14 @@
+{
+    "name": "BFTools.Core.EventBus",
+    "rootNamespace": "BFTools.Core.EventBus",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
