@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace BFTools.Core.Bootstrapper.Editor
 {
-    public static class BFBootstrapConfigCreator
+    public static class BFGlobalBootstrapConfigCreator
     {
         private const string TargetPath = "Assets/Resources/BFTools";
-        private const string AssetName = "BootstrapConfig.asset";
+        private const string AssetName = "GlobalBootstrapConfig.asset";
 
-        [MenuItem("Assets/Create/BFTools/Config/Bootstrap Config")]
+        [MenuItem("Assets/Create/BFTools/Config/Global Bootstrap Config")]
         private static void Create()
         {
             if (!AssetDatabase.IsValidFolder(TargetPath))
@@ -16,14 +16,14 @@ namespace BFTools.Core.Bootstrapper.Editor
 
             string fullPath = $"{TargetPath}/{AssetName}";
 
-            if (AssetDatabase.LoadAssetAtPath<BootstrapConfig>(fullPath) != null)
+            if (AssetDatabase.LoadAssetAtPath<BFGlobalBootstrapConfig>(fullPath) != null)
             {
-                Debug.LogWarning($"BootstrapConfig already exists at {fullPath}");
-                Selection.activeObject = AssetDatabase.LoadAssetAtPath<BootstrapConfig>(fullPath);
+                Debug.LogWarning($"GlobalBootstrapConfig already exists at {fullPath}");
+                Selection.activeObject = AssetDatabase.LoadAssetAtPath<BFGlobalBootstrapConfig>(fullPath);
                 return;
             }
 
-            BootstrapConfig asset = ScriptableObject.CreateInstance<BootstrapConfig>();
+            BFGlobalBootstrapConfig asset = ScriptableObject.CreateInstance<BFGlobalBootstrapConfig>();
             AssetDatabase.CreateAsset(asset, fullPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

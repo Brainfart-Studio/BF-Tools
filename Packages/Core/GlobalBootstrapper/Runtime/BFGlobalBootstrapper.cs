@@ -7,11 +7,11 @@ namespace BFTools.Core.Bootstrapper
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
-            BootstrapConfig config = Resources.Load<BootstrapConfig>("BFTools/BootstrapConfig");
+            BFGlobalBootstrapConfig config = Resources.Load<BFGlobalBootstrapConfig>("BFTools/GlobalBootstrapConfig");
 
             if (config == null)
             {
-                Debug.LogError("BFGlobalBootstrapper: No BootstrapConfig found at Resources/BFTools/BootstrapConfig.");
+                Debug.LogError("BFGlobalBootstrapper: No GlobalBootstrapConfig found at Resources/BFTools/GlobalBootstrapConfig.");
                 return;
             }
 
