@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace BFTools.Core.Bootstrapper
+namespace BFTools.Core.LevelBootstrapper
 {
     public class BFLevelBootstrapConfig : ScriptableObject
     {

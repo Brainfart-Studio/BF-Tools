@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BFTools.Core.Bootstrapper
+namespace BFTools.Core.GlobalBootstrapper
 {
     public static class BFGlobalBootstrapper
     {

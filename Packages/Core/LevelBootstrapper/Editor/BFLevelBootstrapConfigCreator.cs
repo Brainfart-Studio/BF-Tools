@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-namespace BFTools.Core.Bootstrapper.Editor
+namespace BFTools.Core.LevelBootstrapper.Editor
 {
     public static class BFLevelBootstrapConfigCreator
     {

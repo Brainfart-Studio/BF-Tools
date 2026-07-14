@@ -1,6 +1,6 @@
 {
     "name": "BFTools.Core.LevelBootstrapper.Editor",
-    "rootNamespace": "BFTools.Core.Bootstrapper.Editor",
+    "rootNamespace": "BFTools.Core.LevelBootstrapper.Editor",
     "references": [
         "BFTools.Core.LevelBootstrapper"
     ],

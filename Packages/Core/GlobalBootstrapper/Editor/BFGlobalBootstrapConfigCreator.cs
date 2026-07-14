@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace BFTools.Core.Bootstrapper.Editor
+namespace BFTools.Core.GlobalBootstrapper.Editor
 {
     public static class BFGlobalBootstrapConfigCreator
     {

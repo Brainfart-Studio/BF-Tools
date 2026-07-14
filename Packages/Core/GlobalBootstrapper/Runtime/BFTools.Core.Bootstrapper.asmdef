@@ -1,6 +1,6 @@
 {
-    "name": "BFTools.Core.Bootstrapper",
-    "rootNamespace": "BFTools.Core.Bootstrapper",
+    "name": "BFTools.Core.GlobalBootstrapper",
+    "rootNamespace": "BFTools.Core.GlobalBootstrapper",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
