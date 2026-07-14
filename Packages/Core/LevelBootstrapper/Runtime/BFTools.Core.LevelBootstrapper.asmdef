@@ -1,0 +1,10 @@
+{
+    "name": "BFTools.Core.LevelBootstrapper",
+    "rootNamespace": "BFTools.Core.Bootstrapper",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
