@@ -7,7 +7,7 @@ namespace BFTools.Core.GlobalBootstrapper
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
-            BFGlobalBootstrapConfig config = Resources.Load<BFGlobalBootstrapConfig>("BFTools/GlobalBootstrapConfig");
+            BFGlobalBootstrapperConfig config = Resources.Load<BFGlobalBootstrapperConfig>("BFTools/GlobalBootstrapConfig");
 
             if (config == null)
             {

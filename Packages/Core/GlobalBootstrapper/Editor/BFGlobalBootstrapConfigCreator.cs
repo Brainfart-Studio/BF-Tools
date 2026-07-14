@@ -16,14 +16,14 @@ namespace BFTools.Core.GlobalBootstrapper.Editor
 
             string fullPath = $"{TargetPath}/{AssetName}";
 
-            if (AssetDatabase.LoadAssetAtPath<BFGlobalBootstrapConfig>(fullPath) != null)
+            if (AssetDatabase.LoadAssetAtPath<BFGlobalBootstrapperConfig>(fullPath) != null)
             {
                 Debug.LogWarning($"GlobalBootstrapConfig already exists at {fullPath}");
-                Selection.activeObject = AssetDatabase.LoadAssetAtPath<BFGlobalBootstrapConfig>(fullPath);
+                Selection.activeObject = AssetDatabase.LoadAssetAtPath<BFGlobalBootstrapperConfig>(fullPath);
                 return;
             }
 
-            BFGlobalBootstrapConfig asset = ScriptableObject.CreateInstance<BFGlobalBootstrapConfig>();
+            BFGlobalBootstrapperConfig asset = ScriptableObject.CreateInstance<BFGlobalBootstrapperConfig>();
             AssetDatabase.CreateAsset(asset, fullPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
