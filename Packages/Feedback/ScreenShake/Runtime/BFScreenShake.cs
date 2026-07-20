@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using BFTools.Core.EventBus;
 namespace BFTools.Feedback.ScreenShake
 {
@@ -10,16 +11,27 @@ namespace BFTools.Feedback.ScreenShake
     public class BFScreenShake : MonoBehaviour
     {
         [SerializeField] private BFScreenShakeConfig config;
-        [SerializeField] private Transform target;
+        private Transform target;
         private Vector3 originalPosition;
         private Coroutine activeShake;
         private void OnEnable()
         {
             EventBus<BFScreenShakeEvent>.Subscribe(OnScreenShakeEvent);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            ResolveTarget();
         }
         private void OnDisable()
         {
             EventBus<BFScreenShakeEvent>.Unsubscribe(OnScreenShakeEvent);
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            ResolveTarget();
+        }
+        private void ResolveTarget()
+        {
+            target = Camera.main != null ? Camera.main.transform : null;
         }
         private void OnScreenShakeEvent(BFScreenShakeEvent evt)
         {
