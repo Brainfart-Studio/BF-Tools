@@ -19,7 +19,7 @@
 
 ### Changed
 - Renamed BootstrapConfig to BFGlobalBootstrapConfig for naming consistency
-- Renamed BFGlobalBootstrapConfig to BFGlobalBootstrpperConfig for naming consistency
+- Renamed BFGlobalBootstrapConfig to BFGlobalBootstrapperConfig for naming consistency
 - Split Bootstrapper namespaces and asmdefs into Global/Level
 
 ### Fixed
