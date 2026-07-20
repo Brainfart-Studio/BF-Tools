@@ -25,14 +25,14 @@ None.
 2. Click **+ > Add package from git URL...**
 3. Enter:
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git#development?path=Packages/Core
+   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core#development
    ```
 
 ### Via manifest.json
 Add the entry directly to your project's `Packages/manifest.json`:
 ```json
 "dependencies": {
-  "com.bftools.core": "https://github.com/Brainfart-Studio/BF-Tools.git#development?path=Packages/Core"
+  "com.bftools.core": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core#development"
 }
 ```
 
