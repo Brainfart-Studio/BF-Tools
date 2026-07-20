@@ -1,0 +1,12 @@
+{
+    "name": "BFTools.Feedback.ScreenShake",
+    "rootNamespace": "BFTools.Feedback.ScreenShake",
+    "references": [
+        "BFTools.Core.EventBus"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
