@@ -18,19 +18,21 @@ None.
 
 ## Installation
 
+> **Note:** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
+
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter:
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core
+   https://github.com/Brainfart-Studio/BF-Tools.git#development?path=Packages/Core
    ```
 
 ### Via manifest.json
 Add the entry directly to your project's `Packages/manifest.json`:
 ```json
 "dependencies": {
-  "com.bftools.core": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core"
+  "com.bftools.core": "https://github.com/Brainfart-Studio/BF-Tools.git#development?path=Packages/Core"
 }
 ```
 
