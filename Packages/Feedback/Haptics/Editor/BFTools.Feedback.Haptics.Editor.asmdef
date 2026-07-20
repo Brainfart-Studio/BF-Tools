@@ -1,0 +1,14 @@
+{
+    "name": "BFTools.Feedback.Haptics.Editor",
+    "rootNamespace": "BFTools.Feedback.Haptics.Editor",
+    "references": [
+        "BFTools.Feedback.Haptics"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

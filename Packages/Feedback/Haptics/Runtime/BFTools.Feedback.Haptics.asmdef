@@ -1,0 +1,13 @@
+{
+    "name": "BFTools.Feedback.Haptics",
+    "rootNamespace": "BFTools.Feedback.Haptics",
+    "references": [
+        "Unity.InputSystem",
+        "BFTools.Core.EventBus"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
