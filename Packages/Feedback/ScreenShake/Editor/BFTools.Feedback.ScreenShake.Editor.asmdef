@@ -1,0 +1,14 @@
+{
+    "name": "BFTools.Feedback.ScreenShake.Editor",
+    "rootNamespace": "BFTools.Feedback.ScreenShake.Editor",
+    "references": [
+        "BFTools.Feedback.ScreenShake"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
