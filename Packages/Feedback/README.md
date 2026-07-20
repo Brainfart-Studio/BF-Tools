@@ -19,12 +19,14 @@ Camera shake triggered by named events. See [Documentation~/ScreenShake.md](Docu
 
 ## Installation
 
+> **Note:** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
+
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter:
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback
+   https://github.com/Brainfart-Studio/BF-Tools.git#development?path=Packages/Feedback
    ```
 
 Feedback depends on `com.bftools.core`; install it the same way (see [Core's README](../Core/README.md#installation)) if it isn't already in the project.
@@ -33,7 +35,7 @@ Feedback depends on `com.bftools.core`; install it the same way (see [Core's REA
 Add the entry directly to your project's `Packages/manifest.json`:
 ```json
 "dependencies": {
-  "com.bftools.feedback": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback"
+  "com.bftools.feedback": "https://github.com/Brainfart-Studio/BF-Tools.git#development?path=Packages/Feedback"
 }
 ```
 
