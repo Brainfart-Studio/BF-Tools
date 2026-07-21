@@ -2,7 +2,8 @@
     "name": "BFTools.Feedback.Haptics.Editor",
     "rootNamespace": "BFTools.Feedback.Haptics.Editor",
     "references": [
-        "BFTools.Feedback.Haptics"
+        "BFTools.Feedback.Haptics",
+        "BFTools.Core.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"

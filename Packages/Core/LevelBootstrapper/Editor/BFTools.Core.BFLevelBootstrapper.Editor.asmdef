@@ -2,7 +2,8 @@
     "name": "BFTools.Core.LevelBootstrapper.Editor",
     "rootNamespace": "BFTools.Core.LevelBootstrapper.Editor",
     "references": [
-        "BFTools.Core.LevelBootstrapper"
+        "BFTools.Core.LevelBootstrapper",
+        "BFTools.Core.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"
