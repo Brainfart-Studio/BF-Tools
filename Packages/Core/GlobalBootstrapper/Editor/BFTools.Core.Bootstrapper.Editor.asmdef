@@ -2,7 +2,8 @@
     "name": "BFTools.Core.GlobalBootstrapper.Editor",
     "rootNamespace": "BFTools.Core.GlobalBootstrapper.Editor",
     "references": [
-        "BFTools.Core.GlobalBootstrapper"
+        "BFTools.Core.GlobalBootstrapper",
+        "BFTools.Core.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"
