@@ -3,7 +3,7 @@
 Event-driven feedback systems: controller haptics and camera screen shake.
 
 ## Version
-0.2.0
+0.3.0
 
 ## Contents
 
@@ -14,7 +14,7 @@ Controller rumble triggered by named events. See [Documentation~/Haptics.md](Doc
 Camera shake triggered by named events. See [Documentation~/ScreenShake.md](Documentation~/ScreenShake.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.2.0
+- `com.bftools.core` @ 0.3.0
 - `com.unity.inputsystem` @ 1.7.0
 
 ## Installation
@@ -33,6 +33,7 @@ Feedback depends on `com.bftools.core`; install it the same way (see [Core's REA
 
 ### Via manifest.json
 Add the entry directly to your project's `Packages/manifest.json`:
+
 ```json
 "dependencies": {
   "com.bftools.feedback": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback#development"
@@ -41,9 +42,10 @@ Add the entry directly to your project's `Packages/manifest.json`:
 
 ### As a dependency of another package
 Reference `com.bftools.feedback` from a dependent package's `package.json`:
+
 ```json
 "dependencies": {
-  "com.bftools.feedback": "0.2.0"
+  "com.bftools.feedback": "0.3.0"
 }
 ```
 
