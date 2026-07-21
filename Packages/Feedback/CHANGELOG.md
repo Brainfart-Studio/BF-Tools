@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - Editor Asset Utility
+
+### Changed
+- Migrated Haptics and ScreenShake Editor creators to Core's BFEditorAssetUtility
+- Bumped com.bftools.core dependency to 0.3.0
+
 ## [0.2.0] - ScreenShake
 
 ### Added
