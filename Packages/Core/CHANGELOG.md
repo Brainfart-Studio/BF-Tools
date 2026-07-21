@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0] - Editor Asset Utility
+
+### Added
+- BFEditorAssetUtility editor utility: shared recursive folder creation, config asset creation, and prefab variant creation
+
+### Changed
+- Migrated BFGlobalBootstrapConfigCreator to BFEditorAssetUtility
+- Migrated BFLevelBootstrapConfigCreator and BFLevelBootstrapperVariantCreator to BFEditorAssetUtility
+
+### Fixed
+- Folder creation no longer silently continues when an intermediate folder fails to create
+
 ## [0.2.0] - Event Bus
 
 ### Added
