@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.feedback",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "displayName": "BFTools Feedback",
     "description": "Feedback systems for BFTools: Haptics, Screen Shake, Screen Flash, Time Stop.",
     "unity": "2022.3",

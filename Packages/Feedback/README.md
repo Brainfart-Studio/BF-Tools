@@ -3,7 +3,7 @@
 Event-driven feedback systems: controller haptics and camera screen shake.
 
 ## Version
-0.3.0
+0.4.0
 
 ## Contents
 
@@ -45,7 +45,7 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "0.3.0"
+  "com.bftools.feedback": "0.4.0"
 }
 ```
 
