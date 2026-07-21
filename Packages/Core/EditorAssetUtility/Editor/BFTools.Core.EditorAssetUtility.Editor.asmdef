@@ -1,3 +1,12 @@
 {
-	"name": "BFTools.Core.EditorAssetUtility.Editor"
+    "name": "BFTools.Core.EditorAssetUtility.Editor",
+    "rootNamespace": "BFTools.Core.EditorAssetUtility.Editor",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
 }
