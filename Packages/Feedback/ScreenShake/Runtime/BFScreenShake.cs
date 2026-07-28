@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using BFTools.Core.EventBus;
@@ -10,12 +11,14 @@ namespace BFTools.Feedback.ScreenShake
     }
     public class BFScreenShake : MonoBehaviour
     {
-        [SerializeField] private BFScreenShakeConfig config;
+        [SerializeField] private List<BFScreenShakeConfig> configs = new List<BFScreenShakeConfig>();
+        private Dictionary<string, BFScreenShakeEntry> lookup;
         private Transform target;
         private Vector3 originalPosition;
         private Coroutine activeShake;
         private void OnEnable()
         {
+            BuildLookup();
             EventBus<BFScreenShakeEvent>.Subscribe(OnScreenShakeEvent);
             SceneManager.sceneLoaded += OnSceneLoaded;
             ResolveTarget();
@@ -33,14 +36,33 @@ namespace BFTools.Feedback.ScreenShake
         {
             target = Camera.main != null ? Camera.main.transform : null;
         }
+        private void BuildLookup()
+        {
+            lookup = new Dictionary<string, BFScreenShakeEntry>();
+
+            foreach (var cfg in configs)
+            {
+                if (cfg == null)
+                    continue;
+
+                foreach (var entry in cfg.Entries)
+                {
+                    if (lookup.ContainsKey(entry.eventName))
+                    {
+                        Debug.LogWarning(
+                            $"[BFScreenShake] Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
+                            this);
+                    }
+
+                    lookup[entry.eventName] = entry;
+                }
+            }
+        }
         private void OnScreenShakeEvent(BFScreenShakeEvent evt)
         {
-            if (config == null || target == null)
+            if (target == null || lookup == null || !lookup.TryGetValue(evt.eventName, out BFScreenShakeEntry entry))
                 return;
-            if (config.TryGetEntry(evt.eventName, out BFScreenShakeEntry entry))
-            {
-                Trigger(entry.amplitude, entry.duration);
-            }
+            Trigger(entry.amplitude, entry.duration);
         }
         private void Trigger(float amplitude, float duration)
         {

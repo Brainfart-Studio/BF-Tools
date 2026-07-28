@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using BFTools.Core.EventBus;
@@ -12,10 +13,13 @@ namespace BFTools.Feedback.Haptics
 
     public class BFHaptics : MonoBehaviour
     {
-        [SerializeField] private BFHapticsConfig config;
+        [SerializeField] private List<BFHapticsConfig> configs = new List<BFHapticsConfig>();
+
+        private Dictionary<string, BFHapticsEntry> lookup;
 
         private void OnEnable()
         {
+            BuildLookup();
             EventBus<BFHapticsEvent>.Subscribe(OnHapticsEvent);
         }
 
@@ -24,15 +28,35 @@ namespace BFTools.Feedback.Haptics
             EventBus<BFHapticsEvent>.Unsubscribe(OnHapticsEvent);
         }
 
+        private void BuildLookup()
+        {
+            lookup = new Dictionary<string, BFHapticsEntry>();
+
+            foreach (var cfg in configs)
+            {
+                if (cfg == null)
+                    continue;
+
+                foreach (var entry in cfg.Entries)
+                {
+                    if (lookup.ContainsKey(entry.eventName))
+                    {
+                        Debug.LogWarning(
+                            $"[BFHaptics] Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
+                            this);
+                    }
+
+                    lookup[entry.eventName] = entry;
+                }
+            }
+        }
+
         private void OnHapticsEvent(BFHapticsEvent evt)
         {
-            if (config == null)
+            if (lookup == null || !lookup.TryGetValue(evt.eventName, out BFHapticsEntry entry))
                 return;
 
-            if (config.TryGetEntry(evt.eventName, out BFHapticsEntry entry))
-            {
-                Trigger(entry.intensity, entry.duration);
-            }
+            Trigger(entry.intensity, entry.duration);
         }
 
         private void Trigger(float intensity, float duration)

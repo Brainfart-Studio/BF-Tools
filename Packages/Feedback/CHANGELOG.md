@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0] - Multi-Config Support
+
+### Changed
+- `BFHaptics` and `BFScreenShake` now accept a list of config assets (`configs`) instead of a single config reference, so entries can be split across multiple assets (e.g. by category) and merged at runtime.
+- On duplicate `eventName` across configs in the same list, the later config wins and a warning is logged.
+- **Breaking:** the `config` field on `BFHaptics` and `BFScreenShake` has been replaced by `configs`. Existing prefab variants need their config(s) re-assigned to the new list field.
+
 ## [0.3.0] - Editor Asset Utility
 
 ### Changed
