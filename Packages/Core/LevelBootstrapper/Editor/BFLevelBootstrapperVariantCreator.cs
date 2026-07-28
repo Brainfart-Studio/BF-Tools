@@ -9,7 +9,7 @@ namespace BFTools.Core.LevelBootstrapper.Editor
         private const string TargetPath = "Assets/Prefabs/Core";
         private const string AssetName = "LevelBootstrapper.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Prefabs/Level Bootstrapper")]
+        [MenuItem("Assets/Create/BFTools/Core/Prefabs/Level Bootstrapper", priority = BFMenuPriority.Group.Core + BFMenuPriority.Module.LevelBootstrapper)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);

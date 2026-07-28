@@ -9,7 +9,7 @@ namespace BFTools.Feedback.ScreenShake.Editor
         private const string TargetPath = "Assets/Prefabs/Feedback";
         private const string AssetName = "ScreenShake.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Prefabs/Screen Shake")]
+        [MenuItem("Assets/Create/BFTools/Feedback/Prefabs/Screen Shake", priority = BFMenuPriority.Group.Feedback + BFMenuPriority.Module.ScreenShake)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);

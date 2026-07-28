@@ -3,9 +3,9 @@
 Controller rumble/vibration triggered by named events, driven by config-defined intensity/duration entries.
 
 ## Setup
-1. `Assets/Create/BFTools/Config/Haptics Config` creates a config at `Assets/Configs/Feedback/Haptics/HapticsConfig.asset`.
+1. `Assets/Create/BFTools/Feedback/Config/Haptics Config` creates a config at `Assets/Configs/Feedback/Haptics/HapticsConfig.asset`.
 2. Populate `Entries` with `eventName` / `intensity` (0–1) / `duration` (seconds) rows.
-3. `Assets/Create/BFTools/Prefabs/Haptics` creates a prefab variant of the base `Haptics` prefab at `Assets/Prefabs/Feedback/Haptics.prefab`.
+3. `Assets/Create/BFTools/Feedback/Prefabs/Haptics` creates a prefab variant of the base `Haptics` prefab at `Assets/Prefabs/Feedback/Haptics.prefab`.
 4. Assign one or more `HapticsConfig` assets to the variant's `BFHaptics` component (`configs` list) — e.g. split by category (`UI_Haptics`, `Combat_Haptics`, `Environment_Haptics`) instead of cramming everything into one asset.
 5. Place the prefab instance in the scene (or wire it into a Bootstrapper).
 

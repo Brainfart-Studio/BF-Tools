@@ -7,7 +7,7 @@ Two independent bootstrap systems: **Global** (app-lifetime systems, initialized
 Instantiates persistent system prefabs once, before the first scene loads. Prefabs are parented to root and marked `DontDestroyOnLoad`.
 
 ### Setup
-1. `Assets/Create/BFTools/Config/Global Bootstrap Config` creates config at `Assets/Resources/BFTools/GlobalBootstrapConfig.asset`.
+1. `Assets/Create/BFTools/Core/Config/Global Bootstrap Config` creates config at `Assets/Resources/BFTools/GlobalBootstrapConfig.asset`.
 2. Assign system prefabs to the config's `System Prefabs` array.
 
 ### How it works
@@ -25,8 +25,8 @@ Instantiates persistent system prefabs once, before the first scene loads. Prefa
 Instantiates scene-specific prefabs via `Awake()` on a `MonoBehaviour`, using a directly assigned config (no `Resources.Load`).
 
 ### Setup
-1. `Assets/Create/BFTools/Config/Level Bootstrap Config` creates config at `Assets/Configs/Core/LevelBootstrapper/LevelBootstrapConfig.asset`.
-2. `Assets/Create/BFTools/Prefabs/Level Bootstrapper` creates a prefab variant of the base `LevelBootstrapper` prefab at `Assets/Prefabs/Core/LevelBootstrapper.prefab`.
+1. `Assets/Create/BFTools/Core/Config/Level Bootstrap Config` creates config at `Assets/Configs/Core/LevelBootstrapper/LevelBootstrapConfig.asset`.
+2. `Assets/Create/BFTools/Core/Prefabs/Level Bootstrapper` creates a prefab variant of the base `LevelBootstrapper` prefab at `Assets/Prefabs/Core/LevelBootstrapper.prefab`.
 3. Place the prefab variant in the scene, assign the config to its `Config` field.
 
 ### How it works

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.1] - Create Menu Reorganization
+
+### Added
+- `BFMenuPriority` static class centralizing Create menu priority values (`Group` + `Module`)
+
+### Changed
+- Reorganized `Assets/Create/BFTools` menu items into per-package submenus (`Core`, `Feedback`)
+- Logger, GlobalBootstrapper, LevelBootstrapper, and ObjectPooler creators now use explicit low priority values via `BFMenuPriority`, sorting BFTools above Unity's built-in Create menu categories
+
 ## [0.6.0] - Object Pooler
 
 ### Added

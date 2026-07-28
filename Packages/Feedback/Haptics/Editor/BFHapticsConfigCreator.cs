@@ -8,7 +8,7 @@ namespace BFTools.Feedback.Haptics.Editor
         private const string TargetPath = "Assets/Configs/Feedback/Haptics";
         private const string AssetName = "HapticsConfig.asset";
 
-        [MenuItem("Assets/Create/BFTools/Config/Haptics Config")]
+        [MenuItem("Assets/Create/BFTools/Feedback/Config/Haptics Config", priority = BFMenuPriority.Group.Feedback + BFMenuPriority.Module.Haptics)]
         private static void Create()
         {
             BFEditorAssetUtility.CreateConfigAsset<BFHapticsConfig>(TargetPath, AssetName);
