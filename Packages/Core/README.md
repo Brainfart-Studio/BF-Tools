@@ -1,9 +1,9 @@
 # BFTools Core (`com.bftools.core`)
 
-Foundational systems for BFTools: bootstrapping and event communication.
+Foundational systems for BFTools: bootstrapping, event communication, and logging.
 
 ## Version
-0.3.0
+0.4.1
 
 ## Contents
 
@@ -12,6 +12,12 @@ Global (app-lifetime) and Level (per-scene) system initialization. See [Document
 
 ### Event Bus
 Generic static pub/sub system for struct-based events. See [Documentation~/EventBus.md](Documentation~/EventBus.md).
+
+### Editor Asset Utility
+Shared editor-only helpers (folder creation, config asset creation, prefab variant creation) used by this repo's `Assets/Create/BFTools/...` menu creators.
+
+### Logger
+Tag-based logging with per-tag level overrides and pluggable sinks. See [Documentation~/Logger.md](Documentation~/Logger.md).
 
 ## Dependencies
 None.
@@ -40,7 +46,7 @@ Add the entry directly to your project's `Packages/manifest.json`:
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Feedback/package.json](../Feedback/package.json) for an example):
 ```json
 "dependencies": {
-  "com.bftools.core": "0.3.0"
+  "com.bftools.core": "0.4.1"
 }
 ```
 

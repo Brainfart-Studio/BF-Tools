@@ -2,7 +2,8 @@
     "name": "BFTools.Feedback.ScreenShake",
     "rootNamespace": "BFTools.Feedback.ScreenShake",
     "references": [
-        "BFTools.Core.EventBus"
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

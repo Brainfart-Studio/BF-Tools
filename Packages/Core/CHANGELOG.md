@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.4.1] - Logger Rollout
+
+### Added
+- BFLogger tracing added to EventBus (subscribe/unsubscribe/fire/clear), GlobalBootstrapper, LevelBootstrapper, and EditorAssetUtility
+
+### Fixed
+- BFLogger now auto-loads `BFLoggerConfig` from `Resources/BFTools/BFLoggerConfig` on the first log call if `Initialize` wasn't called explicitly, falling back to a default config (`Info` level, console sink) with a one-time warning if none is found
+
+## [0.4.0] - Logger
+
+### Added
+- LogLevel enum (Trace/Debug/Info/Warning/Error/Critical)
+- BFLoggerConfig ScriptableObject with global minimum level, per-tag level overrides, tag allowlist, and stack trace threshold
+- IBFLoggerSink interface
+- UnityConsoleSink implementation
+- FileSink implementation, writing Warning and above to a rotating log file
+- BFLogger static wrapper with level and tag filtering
+- BFLoggerConfigCreator editor tool
+
+### Fixed
+- UnityConsoleSink no longer throws a FormatException when a log message contains `{}`-style characters
+- Tag level overrides can now raise the effective minimum level above the global default, not just lower it
+
 ## [0.3.0] - Editor Asset Utility
 
 ### Added

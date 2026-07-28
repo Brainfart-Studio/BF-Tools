@@ -4,20 +4,21 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.3.0)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.4.1)
 Foundational systems every other package builds on.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Core/Documentation~/Bootstrapper.md).
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
 - **Editor Asset Utility**: shared editor-only helpers (folder creation, config asset creation, prefab variant creation) used by this repo's `Assets/Create/BFTools/...` menu creators.
+- **Logger**: tag-based logging with per-tag level overrides and pluggable sinks. See [Logger.md](Packages/Core/Documentation~/Logger.md).
 
 No dependencies.
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.4.0)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.4.1)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
 
-Depends on `com.bftools.core` (0.3.0) and `com.unity.inputsystem` (1.7.0).
+Depends on `com.bftools.core` (0.4.1) and `com.unity.inputsystem` (1.7.0).
 
 ## Structure
 ```

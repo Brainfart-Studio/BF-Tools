@@ -1,0 +1,10 @@
+{
+    "name": "BFTools.Core.Logger",
+    "rootNamespace": "BFTools.Core.Logger",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
