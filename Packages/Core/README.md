@@ -3,7 +3,7 @@
 Foundational systems for BFTools: bootstrapping, event communication, and logging.
 
 ## Version
-0.5.0
+0.6.0
 
 ## Contents
 
@@ -21,6 +21,9 @@ Tag-based logging with per-tag level overrides and pluggable sinks. See [Documen
 
 ### Service Locator
 Static registry for locating shared services by type at runtime. See [Documentation~/ServiceLocator.md](Documentation~/ServiceLocator.md).
+
+### Object Pooler
+Config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [Documentation~/ObjectPooler.md](Documentation~/ObjectPooler.md).
 
 ## Dependencies
 None.
@@ -49,7 +52,7 @@ Add the entry directly to your project's `Packages/manifest.json`:
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Feedback/package.json](../Feedback/package.json) for an example):
 ```json
 "dependencies": {
-  "com.bftools.core": "0.5.0"
+  "com.bftools.core": "0.6.0"
 }
 ```
 
