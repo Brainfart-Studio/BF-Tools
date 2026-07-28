@@ -4,12 +4,13 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.4.1)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.5.0)
 Foundational systems every other package builds on.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Core/Documentation~/Bootstrapper.md).
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
 - **Editor Asset Utility**: shared editor-only helpers (folder creation, config asset creation, prefab variant creation) used by this repo's `Assets/Create/BFTools/...` menu creators.
 - **Logger**: tag-based logging with per-tag level overrides and pluggable sinks. See [Logger.md](Packages/Core/Documentation~/Logger.md).
+- **Service Locator**: static registry for locating shared services by type at runtime. See [ServiceLocator.md](Packages/Core/Documentation~/ServiceLocator.md).
 
 No dependencies.
 
@@ -28,6 +29,7 @@ Packages/
     LevelBootstrapper/       Editor/, Runtime/, Prefabs/
     EventBus/                Runtime/
     EditorAssetUtility/      Editor/
+    ServiceLocator/          Runtime/
     Documentation~/
   Feedback/                com.bftools.feedback
     Haptics/                 Editor/, Runtime/, Prefabs/
