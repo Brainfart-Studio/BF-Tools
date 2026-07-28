@@ -1,7 +1,9 @@
 {
     "name": "BFTools.Core.EditorAssetUtility.Editor",
     "rootNamespace": "BFTools.Core.EditorAssetUtility.Editor",
-    "references": [],
+    "references": [
+        "BFTools.Core.Logger"
+    ],
     "includePlatforms": [
         "Editor"
     ],
