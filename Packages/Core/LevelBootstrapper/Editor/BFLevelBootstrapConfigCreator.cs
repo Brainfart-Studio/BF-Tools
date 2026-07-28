@@ -8,7 +8,7 @@ namespace BFTools.Core.LevelBootstrapper.Editor
         private const string TargetPath = "Assets/Configs/Core/LevelBootstrapper";
         private const string AssetName = "LevelBootstrapConfig.asset";
 
-        [MenuItem("Assets/Create/BFTools/Core/Config/Level Bootstrap Config", priority = -100)]
+        [MenuItem("Assets/Create/BFTools/Core/Config/Level Bootstrap Config", priority = BFMenuPriority.Group.Core + BFMenuPriority.Module.LevelBootstrapper)]
         private static void Create()
         {
             BFEditorAssetUtility.CreateConfigAsset<BFLevelBootstrapConfig>(TargetPath, AssetName);

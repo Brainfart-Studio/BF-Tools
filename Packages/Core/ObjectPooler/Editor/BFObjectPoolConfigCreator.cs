@@ -8,7 +8,7 @@ namespace BFTools.Core.ObjectPooler.Editor
         private const string TargetPath = "Assets/Configs/Core/ObjectPooler";
         private const string AssetName = "ObjectPoolConfig.asset";
 
-        [MenuItem("Assets/Create/BFTools/Core/Config/Object Pool Config", priority = -100)]
+        [MenuItem("Assets/Create/BFTools/Core/Config/Object Pool Config", priority = BFMenuPriority.Group.Core + BFMenuPriority.Module.ObjectPooler)]
         private static void Create()
         {
             BFEditorAssetUtility.CreateConfigAsset<BFObjectPoolConfig>(TargetPath, AssetName);
