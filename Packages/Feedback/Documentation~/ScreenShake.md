@@ -3,9 +3,9 @@
 Camera shake triggered by named events, driven by config-defined amplitude/duration entries.
 
 ## Setup
-1. `Assets/Create/BFTools/Config/Screen Shake Config` creates a config at `Assets/Configs/Feedback/ScreenShake/ScreenShakeConfig.asset`.
+1. `Assets/Create/BFTools/Feedback/Config/Screen Shake Config` creates a config at `Assets/Configs/Feedback/ScreenShake/ScreenShakeConfig.asset`.
 2. Populate `Entries` with `eventName` / `amplitude` (0–1) / `duration` (seconds) rows.
-3. `Assets/Create/BFTools/Prefabs/Screen Shake` creates a prefab variant of the base `ScreenShake` prefab at `Assets/Prefabs/Feedback/ScreenShake.prefab`.
+3. `Assets/Create/BFTools/Feedback/Prefabs/Screen Shake` creates a prefab variant of the base `ScreenShake` prefab at `Assets/Prefabs/Feedback/ScreenShake.prefab`.
 4. Assign one or more `ScreenShakeConfig` assets to the variant's `BFScreenShake` component (`configs` list) — e.g. split by category (`UI_ScreenShake`, `Combat_ScreenShake`, `Environment_ScreenShake`) instead of cramming everything into one asset.
 5. Place the prefab instance in the scene (or wire it into a Bootstrapper).
 

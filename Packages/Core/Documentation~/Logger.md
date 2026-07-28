@@ -3,7 +3,7 @@
 Static, tag-based logging with per-tag level overrides, pluggable sinks, and a console + file sink included out of the box.
 
 ## Setup
-1. `Assets/Create/BFTools/Config/Logger Config` creates a config at `Assets/Resources/BFTools/BFLoggerConfig.asset`.
+1. `Assets/Create/BFTools/Core/Config/Logger Config` creates a config at `Assets/Resources/BFTools/BFLoggerConfig.asset`.
 2. Configure the config asset.
    - `Global Minimum Level` is the default level below which nothing logs (default `Info`).
    - `Tag Level Overrides` are per-tag `tag` / `minimumLevel` entries. A matching override fully replaces the global minimum for that tag, in either direction (more or less verbose).
