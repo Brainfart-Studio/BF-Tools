@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1] - Logger Rollout
+
+### Added
+- BFLogger tracing added to EventBus (subscribe/unsubscribe/fire/clear), GlobalBootstrapper, LevelBootstrapper, and EditorAssetUtility
+
+### Fixed
+- BFLogger now auto-loads `BFLoggerConfig` from `Resources/BFTools/BFLoggerConfig` on the first log call if `Initialize` wasn't called explicitly, falling back to a default config (`Info` level, console sink) with a one-time warning if none is found
+
 ## [0.4.0] - Logger
 
 ### Added

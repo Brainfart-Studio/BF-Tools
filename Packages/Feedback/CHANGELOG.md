@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1] - Logger Integration
+
+### Added
+- BFLogger tracing added to `BFHaptics` and `BFScreenShake`: lookup building, duplicate-`eventName` warnings, no-match trace logs, and trigger calls
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.4.1, required for the Logger assembly reference
+
 ## [0.4.0] - Multi-Config Support
 
 ### Changed
