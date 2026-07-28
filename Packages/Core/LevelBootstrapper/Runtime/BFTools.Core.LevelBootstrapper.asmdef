@@ -1,7 +1,9 @@
 {
     "name": "BFTools.Core.LevelBootstrapper",
     "rootNamespace": "BFTools.Core.LevelBootstrapper",
-    "references": [],
+    "references": [
+        "BFTools.Core.Logger"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
