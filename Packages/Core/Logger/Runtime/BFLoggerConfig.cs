@@ -1,18 +1,28 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BFLoggerConfig : MonoBehaviour
+namespace BFTools.Core.Logger
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BFLoggerConfig : ScriptableObject
     {
-        
-    }
+        [Serializable]
+        public struct TagLevelOverride
+        {
+            public string tag;
+            public LogLevel minimumLevel;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField] private LogLevel globalMinimumLevel = LogLevel.Info;
+        [SerializeField] private List<TagLevelOverride> tagLevelOverrides = new List<TagLevelOverride>();
+        [SerializeField] private bool useTagAllowlist = false;
+        [SerializeField] private List<string> tagAllowlist = new List<string>();
+        [SerializeField] private LogLevel stackTraceMinimumLevel = LogLevel.Error;
+
+        internal LogLevel GlobalMinimumLevel => globalMinimumLevel;
+        internal IReadOnlyList<TagLevelOverride> TagLevelOverrides => tagLevelOverrides;
+        internal bool UseTagAllowlist => useTagAllowlist;
+        internal IReadOnlyList<string> TagAllowlist => tagAllowlist;
+        internal LogLevel StackTraceMinimumLevel => stackTraceMinimumLevel;
     }
 }

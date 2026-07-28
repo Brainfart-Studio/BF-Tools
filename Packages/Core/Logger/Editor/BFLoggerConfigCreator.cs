@@ -1,18 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using UnityEditor;
+using BFTools.Core.EditorAssetUtility.Editor;
 
-public class BFLoggerConfigCreator : MonoBehaviour
+namespace BFTools.Core.Logger.Editor
 {
-    // Start is called before the first frame update
-    void Start()
+    public static class BFLoggerConfigCreator
     {
-        
-    }
+        private const string TargetPath = "Assets/Resources/BFTools";
+        private const string AssetName = "BFLoggerConfig.asset";
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [MenuItem("Assets/Create/BFTools/Config/Logger Config")]
+        private static void Create()
+        {
+            BFEditorAssetUtility.CreateConfigAsset<BFLoggerConfig>(TargetPath, AssetName);
+        }
     }
 }
