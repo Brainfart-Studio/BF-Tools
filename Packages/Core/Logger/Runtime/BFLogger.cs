@@ -70,22 +70,27 @@ namespace BFTools.Core.Logger
 
         private static LogLevel ResolveMinimumLevel(string[] tags)
         {
-            LogLevel minimumLevel = config.GlobalMinimumLevel;
-
             if (tags == null)
-                return minimumLevel;
+                return config.GlobalMinimumLevel;
+
+            bool hasOverride = false;
+            LogLevel overrideLevel = LogLevel.Critical;
 
             for (int i = 0; i < tags.Length; i++)
             {
                 for (int j = 0; j < config.TagLevelOverrides.Count; j++)
                 {
                     BFLoggerConfig.TagLevelOverride overrideEntry = config.TagLevelOverrides[j];
-                    if (overrideEntry.tag == tags[i] && overrideEntry.minimumLevel < minimumLevel)
-                        minimumLevel = overrideEntry.minimumLevel;
+                    if (overrideEntry.tag != tags[i])
+                        continue;
+
+                    hasOverride = true;
+                    if (overrideEntry.minimumLevel < overrideLevel)
+                        overrideLevel = overrideEntry.minimumLevel;
                 }
             }
 
-            return minimumLevel;
+            return hasOverride ? overrideLevel : config.GlobalMinimumLevel;
         }
 
         private static bool IsTagAllowed(string[] tags)
