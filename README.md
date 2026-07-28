@@ -12,7 +12,7 @@ Foundational systems every other package builds on.
 
 No dependencies.
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.3.0)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.4.0)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
