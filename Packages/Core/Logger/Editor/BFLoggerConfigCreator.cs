@@ -8,7 +8,7 @@ namespace BFTools.Core.Logger.Editor
         private const string TargetPath = "Assets/Resources/BFTools";
         private const string AssetName = "BFLoggerConfig.asset";
 
-        [MenuItem("Assets/Create/BFTools/Config/Logger Config")]
+        [MenuItem("Assets/Create/BFTools/Core/Config/Logger Config", priority = -100)]
         private static void Create()
         {
             BFEditorAssetUtility.CreateConfigAsset<BFLoggerConfig>(TargetPath, AssetName);
