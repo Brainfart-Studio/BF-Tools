@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.0] - Service Locator
+
+### Added
+- BFServiceLocator static class with Register/Get/Unregister for type-keyed service registration
+- BFLogger tracing on Register/Get/Unregister calls
+
 ## [0.4.1] - Logger Rollout
 
 ### Added

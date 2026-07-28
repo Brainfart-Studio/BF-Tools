@@ -3,7 +3,7 @@
 Foundational systems for BFTools: bootstrapping, event communication, and logging.
 
 ## Version
-0.4.1
+0.5.0
 
 ## Contents
 
@@ -18,6 +18,9 @@ Shared editor-only helpers (folder creation, config asset creation, prefab varia
 
 ### Logger
 Tag-based logging with per-tag level overrides and pluggable sinks. See [Documentation~/Logger.md](Documentation~/Logger.md).
+
+### Service Locator
+Static registry for locating shared services by type at runtime. See [Documentation~/ServiceLocator.md](Documentation~/ServiceLocator.md).
 
 ## Dependencies
 None.
@@ -46,7 +49,7 @@ Add the entry directly to your project's `Packages/manifest.json`:
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Feedback/package.json](../Feedback/package.json) for an example):
 ```json
 "dependencies": {
-  "com.bftools.core": "0.4.1"
+  "com.bftools.core": "0.5.0"
 }
 ```
 
