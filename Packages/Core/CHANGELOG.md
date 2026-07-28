@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0] - Object Pooler
+
+### Added
+- BFObjectPoolConfig ScriptableObject with key/prefab/prewarmCount pool entries
+- BFObjectPooler MonoBehaviour with prewarm-on-Awake and Get/Release
+- BFObjectPooler registration with BFServiceLocator on Awake/OnDestroy
+- BFLogger tracing on BFObjectPooler (prewarm, get, release) and warning on pool exhaustion
+- BFObjectPoolConfigCreator editor tool
+- BFObjectPoolerVariantCreator editor tool
+- Base ObjectPooler prefab
+
+### Fixed
+- Corrected ObjectPooler prefab folder name (`Prefab` -> `Prefabs`) to match BFObjectPoolerVariantCreator's base prefab path
+
 ## [0.5.0] - Service Locator
 
 ### Added
