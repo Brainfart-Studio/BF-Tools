@@ -1,7 +1,9 @@
 {
     "name": "BFTools.Core.EventBus",
     "rootNamespace": "BFTools.Core.EventBus",
-    "references": [],
+    "references": [
+        "BFTools.Core.Logger"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
