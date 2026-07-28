@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2] - Create Menu Reorganization
+
+### Changed
+- Haptics and ScreenShake creators' menu paths moved from `Assets/Create/BFTools/Config|Prefabs/...` to `Assets/Create/BFTools/Feedback/Config|Prefabs/...`
+- Menu items now sort using priority values from Core's `BFMenuPriority`, placing BFTools above Unity's built-in Create menu categories
+- Bumped `com.bftools.core` dependency to 0.6.1, required for `BFMenuPriority`
+
 ## [0.4.1] - Logger Integration
 
 ### Added
