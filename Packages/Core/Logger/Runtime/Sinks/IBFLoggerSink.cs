@@ -1,18 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class IBFLoggerSink : MonoBehaviour
+namespace BFTools.Core.Logger
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface IBFLoggerSink
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        void Write(LogLevel level, string[] tags, string message, Object context, bool includeStackTrace);
     }
 }
