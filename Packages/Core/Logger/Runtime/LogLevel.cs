@@ -1,18 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class LogLevel : MonoBehaviour
+namespace BFTools.Core.Logger
 {
-    // Start is called before the first frame update
-    void Start()
+    public enum LogLevel
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Trace = 0,
+        Debug = 1,
+        Info = 2,
+        Warning = 3,
+        Error = 4,
+        Critical = 5
     }
 }
