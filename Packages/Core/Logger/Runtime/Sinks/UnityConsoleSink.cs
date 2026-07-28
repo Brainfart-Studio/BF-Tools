@@ -10,7 +10,7 @@ namespace BFTools.Core.Logger
             LogType logType = ToLogType(level);
             LogOption logOption = includeStackTrace ? LogOption.None : LogOption.NoStacktrace;
 
-            Debug.LogFormat(logType, logOption, context, formatted);
+            Debug.LogFormat(logType, logOption, context, "{0}", formatted);
         }
 
         private static string Format(LogLevel level, string[] tags, string message)
