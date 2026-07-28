@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BFTools.Core.ServiceLocator;
 using UnityEngine;
 
 namespace BFTools.Core.ObjectPooler
@@ -14,6 +15,12 @@ namespace BFTools.Core.ObjectPooler
         private void Awake()
         {
             Prewarm();
+            BFServiceLocator.Register(this);
+        }
+
+        private void OnDestroy()
+        {
+            BFServiceLocator.Unregister<BFObjectPooler>();
         }
 
         private void Prewarm()
