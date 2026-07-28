@@ -6,8 +6,11 @@ namespace BFTools.Core.Logger
 {
     public static class BFLogger
     {
+        private const string ResourcesConfigPath = "BFTools/BFLoggerConfig";
+
         private static readonly List<IBFLoggerSink> sinks = new List<IBFLoggerSink>();
         private static BFLoggerConfig config;
+        private static bool initialized;
 
         public static void Initialize(BFLoggerConfig loggerConfig, params IBFLoggerSink[] activeSinks)
         {
@@ -15,6 +18,25 @@ namespace BFTools.Core.Logger
             sinks.Clear();
             if (activeSinks != null)
                 sinks.AddRange(activeSinks);
+            initialized = true;
+        }
+
+        private static void EnsureInitialized()
+        {
+            if (initialized)
+                return;
+
+            initialized = true;
+
+            config = Resources.Load<BFLoggerConfig>(ResourcesConfigPath);
+            if (config == null)
+            {
+                UnityEngine.Debug.LogWarning($"[BFLogger] No BFLoggerConfig found at Resources/{ResourcesConfigPath}. Using default config (Info level, console sink).");
+                config = ScriptableObject.CreateInstance<BFLoggerConfig>();
+            }
+
+            if (sinks.Count == 0)
+                sinks.Add(new UnityConsoleSink());
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -47,7 +69,9 @@ namespace BFTools.Core.Logger
 
         private static void Log(LogLevel level, string[] tags, string message, Object context)
         {
-            if (config == null || !ShouldLog(level, tags))
+            EnsureInitialized();
+
+            if (!ShouldLog(level, tags))
                 return;
 
             bool includeStackTrace = level >= config.StackTraceMinimumLevel;
