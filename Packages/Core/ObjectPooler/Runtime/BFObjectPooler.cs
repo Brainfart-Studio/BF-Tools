@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ namespace BFTools.Core.ObjectPooler
 {
     public class BFObjectPooler : MonoBehaviour
     {
+        private const string LogTag = "ObjectPooler";
+
         [SerializeField] private BFObjectPoolConfig config;
 
         private readonly Dictionary<string, Queue<GameObject>> pools = new Dictionary<string, Queue<GameObject>>();
@@ -16,11 +19,13 @@ namespace BFTools.Core.ObjectPooler
         {
             Prewarm();
             BFServiceLocator.Register(this);
+            BFLogger.Trace(LogTag, "Registered with ServiceLocator");
         }
 
         private void OnDestroy()
         {
             BFServiceLocator.Unregister<BFObjectPooler>();
+            BFLogger.Trace(LogTag, "Unregistered from ServiceLocator");
         }
 
         private void Prewarm()
@@ -38,6 +43,8 @@ namespace BFTools.Core.ObjectPooler
                     instance.SetActive(false);
                     pools[entry.key].Enqueue(instance);
                 }
+
+                BFLogger.Trace(LogTag, $"Prewarmed {entry.prewarmCount} instance(s) for '{entry.key}'");
             }
         }
 
@@ -52,11 +59,19 @@ namespace BFTools.Core.ObjectPooler
         {
             Queue<GameObject> pool = pools[key];
 
-            GameObject instance = pool.Count > 0
-                ? pool.Dequeue()
-                : CreateInstance(key, prefabsByKey[key]);
+            GameObject instance;
+            if (pool.Count > 0)
+            {
+                instance = pool.Dequeue();
+            }
+            else
+            {
+                BFLogger.Warning(LogTag, $"Pool '{key}' exhausted, instantiating new instance. Consider increasing prewarm count.");
+                instance = CreateInstance(key, prefabsByKey[key]);
+            }
 
             instance.SetActive(true);
+            BFLogger.Trace(LogTag, $"Got instance from pool '{key}'");
             return instance;
         }
 
@@ -65,6 +80,7 @@ namespace BFTools.Core.ObjectPooler
             string key = keysByInstance[instance];
             instance.SetActive(false);
             pools[key].Enqueue(instance);
+            BFLogger.Trace(LogTag, $"Released instance to pool '{key}'");
         }
     }
 }
