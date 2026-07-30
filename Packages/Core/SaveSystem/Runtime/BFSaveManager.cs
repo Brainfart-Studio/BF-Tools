@@ -160,6 +160,12 @@ namespace BFTools.Core.SaveSystem
                 return false;
             }
 
+            if (saveData == null)
+            {
+                BFLogger.Warning(LogTag, $"Decrypted save data for slot '{slotName}' was empty or invalid.");
+                return false;
+            }
+
             if (saveData.metadata.version != BFSaveVersionMigrator.CurrentVersion)
                 BFLogger.Info(LogTag, $"Migrating slot '{slotName}' from version {saveData.metadata.version} to {BFSaveVersionMigrator.CurrentVersion}");
 
