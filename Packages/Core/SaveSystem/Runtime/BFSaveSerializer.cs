@@ -10,7 +10,7 @@ namespace BFTools.Core.SaveSystem
 
         private static readonly JsonSerializerSettings settings = new JsonSerializerSettings
         {
-            Formatting = Formatting.None,
+            Formatting = Newtonsoft.Json.Formatting.None,
             TypeNameHandling = TypeNameHandling.Auto
         };
 
