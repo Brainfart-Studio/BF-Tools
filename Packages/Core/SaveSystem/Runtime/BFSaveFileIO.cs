@@ -7,10 +7,17 @@ namespace BFTools.Core.SaveSystem
     {
         public static async Task WriteAsync(string filePath, byte[] data)
         {
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+            string tempPath = filePath + ".tmp";
+
+            using (FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
             {
                 await fileStream.WriteAsync(data, 0, data.Length);
             }
+
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            File.Move(tempPath, filePath);
         }
 
         public static async Task<byte[]> ReadAsync(string filePath)
