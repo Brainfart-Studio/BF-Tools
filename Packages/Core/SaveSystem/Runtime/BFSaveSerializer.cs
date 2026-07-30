@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using BFTools.Core.Logger;
-using System.Xml;
 
 namespace BFTools.Core.SaveSystem
 {
