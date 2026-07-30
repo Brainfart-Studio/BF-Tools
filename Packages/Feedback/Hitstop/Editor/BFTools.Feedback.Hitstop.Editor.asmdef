@@ -1,0 +1,15 @@
+{
+    "name": "BFTools.Feedback.Hitstop.Editor",
+    "rootNamespace": "BFTools.Feedback.Hitstop.Editor",
+    "references": [
+        "BFTools.Feedback.Hitstop",
+        "BFTools.Core.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

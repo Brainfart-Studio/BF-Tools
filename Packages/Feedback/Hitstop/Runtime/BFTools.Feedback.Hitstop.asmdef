@@ -1,0 +1,13 @@
+{
+    "name": "BFTools.Feedback.Hitstop",
+    "rootNamespace": "BFTools.Feedback.Hitstop",
+    "references": [
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
