@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0] - Hitstop
+
+### Added
+- Scaffold Hitstop system in Feedback package
+- BFHitstopConfig ScriptableObject
+- BFHitstop runtime component
+- Base Hitstop prefab
+- HitstopConfig Editor creator
+- Hitstop prefab variant creator
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.7.1, required for the `BFMenuPriority.Module.Hitstop` entry
+
 ## [0.4.2] - Create Menu Reorganization
 
 ### Changed
