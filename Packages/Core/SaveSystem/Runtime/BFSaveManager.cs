@@ -11,12 +11,14 @@ namespace BFTools.Core.SaveSystem
 
         private static readonly List<ISaveable> saveables = new List<ISaveable>();
         private static readonly List<BFSaveSlot> slots = new List<BFSaveSlot>();
+        private static readonly HashSet<Type> registeredStateTypes = new HashSet<Type>();
 
         public static void Register(ISaveable saveable)
         {
             if (!saveables.Contains(saveable))
             {
                 saveables.Add(saveable);
+                registeredStateTypes.Add(saveable.StateType);
                 BFLogger.Trace(LogTag, $"Registered {saveable.GetType().Name}");
             }
         }
