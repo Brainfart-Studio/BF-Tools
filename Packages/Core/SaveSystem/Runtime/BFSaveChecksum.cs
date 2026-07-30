@@ -7,9 +7,9 @@ namespace BFTools.Core.SaveSystem
     {
         public static string Generate(byte[] data)
         {
-            using (SHA256 sha256 = SHA256.Create())
+            using (HMACSHA256 hmac = new HMACSHA256(BFSaveKeyProvider.GetMacKey()))
             {
-                byte[] hash = sha256.ComputeHash(data);
+                byte[] hash = hmac.ComputeHash(data);
                 StringBuilder builder = new StringBuilder();
 
                 for (int i = 0; i < hash.Length; i++)

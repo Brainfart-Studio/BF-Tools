@@ -1,5 +1,6 @@
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using BFTools.Core.Logger;
 
 namespace BFTools.Core.SaveSystem
@@ -10,6 +11,7 @@ namespace BFTools.Core.SaveSystem
         private const int KeySizeInBytes = 32;
 
         private static byte[] cachedKey;
+        private static byte[] cachedMacKey;
 
         public static byte[] GetKey()
         {
@@ -30,6 +32,19 @@ namespace BFTools.Core.SaveSystem
             }
 
             return cachedKey;
+        }
+
+        public static byte[] GetMacKey()
+        {
+            if (cachedMacKey != null)
+                return cachedMacKey;
+
+            using (HMACSHA256 hmac = new HMACSHA256(GetKey()))
+            {
+                cachedMacKey = hmac.ComputeHash(Encoding.UTF8.GetBytes("BFSaveSystem.MacKey"));
+            }
+
+            return cachedMacKey;
         }
 
         private static byte[] GenerateAndPersistKey(string keyPath)
