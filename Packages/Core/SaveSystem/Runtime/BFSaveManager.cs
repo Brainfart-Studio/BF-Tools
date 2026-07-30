@@ -54,6 +54,16 @@ namespace BFTools.Core.SaveSystem
             return $"save_{slotName}.dat";
         }
 
+        public static Task SaveAsync(string slotName)
+        {
+            return SaveAsync(slotName, BFSavePath.DefaultDirectory);
+        }
+
+        public static Task<bool> LoadAsync(string slotName)
+        {
+            return LoadAsync(slotName, BFSavePath.DefaultDirectory);
+        }
+
         public static async Task SaveAsync(string slotName, string directoryPath)
         {
             BFSaveData saveData = new BFSaveData
