@@ -1,25 +1,25 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace BFTools.Core.SaveSystem
 {
     public static class BFSaveEncryptor
     {
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("0123456789ABCDEF0123456789ABCDEF");
-        private static readonly byte[] IV = Encoding.UTF8.GetBytes("ABCDEF0123456789");
-
         public static byte[] Encrypt(string plainText)
         {
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Key;
-                aes.IV = IV;
+                aes.Key = BFSaveKeyProvider.GetKey();
+                aes.GenerateIV();
+
+                byte[] iv = aes.IV;
 
                 using (ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
+                    memoryStream.Write(iv, 0, iv.Length);
+
                     using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                     using (StreamWriter writer = new StreamWriter(cryptoStream))
                     {
@@ -35,11 +35,15 @@ namespace BFTools.Core.SaveSystem
         {
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Key;
-                aes.IV = IV;
+                aes.Key = BFSaveKeyProvider.GetKey();
+
+                int ivLength = aes.BlockSize / 8;
+                byte[] iv = new byte[ivLength];
+                Array.Copy(cipherBytes, iv, ivLength);
+                aes.IV = iv;
 
                 using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
-                using (MemoryStream memoryStream = new MemoryStream(cipherBytes))
+                using (MemoryStream memoryStream = new MemoryStream(cipherBytes, ivLength, cipherBytes.Length - ivLength))
                 using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                 using (StreamReader reader = new StreamReader(cryptoStream))
                 {
