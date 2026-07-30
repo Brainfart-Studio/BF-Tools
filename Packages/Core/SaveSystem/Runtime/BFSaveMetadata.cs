@@ -3,7 +3,7 @@ using System;
 namespace BFTools.Core.SaveSystem
 {
     [Serializable]
-    public struct SaveMetadata
+    public struct BFSaveMetadata
     {
         public int version;
         public DateTime timestamp;
