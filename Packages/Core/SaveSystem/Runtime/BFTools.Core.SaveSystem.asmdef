@@ -2,14 +2,15 @@
     "name": "BFTools.Core.SaveSystem",
     "rootNamespace": "BFTools.Core.SaveSystem",
     "references": [
-        "BFTools.Core.Logger",
-        "Newtonsoft.Json"
+        "BFTools.Core.Logger"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

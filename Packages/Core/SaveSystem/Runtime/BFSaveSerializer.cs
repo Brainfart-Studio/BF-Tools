@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Unity.Plastic.Newtonsoft.Json;
 
 namespace BFTools.Core.SaveSystem
 {
