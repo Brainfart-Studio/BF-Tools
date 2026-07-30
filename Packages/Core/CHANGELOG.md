@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.1] - Menu Priority Update
+
+### Changed
+- Added `Module.Hitstop` constant to `BFMenuPriority`, required for the Feedback package's Hitstop Config and prefab variant creators
+
 ## [0.7.0] - Save System
 
 ### Added
