@@ -2,9 +2,11 @@
 
 Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built around config-driven ScriptableObjects and a lightweight event bus. No DI containers, no speculative abstraction: systems are added when there's a real second use case.
 
+> **Active development.** Everything on `development` is still being built and tested. Most systems should work, but nothing here has been rigorously tested enough to rely on in a commercial project yet. Use at your own risk until a package hits a tagged release on `main`.
+
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.6.1)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.7.0)
 Foundational systems every other package builds on.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Core/Documentation~/Bootstrapper.md).
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
@@ -12,6 +14,7 @@ Foundational systems every other package builds on.
 - **Logger**: tag-based logging with per-tag level overrides and pluggable sinks. See [Logger.md](Packages/Core/Documentation~/Logger.md).
 - **Service Locator**: static registry for locating shared services by type at runtime. See [ServiceLocator.md](Packages/Core/Documentation~/ServiceLocator.md).
 - **Object Pooler**: config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [ObjectPooler.md](Packages/Core/Documentation~/ObjectPooler.md).
+- **Save System**: ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [SaveSystem.md](Packages/Core/Documentation~/SaveSystem.md).
 
 No dependencies.
 
@@ -32,6 +35,7 @@ Packages/
     EditorAssetUtility/      Editor/
     ServiceLocator/          Runtime/
     ObjectPooler/            Editor/, Runtime/, Prefabs/
+    SaveSystem/              Runtime/
     Documentation~/
   Feedback/                com.bftools.feedback
     Haptics/                 Editor/, Runtime/, Prefabs/
