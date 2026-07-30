@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.7.0] - Save System
+
+### Added
+- SaveSystem asmdef added to Core package, with a Newtonsoft.Json dependency
+- ISaveable interface (StateType, CaptureState, RestoreState contract)
+- BFSaveMetadata struct (version, timestamp, playtime)
+- BFSaveSerializer wrapper for JSON conversion via Newtonsoft.Json
+- BFSaveEncryptor for AES encryption/decryption of save bytes
+- BFSaveKeyProvider deriving a per-install encryption key, persisted alongside save data
+- BFSaveChecksum generation and validation
+- BFSaveFileIO with async read/write and a temp-file-then-rename write pattern
+- BFSaveVersionMigrator (upgrade path scaffold)
+- BFSaveManager with ISaveable registration and Save/Load wired to CaptureState/RestoreState
+- Save slot support (multiple named files + slot metadata)
+- Default save path resolution (Application.persistentDataPath)
+- BFLogger tracing added to SaveSystem
+- BFSaveTypeAllowlistBinder restricting save deserialization to registered ISaveable state types
+
+### Changed
+- Renamed SaveMetadata struct to BFSaveMetadata for naming consistency
+
+### Fixed
+- Fully qualified Newtonsoft Formatting to resolve a CS0104 ambiguity
+- Save encryption key now derived per install, with the IV randomized per call
+- Loads now fail gracefully when save data cannot be decrypted or parsed, instead of throwing
+- Guarded against null save data after decrypt to prevent an unhandled crash
+- Restricted BFSaveSerializer TypeNameHandling to allowlisted types
+- Save checksums now use a keyed MAC (HMAC-SHA256) instead of unkeyed SHA256
+
 ## [0.6.1] - Create Menu Reorganization
 
 ### Added
