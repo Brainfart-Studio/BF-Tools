@@ -146,8 +146,19 @@ namespace BFTools.Core.SaveSystem
                 return false;
             }
 
-            string json = BFSaveEncryptor.Decrypt(encryptedBytes);
-            BFSaveData saveData = BFSaveSerializer.Deserialize<BFSaveData>(json);
+            string json;
+            BFSaveData saveData;
+
+            try
+            {
+                json = BFSaveEncryptor.Decrypt(encryptedBytes);
+                saveData = BFSaveSerializer.Deserialize<BFSaveData>(json);
+            }
+            catch (Exception exception)
+            {
+                BFLogger.Warning(LogTag, $"Failed to decrypt or parse save data for slot '{slotName}': {exception.Message}. Save may be corrupted or encrypted with a different key.");
+                return false;
+            }
 
             if (saveData.metadata.version != BFSaveVersionMigrator.CurrentVersion)
                 BFLogger.Info(LogTag, $"Migrating slot '{slotName}' from version {saveData.metadata.version} to {BFSaveVersionMigrator.CurrentVersion}");
