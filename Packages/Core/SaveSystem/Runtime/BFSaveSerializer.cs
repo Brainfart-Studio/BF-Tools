@@ -7,11 +7,20 @@ namespace BFTools.Core.SaveSystem
     {
         private const string LogTag = "Save";
 
+        private static readonly BFSaveTypeAllowlistBinder binder = new BFSaveTypeAllowlistBinder();
+
         private static readonly JsonSerializerSettings settings = new JsonSerializerSettings
         {
             Formatting = Newtonsoft.Json.Formatting.None,
-            TypeNameHandling = TypeNameHandling.Auto
+            TypeNameHandling = TypeNameHandling.Auto,
+            SerializationBinder = binder
         };
+
+        public static void AllowType(System.Type type)
+        {
+            binder.Allow(type);
+            BFLogger.Trace(LogTag, $"Allowed '{type.Name}' for save (de)serialization");
+        }
 
         public static string Serialize(object data)
         {

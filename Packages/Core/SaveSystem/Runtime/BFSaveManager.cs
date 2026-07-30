@@ -18,7 +18,10 @@ namespace BFTools.Core.SaveSystem
             if (!saveables.Contains(saveable))
             {
                 saveables.Add(saveable);
-                registeredStateTypes.Add(saveable.StateType);
+
+                if (registeredStateTypes.Add(saveable.StateType))
+                    BFSaveSerializer.AllowType(saveable.StateType);
+
                 BFLogger.Trace(LogTag, $"Registered {saveable.GetType().Name}");
             }
         }
@@ -158,7 +161,7 @@ namespace BFTools.Core.SaveSystem
             }
             catch (Exception exception)
             {
-                BFLogger.Warning(LogTag, $"Failed to decrypt or parse save data for slot '{slotName}': {exception.Message}. Save may be corrupted or encrypted with a different key.");
+                BFLogger.Warning(LogTag, $"Failed to decrypt or parse save data for slot '{slotName}': {exception.Message}. Save may be corrupted, encrypted with a different key, or reference a type outside the save allowlist.");
                 return false;
             }
 
