@@ -1,0 +1,15 @@
+{
+    "name": "BFTools.Feedback.ScreenFlash.Editor",
+    "rootNamespace": "BFTools.Feedback.ScreenFlash.Editor",
+    "references": [
+        "BFTools.Feedback.ScreenFlash",
+        "BFTools.Core.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
