@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.core",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "displayName": "BFTools Core",
     "description": "Core systems for BFTools: Bootstrapper, Event Bus, Service Locator, Object Pooler, Settings, Keybindings, Save/Load.",
     "unity": "2022.3",

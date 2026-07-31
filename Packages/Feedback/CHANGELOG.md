@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.0] - Screen Flash
+
+### Added
+- Scaffold Screen Flash system in Feedback package
+- BFScreenFlashConfig ScriptableObject
+- BFScreenFlash runtime component, accepting a list of config assets (`configs`) merged at runtime, consistent with Haptics/ScreenShake/Hitstop
+- Base ScreenFlash prefab
+- ScreenFlashConfig Editor creator
+- ScreenFlash prefab variant creator
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.7.2, required for the `BFMenuPriority.Module.ScreenFlash` entry
+
+### Fixed
+- Base ScreenFlash prefab now has the `BFScreenFlash` component attached
+- Base ScreenFlash prefab's flash target corrected from a `RawImage` to an `Image` component, matching the `flashImage` field type
+
 ## [0.5.0] - Hitstop
 
 ### Added

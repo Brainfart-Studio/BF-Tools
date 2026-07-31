@@ -3,7 +3,7 @@
 Foundational systems for BFTools: bootstrapping, event communication, and logging.
 
 ## Version
-0.7.1
+0.7.2
 
 ## Contents
 
@@ -55,7 +55,7 @@ Add the entry directly to your project's `Packages/manifest.json`:
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Feedback/package.json](../Feedback/package.json) for an example):
 ```json
 "dependencies": {
-  "com.bftools.core": "0.7.1"
+  "com.bftools.core": "0.7.2"
 }
 ```
 
