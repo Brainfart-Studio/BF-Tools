@@ -59,7 +59,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
                 LineRenderer lr = go.AddComponent<LineRenderer>();
                 lr.positionCount = Segments + 1;
                 lr.useWorldSpace = true;
-                lr.material = new Material(Shader.Find("Sprites/Default"));
+                lr.material = BFBackgroundGlowMaterial.Create();
                 lr.textureMode = LineTextureMode.Stretch;
 
                 ribbonRenderers.Add(lr);
@@ -92,8 +92,9 @@ namespace BFTools.Visuals.Background.AuroraRibbons
                 BFAuroraRibbon ribbon = effect.Ribbons[i];
                 LineRenderer lr = ribbonRenderers[i];
 
-                lr.startColor = ribbon.Color;
-                lr.endColor = ribbon.Color;
+                Color glowColor = ApplyGlow(ribbon.Color);
+                lr.startColor = glowColor;
+                lr.endColor = glowColor;
                 lr.startWidth = ribbon.CurrentThickness;
                 lr.endWidth = ribbon.CurrentThickness;
 
@@ -147,6 +148,14 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             Color32 bottom = config.BaseBottom;
             backgroundMesh.colors32 = new[] { bottom, bottom, top, top };
             backgroundMesh.RecalculateBounds();
+        }
+
+        private Color ApplyGlow(Color baseColor)
+        {
+            float glowIntensity = Mathf.Clamp01(config.Glow / 60f);
+            Color glowColor = baseColor * (1f + glowIntensity * 1.5f);
+            glowColor.a = Mathf.Lerp(0.6f, 1f, glowIntensity);
+            return glowColor;
         }
 
         private static void EnsureDotSprite()
