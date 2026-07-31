@@ -18,8 +18,6 @@ namespace BFTools.Visuals.Background
         private Camera outputCamera;
         private bool outputCameraConfigured;
         private bool hasWarnedMissingCamera;
-        private CameraClearFlags cachedClearFlags;
-        private int cachedCullingMask;
 
         private void OnEnable()
         {
@@ -84,21 +82,14 @@ namespace BFTools.Visuals.Background
                 return;
             }
 
-            cachedClearFlags = outputCamera.clearFlags;
-            cachedCullingMask = outputCamera.cullingMask;
+            BFBackgroundOutputCameraCompositor.Acquire(outputCamera);
             outputCameraConfigured = true;
-
-            outputCamera.clearFlags = CameraClearFlags.Depth;
-            outputCamera.cullingMask &= ~(1 << BackgroundLayer);
         }
 
         private void RestoreOutputCamera()
         {
-            if (outputCameraConfigured && outputCamera != null)
-            {
-                outputCamera.clearFlags = cachedClearFlags;
-                outputCamera.cullingMask = cachedCullingMask;
-            }
+            if (outputCameraConfigured)
+                BFBackgroundOutputCameraCompositor.Release(outputCamera);
 
             outputCamera = null;
             outputCameraConfigured = false;
