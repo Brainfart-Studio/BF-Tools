@@ -10,9 +10,15 @@ namespace BFTools.Visuals.Background
         public const int BackgroundLayer = 31;
 
         [SerializeField] private BFBackgroundConfig config;
+        [SerializeField] private Camera targetCameraOverride;
 
         private IBFBackgroundEffect activeEffect;
         private Camera backgroundCamera;
+
+        private Camera outputCamera;
+        private bool outputCameraConfigured;
+        private CameraClearFlags cachedClearFlags;
+        private int cachedCullingMask;
 
         private void OnEnable()
         {
@@ -21,6 +27,8 @@ namespace BFTools.Visuals.Background
 
             backgroundCamera = CreateBackgroundCamera();
             SyncBackgroundCamera();
+
+            ConfigureOutputCamera();
 
             activeEffect = config.CreateEffect();
             activeEffect.Init(transform);
@@ -40,6 +48,41 @@ namespace BFTools.Visuals.Background
             if (backgroundCamera != null)
                 Destroy(backgroundCamera.gameObject);
             backgroundCamera = null;
+
+            RestoreOutputCamera();
+        }
+
+        // Without this, the output camera's default clear flags wipe the background
+        // camera's draw every frame (it renders first at depth -100, then gets erased
+        // when the output camera clears the screen for its own pass), and the reserved
+        // layer would otherwise be drawn twice if left in the output camera's mask.
+        private void ConfigureOutputCamera()
+        {
+            outputCamera = targetCameraOverride != null ? targetCameraOverride : Camera.main;
+            if (outputCamera == null)
+            {
+                Debug.LogWarning("BFBackgroundManager: no output camera found (Camera.main is unset and no targetCameraOverride assigned); background effect will not be visible.");
+                return;
+            }
+
+            cachedClearFlags = outputCamera.clearFlags;
+            cachedCullingMask = outputCamera.cullingMask;
+            outputCameraConfigured = true;
+
+            outputCamera.clearFlags = CameraClearFlags.Depth;
+            outputCamera.cullingMask &= ~(1 << BackgroundLayer);
+        }
+
+        private void RestoreOutputCamera()
+        {
+            if (outputCameraConfigured && outputCamera != null)
+            {
+                outputCamera.clearFlags = cachedClearFlags;
+                outputCamera.cullingMask = cachedCullingMask;
+            }
+
+            outputCamera = null;
+            outputCameraConfigured = false;
         }
 
         private Camera CreateBackgroundCamera()
