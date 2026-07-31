@@ -42,6 +42,12 @@ namespace BFTools.Visuals.Palette
             EventBus<BFPaletteConfigChangedEvent>.Unsubscribe(OnPaletteConfigChanged);
         }
 
+        public void Select(string eventName)
+        {
+            currentEventName = eventName;
+            Apply(eventName);
+        }
+
         private void OnPaletteEvent(BFPaletteEvent evt)
         {
             currentEventName = evt.eventName;
