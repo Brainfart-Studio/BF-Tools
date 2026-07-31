@@ -33,11 +33,6 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             CurrentThickness = config.Thickness * thicknessMult;
         }
 
-        public void Tick(float elapsedTime)
-        {
-            // Position sampling for rendering happens via SampleY at draw time.
-        }
-
         public float SampleY(float xNormalized, float elapsedTime, float viewHeight)
         {
             float x = xNormalized;

@@ -43,9 +43,6 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             for (int i = 0; i < stars.Count; i++)
                 stars[i].Tick(dt);
 
-            for (int i = 0; i < ribbons.Count; i++)
-                ribbons[i].Tick(elapsedTime);
-
             renderer.Render();
         }
 
