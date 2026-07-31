@@ -35,6 +35,9 @@ namespace BFTools.Visuals.Palette
         {
             EventBus<BFPaletteEvent>.Subscribe(OnPaletteEvent);
             EventBus<BFPaletteConfigChangedEvent>.Subscribe(OnPaletteConfigChanged);
+
+            if (!string.IsNullOrEmpty(selectedEntryName))
+                Select(selectedEntryName);
         }
 
         private void OnDisable()
