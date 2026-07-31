@@ -77,13 +77,21 @@ namespace BFTools.Visuals.Palette
             {
                 if (entries[i].name == eventName)
                 {
-                    targetRenderer.color = entries[i].color;
+                    GetTargetRenderer().color = entries[i].color;
                     BFLogger.Trace(LogTag, $"Applied palette entry '{eventName}' on '{name}'.", this);
                     return;
                 }
             }
 
             BFLogger.Trace(LogTag, $"No palette entry found for name '{eventName}'.", this);
+        }
+
+        private SpriteRenderer GetTargetRenderer()
+        {
+            if (targetRenderer == null)
+                targetRenderer = GetComponent<SpriteRenderer>();
+
+            return targetRenderer;
         }
     }
 }
