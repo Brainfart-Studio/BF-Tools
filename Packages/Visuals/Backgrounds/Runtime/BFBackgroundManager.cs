@@ -17,6 +17,7 @@ namespace BFTools.Visuals.Background
 
         private Camera outputCamera;
         private bool outputCameraConfigured;
+        private bool hasWarnedMissingCamera;
         private CameraClearFlags cachedClearFlags;
         private int cachedCullingMask;
 
@@ -24,6 +25,8 @@ namespace BFTools.Visuals.Background
         {
             if (config == null)
                 return;
+
+            hasWarnedMissingCamera = false;
 
             backgroundCamera = CreateBackgroundCamera();
             SyncBackgroundCamera();
@@ -37,6 +40,14 @@ namespace BFTools.Visuals.Background
         private void Update()
         {
             SyncBackgroundCamera();
+
+            // Retry each frame until resolved: the scene's main camera may not exist yet
+            // if this manager's OnEnable runs before it (script execution order, async
+            // scene loads), and a dropped-in prefab shouldn't depend on getting that
+            // ordering right.
+            if (!outputCameraConfigured)
+                ConfigureOutputCamera();
+
             activeEffect?.Tick(Time.deltaTime);
         }
 
@@ -61,7 +72,12 @@ namespace BFTools.Visuals.Background
             outputCamera = targetCameraOverride != null ? targetCameraOverride : Camera.main;
             if (outputCamera == null)
             {
-                Debug.LogWarning("BFBackgroundManager: no output camera found (Camera.main is unset and no targetCameraOverride assigned); background effect will not be visible.");
+                if (!hasWarnedMissingCamera)
+                {
+                    Debug.LogError("BFBackgroundManager: no output camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise this background effect will never be visible.", this);
+                    hasWarnedMissingCamera = true;
+                }
+
                 return;
             }
 
