@@ -1,9 +1,9 @@
 # BFTools Feedback (`com.bftools.feedback`)
 
-Event-driven feedback systems: controller haptics, camera screen shake, and hitstop.
+Event-driven feedback systems: controller haptics, camera screen shake, hitstop, and screen flash.
 
 ## Version
-0.5.0
+0.6.0
 
 ## Contents
 
@@ -16,8 +16,11 @@ Camera shake triggered by named events. See [Documentation~/ScreenShake.md](Docu
 ### Hitstop
 Brief global time freeze triggered by named events. See [Documentation~/Hitstop.md](Documentation~/Hitstop.md).
 
+### Screen Flash
+Full-screen color flash triggered by named events. See [Documentation~/ScreenFlash.md](Documentation~/ScreenFlash.md).
+
 ## Dependencies
-- `com.bftools.core` @ 0.7.1
+- `com.bftools.core` @ 0.7.2
 - `com.unity.inputsystem` @ 1.7.0
 
 ## Installation
@@ -48,9 +51,9 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "0.5.0"
+  "com.bftools.feedback": "0.6.0"
 }
 ```
 
 ### Note on embedding
-Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.feedback`), which is what the editor tooling's hardcoded asset paths (e.g. the Haptics, Screen Shake, and Hitstop prefab variant creators) expect. A directly embedded folder is mounted by its on-disk name (`Feedback`) instead, which will break those paths.
+Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.feedback`), which is what the editor tooling's hardcoded asset paths (e.g. the Haptics, Screen Shake, Hitstop, and Screen Flash prefab variant creators) expect. A directly embedded folder is mounted by its on-disk name (`Feedback`) instead, which will break those paths.

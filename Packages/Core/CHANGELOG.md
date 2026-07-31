@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.2] - Menu Priority Update
+
+### Changed
+- Added `Module.ScreenFlash` constant to `BFMenuPriority`, required for the Feedback package's Screen Flash Config and prefab variant creators
+
 ## [0.7.1] - Menu Priority Update
 
 ### Changed
