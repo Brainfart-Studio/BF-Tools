@@ -10,6 +10,10 @@ namespace BFTools.Visuals.Background.AuroraRibbons
         private readonly List<BFBackgroundStar> stars = new List<BFBackgroundStar>();
         private float elapsedTime;
 
+        internal IReadOnlyList<BFAuroraRibbon> Ribbons => ribbons;
+        internal IReadOnlyList<BFBackgroundStar> Stars => stars;
+        internal float ElapsedTime => elapsedTime;
+
         public BFAuroraRibbonsEffect(BFAuroraRibbonsConfig config)
         {
             this.config = config;
