@@ -13,7 +13,7 @@ namespace BFTools.Visuals.Background
         [SerializeField] private Camera targetCameraOverride;
 
         private IBFBackgroundEffect activeEffect;
-        private Camera backgroundCamera;
+        private bool backgroundCameraAcquired;
 
         private Camera outputCamera;
         private bool outputCameraConfigured;
@@ -28,8 +28,9 @@ namespace BFTools.Visuals.Background
 
             hasWarnedMissingCamera = false;
 
-            backgroundCamera = CreateBackgroundCamera();
-            SyncBackgroundCamera();
+            BFBackgroundSharedCamera.Acquire();
+            backgroundCameraAcquired = true;
+            BFBackgroundSharedCamera.Sync();
 
             ConfigureOutputCamera();
 
@@ -39,7 +40,7 @@ namespace BFTools.Visuals.Background
 
         private void Update()
         {
-            SyncBackgroundCamera();
+            BFBackgroundSharedCamera.Sync();
 
             // Retry each frame until resolved: the scene's main camera may not exist yet
             // if this manager's OnEnable runs before it (script execution order, async
@@ -56,9 +57,11 @@ namespace BFTools.Visuals.Background
             activeEffect?.Cleanup();
             activeEffect = null;
 
-            if (backgroundCamera != null)
-                Destroy(backgroundCamera.gameObject);
-            backgroundCamera = null;
+            if (backgroundCameraAcquired)
+            {
+                BFBackgroundSharedCamera.Release();
+                backgroundCameraAcquired = false;
+            }
 
             RestoreOutputCamera();
         }
@@ -99,30 +102,6 @@ namespace BFTools.Visuals.Background
 
             outputCamera = null;
             outputCameraConfigured = false;
-        }
-
-        private Camera CreateBackgroundCamera()
-        {
-            GameObject cameraObj = new GameObject("BFBackgroundCamera");
-            cameraObj.transform.SetParent(transform, false);
-
-            Camera cam = cameraObj.AddComponent<Camera>();
-            cam.orthographic = true;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = Color.black;
-            cam.cullingMask = 1 << BackgroundLayer;
-            cam.depth = -100;
-
-            return cam;
-        }
-
-        private void SyncBackgroundCamera()
-        {
-            if (backgroundCamera == null)
-                return;
-
-            backgroundCamera.orthographicSize = Screen.height / 2f;
-            backgroundCamera.transform.position = new Vector3(Screen.width / 2f, Screen.height / 2f, -10f);
         }
     }
 }
