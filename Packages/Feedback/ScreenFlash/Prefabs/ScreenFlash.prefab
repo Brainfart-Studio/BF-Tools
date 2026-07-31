@@ -190,5 +190,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367ce90dd9db6bf4da42bd408a6f84dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 0}
   flashImage: {fileID: 3470596315639779449}
