@@ -67,7 +67,7 @@ namespace BFTools.Visuals.Palette.Editor
                 return;
 
             Undo.RecordObject(spriteRenderer, "Apply Palette Entry");
-            palette.Apply(entryName);
+            palette.Select(entryName);
             EditorUtility.SetDirty(spriteRenderer);
         }
     }

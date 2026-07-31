@@ -15,6 +15,7 @@ namespace BFTools.Visuals.Palette
         public BFPaletteConfig config;
     }
 
+    [ExecuteAlways]
     [RequireComponent(typeof(SpriteRenderer))]
     public class BFPalette : MonoBehaviour
     {
@@ -33,11 +34,11 @@ namespace BFTools.Visuals.Palette
 
         private void OnEnable()
         {
+            if (currentEventName == null)
+                currentEventName = selectedEntryName;
+
             EventBus<BFPaletteEvent>.Subscribe(OnPaletteEvent);
             EventBus<BFPaletteConfigChangedEvent>.Subscribe(OnPaletteConfigChanged);
-
-            if (!string.IsNullOrEmpty(selectedEntryName))
-                Select(selectedEntryName);
         }
 
         private void OnDisable()
