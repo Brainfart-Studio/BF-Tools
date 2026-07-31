@@ -8,6 +8,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
         private readonly BFAuroraRibbonsConfig config;
         private readonly List<BFAuroraRibbon> ribbons = new List<BFAuroraRibbon>();
         private readonly List<BFBackgroundStar> stars = new List<BFBackgroundStar>();
+        private BFAuroraRibbonsRenderer renderer;
         private float elapsedTime;
 
         internal IReadOnlyList<BFAuroraRibbon> Ribbons => ribbons;
@@ -19,7 +20,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             this.config = config;
         }
 
-        public void Init()
+        public void Init(Transform parent)
         {
             elapsedTime = 0f;
 
@@ -30,6 +31,9 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             stars.Clear();
             for (int i = 0; i < config.StarCount; i++)
                 stars.Add(new BFBackgroundStar(config));
+
+            renderer = new BFAuroraRibbonsRenderer(this, config);
+            renderer.Init(parent);
         }
 
         public void Tick(float dt)
@@ -41,10 +45,14 @@ namespace BFTools.Visuals.Background.AuroraRibbons
 
             for (int i = 0; i < ribbons.Count; i++)
                 ribbons[i].Tick(elapsedTime);
+
+            renderer.Render();
         }
 
         public void Cleanup()
         {
+            renderer?.Cleanup();
+            renderer = null;
             ribbons.Clear();
             stars.Clear();
         }

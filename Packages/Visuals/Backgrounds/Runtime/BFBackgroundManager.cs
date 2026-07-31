@@ -14,7 +14,7 @@ namespace BFTools.Visuals.Background
                 return;
 
             activeEffect = config.CreateEffect();
-            activeEffect.Init();
+            activeEffect.Init(transform);
         }
 
         private void Update()
