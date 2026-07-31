@@ -21,6 +21,7 @@ namespace BFTools.Visuals.Palette
         private const string LogTag = "Palette";
 
         [SerializeField] private BFPaletteConfig config;
+        [SerializeField] private string selectedEntryName;
 
         private SpriteRenderer targetRenderer;
         private string currentEventName;
@@ -62,7 +63,7 @@ namespace BFTools.Visuals.Palette
             Apply(currentEventName);
         }
 
-        private void Apply(string eventName)
+        internal void Apply(string eventName)
         {
             if (config == null)
             {
