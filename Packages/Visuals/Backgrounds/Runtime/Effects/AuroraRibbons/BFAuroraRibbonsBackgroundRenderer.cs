@@ -28,11 +28,13 @@ namespace BFTools.Visuals.Background.AuroraRibbons
 
             GameObject rootObj = new GameObject("BFAuroraRibbonsRenderer");
             rootObj.transform.SetParent(parent, false);
+            rootObj.layer = BFBackgroundManager.BackgroundLayer;
             root = rootObj.transform;
 
             GameObject backgroundObj = new GameObject("Background");
             backgroundObj.transform.SetParent(root, false);
             backgroundObj.transform.position = new Vector3(0f, 0f, 10f);
+            backgroundObj.layer = BFBackgroundManager.BackgroundLayer;
 
             backgroundMesh = new Mesh { name = "BFAuroraRibbonsBackground" };
             backgroundMesh.vertices = new Vector3[4];
@@ -52,6 +54,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             {
                 GameObject go = new GameObject($"Ribbon_{i}");
                 go.transform.SetParent(root, false);
+                go.layer = BFBackgroundManager.BackgroundLayer;
 
                 LineRenderer lr = go.AddComponent<LineRenderer>();
                 lr.positionCount = Segments + 1;
@@ -67,6 +70,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             {
                 GameObject go = new GameObject($"Star_{i}");
                 go.transform.SetParent(root, false);
+                go.layer = BFBackgroundManager.BackgroundLayer;
 
                 SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
                 sr.sprite = dotSprite;
