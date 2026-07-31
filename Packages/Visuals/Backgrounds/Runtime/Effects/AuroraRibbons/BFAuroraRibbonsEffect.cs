@@ -8,7 +8,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
         private readonly BFAuroraRibbonsConfig config;
         private readonly List<BFAuroraRibbon> ribbons = new List<BFAuroraRibbon>();
         private readonly List<BFBackgroundStar> stars = new List<BFBackgroundStar>();
-        private BFAuroraRibbonsRenderer renderer;
+        private IBFBackgroundRenderer renderer;
         private float elapsedTime;
 
         internal IReadOnlyList<BFAuroraRibbon> Ribbons => ribbons;
