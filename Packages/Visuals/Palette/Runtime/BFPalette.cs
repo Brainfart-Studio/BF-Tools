@@ -63,7 +63,7 @@ namespace BFTools.Visuals.Palette
             Apply(currentEventName);
         }
 
-        internal void Apply(string eventName)
+        public void Apply(string eventName)
         {
             if (config == null)
             {
