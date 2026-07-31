@@ -7,8 +7,6 @@ namespace BFTools.Visuals.Background.AuroraRibbons
     [CreateAssetMenu(fileName = "BFAuroraRibbonsConfig", menuName = "BFTools/Visuals/Background/Aurora Ribbons Config")]
     public class BFAuroraRibbonsConfig : BFBackgroundConfig
     {
-        [SerializeField] private Color baseTop = new Color(0.016f, 0.024f, 0.067f);
-        [SerializeField] private Color baseBottom = new Color(0.039f, 0.047f, 0.118f);
         [SerializeField]
         private List<Color> ribbonColors = new List<Color>
         {
@@ -25,8 +23,6 @@ namespace BFTools.Visuals.Background.AuroraRibbons
         [SerializeField, Range(0, 300)] private int starCount = 120;
         [SerializeField] private bool twinkle = true;
 
-        internal Color BaseTop => baseTop;
-        internal Color BaseBottom => baseBottom;
         internal IReadOnlyList<Color> RibbonColors => ribbonColors;
         internal int RibbonCount => ribbonCount;
         internal float WaveSpeed => waveSpeed;

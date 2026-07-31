@@ -11,6 +11,7 @@ namespace BFTools.Visuals.Background.AuroraRibbons
         private readonly BFAuroraRibbonsConfig config;
 
         private Transform root;
+        private Mesh backgroundMesh;
         private readonly List<LineRenderer> ribbonRenderers = new List<LineRenderer>();
         private readonly List<SpriteRenderer> starRenderers = new List<SpriteRenderer>();
         private static Sprite dotSprite;
@@ -28,6 +29,23 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             GameObject rootObj = new GameObject("BFAuroraRibbonsRenderer");
             rootObj.transform.SetParent(parent, false);
             root = rootObj.transform;
+
+            GameObject backgroundObj = new GameObject("Background");
+            backgroundObj.transform.SetParent(root, false);
+            backgroundObj.transform.position = new Vector3(0f, 0f, 10f);
+
+            backgroundMesh = new Mesh { name = "BFAuroraRibbonsBackground" };
+            backgroundMesh.vertices = new Vector3[4];
+            backgroundMesh.uv = new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, 1f), new Vector2(1f, 1f) };
+            backgroundMesh.triangles = new[] { 0, 2, 1, 2, 3, 1 };
+
+            MeshFilter backgroundFilter = backgroundObj.AddComponent<MeshFilter>();
+            backgroundFilter.mesh = backgroundMesh;
+
+            MeshRenderer backgroundRenderer = backgroundObj.AddComponent<MeshRenderer>();
+            Material backgroundMaterial = new Material(Shader.Find("Sprites/Default"));
+            backgroundMaterial.mainTexture = Texture2D.whiteTexture;
+            backgroundRenderer.material = backgroundMaterial;
 
             ribbonRenderers.Clear();
             for (int i = 0; i < effect.Ribbons.Count; i++)
@@ -62,6 +80,8 @@ namespace BFTools.Visuals.Background.AuroraRibbons
         {
             float viewWidth = Screen.width;
             float viewHeight = Screen.height;
+
+            UpdateBackground(viewWidth, viewHeight);
 
             for (int i = 0; i < ribbonRenderers.Count; i++)
             {
@@ -102,8 +122,27 @@ namespace BFTools.Visuals.Background.AuroraRibbons
             if (root != null)
                 Object.Destroy(root.gameObject);
 
+            if (backgroundMesh != null)
+                Object.Destroy(backgroundMesh);
+            backgroundMesh = null;
+
             ribbonRenderers.Clear();
             starRenderers.Clear();
+        }
+
+        private void UpdateBackground(float viewWidth, float viewHeight)
+        {
+            Vector3[] vertices = backgroundMesh.vertices;
+            vertices[0] = new Vector3(0f, 0f, 0f);
+            vertices[1] = new Vector3(viewWidth, 0f, 0f);
+            vertices[2] = new Vector3(0f, viewHeight, 0f);
+            vertices[3] = new Vector3(viewWidth, viewHeight, 0f);
+            backgroundMesh.vertices = vertices;
+
+            Color32 top = config.BaseTop;
+            Color32 bottom = config.BaseBottom;
+            backgroundMesh.colors32 = new[] { bottom, bottom, top, top };
+            backgroundMesh.RecalculateBounds();
         }
 
         private static void EnsureDotSprite()
