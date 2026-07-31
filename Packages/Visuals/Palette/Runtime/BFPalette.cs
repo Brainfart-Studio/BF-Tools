@@ -10,6 +10,11 @@ namespace BFTools.Visuals.Palette
         public string eventName;
     }
 
+    public struct BFPaletteConfigChangedEvent
+    {
+        public BFPaletteConfig config;
+    }
+
     [RequireComponent(typeof(SpriteRenderer))]
     public class BFPalette : MonoBehaviour
     {
@@ -18,6 +23,7 @@ namespace BFTools.Visuals.Palette
         [SerializeField] private BFPaletteConfig config;
 
         private SpriteRenderer targetRenderer;
+        private string currentEventName;
 
         private void Awake()
         {
@@ -27,14 +33,30 @@ namespace BFTools.Visuals.Palette
         private void OnEnable()
         {
             EventBus<BFPaletteEvent>.Subscribe(OnPaletteEvent);
+            EventBus<BFPaletteConfigChangedEvent>.Subscribe(OnPaletteConfigChanged);
         }
 
         private void OnDisable()
         {
             EventBus<BFPaletteEvent>.Unsubscribe(OnPaletteEvent);
+            EventBus<BFPaletteConfigChangedEvent>.Unsubscribe(OnPaletteConfigChanged);
         }
 
         private void OnPaletteEvent(BFPaletteEvent evt)
+        {
+            currentEventName = evt.eventName;
+            Apply(evt.eventName);
+        }
+
+        private void OnPaletteConfigChanged(BFPaletteConfigChangedEvent evt)
+        {
+            if (evt.config != config || currentEventName == null)
+                return;
+
+            Apply(currentEventName);
+        }
+
+        private void Apply(string eventName)
         {
             if (config == null)
             {
@@ -46,15 +68,15 @@ namespace BFTools.Visuals.Palette
 
             for (int i = 0; i < entries.Count; i++)
             {
-                if (entries[i].name == evt.eventName)
+                if (entries[i].name == eventName)
                 {
                     targetRenderer.color = entries[i].color;
-                    BFLogger.Trace(LogTag, $"Applied palette entry '{evt.eventName}' on '{name}'.", this);
+                    BFLogger.Trace(LogTag, $"Applied palette entry '{eventName}' on '{name}'.", this);
                     return;
                 }
             }
 
-            BFLogger.Trace(LogTag, $"No palette entry found for name '{evt.eventName}'.", this);
+            BFLogger.Trace(LogTag, $"No palette entry found for name '{eventName}'.", this);
         }
     }
 }
