@@ -1,0 +1,15 @@
+{
+    "name": "BFTools.Visuals.Palette.Editor",
+    "rootNamespace": "BFTools.Visuals.Palette.Editor",
+    "references": [
+        "BFTools.Visuals.Palette",
+        "BFTools.Core.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

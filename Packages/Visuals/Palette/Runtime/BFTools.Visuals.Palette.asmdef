@@ -1,0 +1,13 @@
+{
+    "name": "BFTools.Visuals.Palette",
+    "rootNamespace": "BFTools.Visuals.Palette",
+    "references": [
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
