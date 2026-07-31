@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using BFTools.Core.EventBus;
@@ -15,13 +16,15 @@ namespace BFTools.Feedback.ScreenFlash
     {
         private const string LogTag = "ScreenFlash";
 
-        [SerializeField] private BFScreenFlashConfig config;
+        [SerializeField] private List<BFScreenFlashConfig> configs = new List<BFScreenFlashConfig>();
         [SerializeField] private Image flashImage;
 
+        private Dictionary<string, BFScreenFlashEntry> lookup;
         private Coroutine activeFlash;
 
         private void OnEnable()
         {
+            BuildLookup();
             EventBus<BFScreenFlashEvent>.Subscribe(OnScreenFlashEvent);
         }
 
@@ -30,11 +33,34 @@ namespace BFTools.Feedback.ScreenFlash
             EventBus<BFScreenFlashEvent>.Unsubscribe(OnScreenFlashEvent);
         }
 
+        private void BuildLookup()
+        {
+            lookup = new Dictionary<string, BFScreenFlashEntry>();
+            foreach (var cfg in configs)
+            {
+                if (cfg == null)
+                    continue;
+
+                foreach (var entry in cfg.Entries)
+                {
+                    if (lookup.ContainsKey(entry.eventName))
+                    {
+                        BFLogger.Warning(LogTag,
+                            $"Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
+                            this);
+                    }
+                    lookup[entry.eventName] = entry;
+                }
+            }
+
+            BFLogger.Debug(LogTag, $"Built lookup with {lookup.Count} entrie(s) on '{name}'.", this);
+        }
+
         private void OnScreenFlashEvent(BFScreenFlashEvent evt)
         {
-            if (!config.TryGetEntry(evt.eventName, out BFScreenFlashEntry entry))
+            if (lookup == null || !lookup.TryGetValue(evt.eventName, out BFScreenFlashEntry entry))
             {
-                BFLogger.Warning(LogTag, $"No entry found for event '{evt.eventName}'");
+                BFLogger.Trace(LogTag, $"No screen flash entry found for eventName '{evt.eventName}'.", this);
                 return;
             }
 
