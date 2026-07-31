@@ -6,8 +6,8 @@ namespace BFTools.Core.EditorAssetUtility.Editor
         {
             public const int Core = -100;
             public const int Feedback = -80;
+            public const int Visuals = -60;
         }
-
         public static class Module
         {
             // Core
@@ -21,6 +21,9 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             public const int ScreenShake = 2;
             public const int Hitstop = 3;
             public const int ScreenFlash = 4;
+
+            // Visuals
+            public const int Palette = 1;
         }
     }
 }

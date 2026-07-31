@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.3] - Menu Priority Update
+
+### Changed
+- Added `Group.Visuals` and `Module.Palette` constants to `BFMenuPriority`, required for the Visuals package's Palette Config creator
+
 ## [0.7.2] - Menu Priority Update
 
 ### Changed
