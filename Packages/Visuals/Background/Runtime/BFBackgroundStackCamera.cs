@@ -103,6 +103,8 @@ namespace BFTools.Visuals.Background
             {
                 outputCamera.clearFlags = outputCameraOriginalClearFlags;
                 outputCamera.cullingMask = outputCameraOriginalCullingMask;
+
+                BFLogger.Info(LogTag, $"BFBackgroundStackCamera: restored output camera '{outputCamera.name}'.", context);
             }
 
             outputCamera = null;
