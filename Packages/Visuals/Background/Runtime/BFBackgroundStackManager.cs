@@ -18,6 +18,16 @@ namespace BFTools.Visuals.Background
         private readonly List<BFBackgroundStack> activeStacks = new List<BFBackgroundStack>();
         private BFBackgroundStackCamera stackCamera;
 
+        // Runs on every Play session regardless of domain reload state. Without this,
+        // disabling domain reload (Edit > Project Settings > Editor > Enter Play Mode
+        // Options) leaves a stale instance reference from the previous session, and the
+        // next Play falsely reports a duplicate instance.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+            instance = null;
+        }
+
         private void OnEnable()
         {
             if (instance != null)
