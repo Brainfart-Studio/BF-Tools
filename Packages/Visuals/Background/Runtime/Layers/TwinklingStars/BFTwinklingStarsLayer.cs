@@ -74,6 +74,8 @@ namespace BFTools.Visuals.Background
 
         public void Cleanup()
         {
+            BFLogger.Info(LogTags, $"BFTwinklingStarsLayer: cleaning up {stars.Count} star(s).");
+
             if (root != null)
                 Object.Destroy(root.gameObject);
             root = null;
