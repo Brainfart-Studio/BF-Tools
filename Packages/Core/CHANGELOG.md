@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.4] - Menu Priority Update
+
+### Changed
+- Added `Module.Background` constant to `BFMenuPriority`, required for the Visuals package's Background config and prefab variant creators
+
 ## [0.7.3] - Menu Priority Update
 
 ### Changed

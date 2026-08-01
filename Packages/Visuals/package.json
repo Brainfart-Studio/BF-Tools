@@ -1,13 +1,13 @@
 {
     "name": "com.bftools.visuals",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "displayName": "BFTools Visuals",
-    "description": "Visuals systems for BFTools: Palette.",
+    "description": "Visuals systems for BFTools: Palette, Background.",
     "unity": "2022.3",
     "author": {
         "name": "Brainfart Studio"
     },
     "dependencies": {
-        "com.bftools.core": "0.7.3"
+        "com.bftools.core": "0.7.4"
     }
 }

@@ -24,6 +24,7 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
             // Visuals
             public const int Palette = 1;
+            public const int Background = 2;
         }
     }
 }
