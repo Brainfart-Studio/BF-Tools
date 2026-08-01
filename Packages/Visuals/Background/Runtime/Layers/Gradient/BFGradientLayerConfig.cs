@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
-    [CreateAssetMenu(fileName = "BFGradientLayerConfig", menuName = "BFTools/Visuals/Background/Gradient Layer Config")]
     public class BFGradientLayerConfig : BFBackgroundLayerConfig
     {
         [SerializeField] private Color topColor = new Color(0.016f, 0.024f, 0.067f);

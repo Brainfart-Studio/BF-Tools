@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
-    [CreateAssetMenu(fileName = "BFAuroraRibbonsLayerConfig", menuName = "BFTools/Visuals/Background/Aurora Ribbons Layer Config")]
     public class BFAuroraRibbonsLayerConfig : BFBackgroundLayerConfig
     {
         [SerializeField]
