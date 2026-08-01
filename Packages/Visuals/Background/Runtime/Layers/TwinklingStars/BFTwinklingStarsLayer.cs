@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using BFTools.Core.Logger;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
     public class BFTwinklingStarsLayer : IBFBackgroundLayer
     {
+        private static readonly string[] LogTags = { "Background", "TwinklingStars" };
+
         private readonly BFTwinklingStarsLayerConfig config;
         private readonly List<BFTwinklingStar> stars = new List<BFTwinklingStar>();
         private readonly List<SpriteRenderer> starRenderers = new List<SpriteRenderer>();
@@ -44,6 +47,8 @@ namespace BFTools.Visuals.Background
 
                 starRenderers.Add(sr);
             }
+
+            BFLogger.Info(LogTags, $"BFTwinklingStarsLayer: initialized with {config.StarCount} star(s).");
         }
 
         public void Tick(float dt)

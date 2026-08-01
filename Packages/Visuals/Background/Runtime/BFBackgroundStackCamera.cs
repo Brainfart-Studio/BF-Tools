@@ -1,9 +1,12 @@
+using BFTools.Core.Logger;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
     internal class BFBackgroundStackCamera
     {
+        private const string LogTag = "Background";
+
         private readonly Camera targetCameraOverride;
         private readonly Object context;
 
@@ -76,7 +79,7 @@ namespace BFTools.Visuals.Background
             {
                 if (!hasWarnedMissingCamera)
                 {
-                    Debug.LogError("BFBackgroundStackCamera: no output camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise this background will never be visible.", context);
+                    BFLogger.Error(LogTag, "BFBackgroundStackCamera: no output camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise this background will never be visible.", context);
                     hasWarnedMissingCamera = true;
                 }
 
@@ -90,6 +93,8 @@ namespace BFTools.Visuals.Background
             outputCamera.cullingMask &= ~(1 << BFBackgroundStackManager.BackgroundLayer);
 
             outputCameraConfigured = true;
+
+            BFLogger.Info(LogTag, $"BFBackgroundStackCamera: configured output camera '{outputCamera.name}'.", context);
         }
 
         private void RestoreOutputCamera()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BFTools.Core.Logger;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
@@ -7,6 +8,8 @@ namespace BFTools.Visuals.Background
     {
         private const int Segments = 80;
         private const string GlowShaderName = "Legacy Shaders/Particles/Additive";
+
+        private static readonly string[] LogTags = { "Background", "AuroraRibbons" };
 
         private readonly BFAuroraRibbonsLayerConfig config;
         private readonly List<BFAuroraRibbon> ribbons = new List<BFAuroraRibbon>();
@@ -50,6 +53,8 @@ namespace BFTools.Visuals.Background
 
                 ribbonRenderers.Add(lr);
             }
+
+            BFLogger.Info(LogTags, $"BFAuroraRibbonsLayer: initialized with {config.RibbonCount} ribbon(s).");
         }
 
         public void Tick(float dt)
@@ -103,7 +108,7 @@ namespace BFTools.Visuals.Background
             Shader shader = Shader.Find(GlowShaderName);
             if (shader == null)
             {
-                Debug.LogWarning($"BFAuroraRibbonsLayer: shader '{GlowShaderName}' not found, falling back to Sprites/Default (no additive glow).");
+                BFLogger.Warning(LogTags, $"BFAuroraRibbonsLayer: shader '{GlowShaderName}' not found, falling back to Sprites/Default (no additive glow).");
                 shader = Shader.Find("Sprites/Default");
             }
 

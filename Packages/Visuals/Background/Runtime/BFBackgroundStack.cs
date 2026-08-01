@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using BFTools.Core.Logger;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
     public class BFBackgroundStack
     {
+        private const string LogTag = "Background";
+
         private readonly BFBackgroundStackConfig config;
         private readonly List<IBFBackgroundLayer> layers = new List<IBFBackgroundLayer>();
 
@@ -26,7 +29,7 @@ namespace BFTools.Visuals.Background
                 BFBackgroundLayerConfig layerConfig = layerConfigs[i];
                 if (layerConfig == null)
                 {
-                    Debug.LogWarning("BFBackgroundStack: skipping empty layer slot in stack config.", config);
+                    BFLogger.Warning(LogTag, "BFBackgroundStack: skipping empty layer slot in stack config.", config);
                     continue;
                 }
 
@@ -35,6 +38,8 @@ namespace BFTools.Visuals.Background
                 layers.Add(layer);
                 sortingOrder++;
             }
+
+            BFLogger.Info(LogTag, $"BFBackgroundStack: initialized with {layers.Count} layer(s).", config);
         }
 
         public void Tick(float dt)
@@ -45,6 +50,8 @@ namespace BFTools.Visuals.Background
 
         public void Cleanup()
         {
+            BFLogger.Info(LogTag, $"BFBackgroundStack: cleaning up {layers.Count} layer(s).", config);
+
             for (int i = 0; i < layers.Count; i++)
                 layers[i].Cleanup();
 

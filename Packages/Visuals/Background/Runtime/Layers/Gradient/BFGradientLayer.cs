@@ -1,9 +1,12 @@
+using BFTools.Core.Logger;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
     public class BFGradientLayer : IBFBackgroundLayer
     {
+        private static readonly string[] LogTags = { "Background", "Gradient" };
+
         private readonly BFGradientLayerConfig config;
 
         private Transform root;
@@ -36,6 +39,8 @@ namespace BFTools.Visuals.Background
             meshRenderer.sortingOrder = sortingOrder;
 
             UpdateMesh();
+
+            BFLogger.Info(LogTags, "BFGradientLayer: initialized.");
         }
 
         public void Tick(float dt)

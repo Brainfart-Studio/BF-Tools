@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using BFTools.Core.Logger;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
     public class BFBackgroundStackManager : MonoBehaviour
     {
+        private const string LogTag = "Background";
+
         public const int BackgroundLayer = 30;
 
         [SerializeField] private List<BFBackgroundStackConfig> stacks = new List<BFBackgroundStackConfig>();
@@ -19,7 +22,7 @@ namespace BFTools.Visuals.Background
         {
             if (instance != null)
             {
-                Debug.LogError("BFBackgroundStackManager: another instance is already active. Only one is supported at a time.", this);
+                BFLogger.Error(LogTag, "BFBackgroundStackManager: another instance is already active. Only one is supported at a time.", this);
                 enabled = false;
                 return;
             }
@@ -30,6 +33,12 @@ namespace BFTools.Visuals.Background
             stackCamera.Init();
 
             BuildStacks();
+
+            int totalLayers = 0;
+            for (int i = 0; i < activeStacks.Count; i++)
+                totalLayers += activeStacks[i].LayerCount;
+
+            BFLogger.Info(LogTag, $"BFBackgroundStackManager: enabled with {activeStacks.Count} stack(s), {totalLayers} layer(s) total.", this);
         }
 
         private void Update()
@@ -53,6 +62,8 @@ namespace BFTools.Visuals.Background
             stackCamera = null;
 
             instance = null;
+
+            BFLogger.Info(LogTag, "BFBackgroundStackManager: disabled and cleaned up.", this);
         }
 
         private void BuildStacks()
@@ -65,7 +76,7 @@ namespace BFTools.Visuals.Background
                 BFBackgroundStackConfig stackConfig = stacks[i];
                 if (stackConfig == null)
                 {
-                    Debug.LogWarning("BFBackgroundStackManager: skipping empty stack slot.", this);
+                    BFLogger.Warning(LogTag, "BFBackgroundStackManager: skipping empty stack slot.", this);
                     continue;
                 }
 
