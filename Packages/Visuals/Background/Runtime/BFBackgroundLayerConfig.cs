@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BFTools.Visuals.BackgroundStacks
+namespace BFTools.Visuals.Background
 {
     public abstract class BFBackgroundLayerConfig : ScriptableObject
     {
