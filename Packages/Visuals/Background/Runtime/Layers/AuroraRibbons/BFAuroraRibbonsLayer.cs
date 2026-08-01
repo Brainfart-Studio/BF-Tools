@@ -27,6 +27,9 @@ namespace BFTools.Visuals.Background
         {
             elapsedTime = 0f;
 
+            if (config.RibbonColors.Count == 0)
+                BFLogger.Error(LogTags, "BFAuroraRibbonsLayer: no ribbon colors configured, ribbons will render white.");
+
             GameObject rootObj = new GameObject("BFAuroraRibbonsLayer");
             rootObj.transform.SetParent(parent, false);
             rootObj.layer = BFBackgroundStackManager.BackgroundLayer;
