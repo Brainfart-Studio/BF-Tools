@@ -37,6 +37,17 @@ namespace BFTools.Visuals.Background
                 backgroundCamera.transform.position = new Vector3(Screen.width / 2f, Screen.height / 2f, -10f);
             }
 
+            // A scene swap can destroy the camera we configured without going through
+            // Cleanup (e.g. a persistent background manager outliving the scene whose
+            // camera it latched onto). Treat that the same as never having configured
+            // one, so the next line re-resolves it instead of leaving the new main
+            // camera unconfigured.
+            if (outputCameraConfigured && outputCamera == null)
+            {
+                BFLogger.Warning(LogTag, "BFBackgroundStackCamera: output camera was destroyed, re-resolving.", context);
+                outputCameraConfigured = false;
+            }
+
             // Retry each frame until resolved: the scene's main camera may not exist yet
             // if the manager's OnEnable runs before it (script execution order, async
             // scene loads), and a dropped-in prefab shouldn't depend on getting that
