@@ -13,13 +13,7 @@ namespace BFTools.Visuals.Background
         private static BFBackgroundStackManager instance;
 
         private readonly List<BFBackgroundStack> activeStacks = new List<BFBackgroundStack>();
-
-        private Camera backgroundCamera;
-        private Camera outputCamera;
-        private CameraClearFlags outputCameraOriginalClearFlags;
-        private int outputCameraOriginalCullingMask;
-        private bool outputCameraConfigured;
-        private bool hasWarnedMissingCamera;
+        private BFBackgroundStackCamera stackCamera;
 
         private void OnEnable()
         {
@@ -31,26 +25,16 @@ namespace BFTools.Visuals.Background
             }
 
             instance = this;
-            hasWarnedMissingCamera = false;
 
-            backgroundCamera = CreateBackgroundCamera();
-            SyncBackgroundCamera();
-
-            ConfigureOutputCamera();
+            stackCamera = new BFBackgroundStackCamera(targetCameraOverride, this);
+            stackCamera.Init();
 
             BuildStacks();
         }
 
         private void Update()
         {
-            SyncBackgroundCamera();
-
-            // Retry each frame until resolved: the scene's main camera may not exist yet
-            // if this manager's OnEnable runs before it (script execution order, async
-            // scene loads), and a dropped-in prefab shouldn't depend on getting that
-            // ordering right.
-            if (!outputCameraConfigured)
-                ConfigureOutputCamera();
+            stackCamera.Sync();
 
             for (int i = 0; i < activeStacks.Count; i++)
                 activeStacks[i].Tick(Time.deltaTime);
@@ -65,11 +49,8 @@ namespace BFTools.Visuals.Background
                 activeStacks[i].Cleanup();
             activeStacks.Clear();
 
-            RestoreOutputCamera();
-
-            if (backgroundCamera != null)
-                Destroy(backgroundCamera.gameObject);
-            backgroundCamera = null;
+            stackCamera.Cleanup();
+            stackCamera = null;
 
             instance = null;
         }
@@ -94,64 +75,6 @@ namespace BFTools.Visuals.Background
 
                 activeStacks.Add(stack);
             }
-        }
-
-        private Camera CreateBackgroundCamera()
-        {
-            GameObject cameraObj = new GameObject("BFBackgroundStackCamera");
-
-            Camera cam = cameraObj.AddComponent<Camera>();
-            cam.orthographic = true;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = Color.black;
-            cam.cullingMask = 1 << BackgroundLayer;
-            cam.depth = -100;
-
-            return cam;
-        }
-
-        private void SyncBackgroundCamera()
-        {
-            if (backgroundCamera == null)
-                return;
-
-            backgroundCamera.orthographicSize = Screen.height / 2f;
-            backgroundCamera.transform.position = new Vector3(Screen.width / 2f, Screen.height / 2f, -10f);
-        }
-
-        private void ConfigureOutputCamera()
-        {
-            outputCamera = targetCameraOverride != null ? targetCameraOverride : Camera.main;
-            if (outputCamera == null)
-            {
-                if (!hasWarnedMissingCamera)
-                {
-                    Debug.LogError("BFBackgroundStackManager: no output camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise this background will never be visible.", this);
-                    hasWarnedMissingCamera = true;
-                }
-
-                return;
-            }
-
-            outputCameraOriginalClearFlags = outputCamera.clearFlags;
-            outputCameraOriginalCullingMask = outputCamera.cullingMask;
-
-            outputCamera.clearFlags = CameraClearFlags.Depth;
-            outputCamera.cullingMask &= ~(1 << BackgroundLayer);
-
-            outputCameraConfigured = true;
-        }
-
-        private void RestoreOutputCamera()
-        {
-            if (outputCameraConfigured)
-            {
-                outputCamera.clearFlags = outputCameraOriginalClearFlags;
-                outputCamera.cullingMask = outputCameraOriginalCullingMask;
-            }
-
-            outputCamera = null;
-            outputCameraConfigured = false;
         }
     }
 }
