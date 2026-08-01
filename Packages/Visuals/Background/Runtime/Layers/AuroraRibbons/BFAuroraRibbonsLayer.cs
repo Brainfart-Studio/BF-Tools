@@ -87,6 +87,8 @@ namespace BFTools.Visuals.Background
 
         public void Cleanup()
         {
+            BFLogger.Info(LogTags, $"BFAuroraRibbonsLayer: cleaning up {ribbons.Count} ribbon(s).");
+
             if (root != null)
                 Object.Destroy(root.gameObject);
             root = null;
