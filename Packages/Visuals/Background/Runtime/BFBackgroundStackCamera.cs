@@ -94,7 +94,7 @@ namespace BFTools.Visuals.Background
 
         private void RestoreOutputCamera()
         {
-            if (outputCameraConfigured)
+            if (outputCameraConfigured && outputCamera != null)
             {
                 outputCamera.clearFlags = outputCameraOriginalClearFlags;
                 outputCamera.cullingMask = outputCameraOriginalCullingMask;
