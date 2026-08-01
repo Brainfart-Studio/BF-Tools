@@ -6,7 +6,7 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.7.3)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.7.4)
 Foundational systems every other package builds on.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Core/Documentation~/Bootstrapper.md).
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
@@ -27,11 +27,12 @@ Event-driven player feedback.
 
 Depends on `com.bftools.core` (0.7.2) and `com.unity.inputsystem` (1.7.0).
 
-### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.1.0)
+### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.2.0)
 Live-editable, config-driven visual systems.
 - **Palette**: live-editable color palette for rapid prototyping, driven by named entries on a config asset. See [Palette.md](Packages/Visuals/Documentation~/Palette.md).
+- **Background**: layered background rendering, compositing gradient, aurora ribbon, and twinkling star layers behind the scene via a dedicated camera. See [Background.md](Packages/Visuals/Documentation~/Background.md).
 
-Depends on `com.bftools.core` (0.7.3).
+Depends on `com.bftools.core` (0.7.4).
 
 ## Structure
 ```
@@ -53,6 +54,7 @@ Packages/
     Documentation~/
   Visuals/                 com.bftools.visuals
     Palette/                 Editor/, Runtime/
+    Background/              Editor/, Runtime/, Prefabs/
     Documentation~/
 ```
 

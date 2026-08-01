@@ -1,17 +1,20 @@
 # BFTools Visuals (`com.bftools.visuals`)
 
-Visual systems for BFTools. Live-editable, config-driven color palettes.
+Visual systems for BFTools. Live-editable, config-driven color palettes, plus a layered background rendering system.
 
 ## Version
-0.1.0
+0.2.0
 
 ## Contents
 
 ### Palette
 Live-editable color palette for rapid prototyping. Pick a named color per `SpriteRenderer` and repaint every object using that name the moment the palette config changes. See [Documentation~/Palette.md](Documentation~/Palette.md).
 
+### Background
+Layered background rendering. Composite gradient, aurora ribbon, and twinkling star layers behind the scene using a dedicated camera. See [Documentation~/Background.md](Documentation~/Background.md).
+
 ## Dependencies
-- `com.bftools.core` @ 0.7.3
+- `com.bftools.core` @ 0.7.4
 
 ## Installation
 
@@ -41,7 +44,7 @@ Reference `com.bftools.visuals` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.visuals": "0.1.0"
+  "com.bftools.visuals": "0.2.0"
 }
 ```
 
