@@ -16,6 +16,7 @@
 
 ### Fixed
 - Star size, brightness, color, count, and twinkle timing now refresh live in Play mode when the config changes, instead of only taking effect on the next Init
+- Twinkle phase now scales by delta time again, fixing twinkle speed that varied with frame rate instead of staying constant across frame rates
 
 ## [0.3.0] - Gradient Layer Expansion
 
