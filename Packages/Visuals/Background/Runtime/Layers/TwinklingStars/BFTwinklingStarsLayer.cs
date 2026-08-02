@@ -36,19 +36,8 @@ namespace BFTools.Visuals.Background
 
             stars.Clear();
 
-            for (int i = 0; i < config.StarCount; i++)
-                stars.Add(new BFTwinklingStar(config));
-
-            int vertexCount = stars.Count * 4;
-            vertices = new Vector3[vertexCount];
-            colors = new Color32[vertexCount];
-
             mesh = new Mesh { name = "BFTwinklingStarsLayer" };
             mesh.MarkDynamic();
-            mesh.vertices = vertices;
-            mesh.colors32 = colors;
-            mesh.uv = BuildUVs(stars);
-            mesh.triangles = BuildTriangles(stars.Count);
 
             MeshFilter filter = rootObj.AddComponent<MeshFilter>();
             filter.mesh = mesh;
@@ -62,6 +51,7 @@ namespace BFTools.Visuals.Background
             meshRenderer.material = material;
             meshRenderer.sortingOrder = sortingOrder;
 
+            SyncStarCount();
             UpdateVertexPositions();
 
             BFLogger.Info(LogTags, $"BFTwinklingStarsLayer: initialized with {stars.Count} star(s).");
@@ -70,6 +60,7 @@ namespace BFTools.Visuals.Background
         public void Tick(float dt)
         {
             RefreshRampTexture();
+            SyncStarCount();
 
             for (int i = 0; i < stars.Count; i++)
             {
@@ -114,6 +105,35 @@ namespace BFTools.Visuals.Background
             colors = null;
 
             stars.Clear();
+        }
+
+        // Grows/shrinks the star list to match Star Count and rebuilds the mesh buffers whenever it changes.
+        private void SyncStarCount()
+        {
+            int targetCount = config.StarCount;
+            if (stars.Count == targetCount)
+                return;
+
+            if (stars.Count < targetCount)
+            {
+                for (int i = stars.Count; i < targetCount; i++)
+                    stars.Add(new BFTwinklingStar(config));
+            }
+            else
+            {
+                stars.RemoveRange(targetCount, stars.Count - targetCount);
+            }
+
+            int vertexCount = stars.Count * 4;
+            vertices = new Vector3[vertexCount];
+            colors = new Color32[vertexCount];
+
+            mesh.Clear();
+            mesh.vertices = vertices;
+            mesh.colors32 = colors;
+            mesh.uv = BuildUVs(stars);
+            mesh.triangles = BuildTriangles(stars.Count);
+            mesh.MarkDynamic();
         }
 
         private void UpdateVertexPositions()

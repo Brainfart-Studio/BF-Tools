@@ -9,6 +9,8 @@ namespace BFTools.Visuals.Background
         private readonly BFTwinklingStarsLayerConfig config;
         private readonly float sizeNoise;
         private readonly float alphaNoise;
+        private readonly float speedNoise;
+        private readonly float depthNoise;
 
         private float phase;
         private float alphaBase;
@@ -26,20 +28,19 @@ namespace BFTools.Visuals.Background
 
             Position = new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f));
             phase = Random.Range(0f, Mathf.PI * 2f);
-            twinkleDepth = Random.Range(config.MinTwinkleDepth, config.MaxTwinkleDepth);
             ColorT = Random.Range(0f, 1f);
 
             float noiseX = Position.x * NoiseScale;
             float noiseY = Position.y * NoiseScale;
             sizeNoise = Mathf.PerlinNoise(noiseX, noiseY);
             alphaNoise = Mathf.PerlinNoise(noiseX + 100f, noiseY + 100f);
-            float speedNoise = Mathf.PerlinNoise(noiseX + 200f, noiseY + 200f);
-            twinkleSpeed = Mathf.Lerp(config.MinTwinkleSpeed, config.MaxTwinkleSpeed, speedNoise);
+            speedNoise = Mathf.PerlinNoise(noiseX + 200f, noiseY + 200f);
+            depthNoise = Mathf.PerlinNoise(noiseX + 300f, noiseY + 300f);
 
             Refresh();
         }
 
-        // Re-samples Size/Brightness from the config's current values, keeping each star's underlying
+        // Re-samples every config-derived trait from the current config, keeping each star's underlying
         // noise fixed so live edits reshape the distribution instead of re-rolling every star.
         public void Refresh()
         {
@@ -48,6 +49,8 @@ namespace BFTools.Visuals.Background
 
             Size = Mathf.Lerp(config.MinSize, config.MaxSize, sizeT);
             alphaBase = Mathf.Lerp(config.MinAlpha, config.MaxAlpha, alphaT);
+            twinkleSpeed = Mathf.Lerp(config.MinTwinkleSpeed, config.MaxTwinkleSpeed, speedNoise);
+            twinkleDepth = Mathf.Lerp(config.MinTwinkleDepth, config.MaxTwinkleDepth, depthNoise);
         }
 
         public void Tick(float dt)
