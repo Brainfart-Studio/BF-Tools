@@ -55,7 +55,7 @@ namespace BFTools.Visuals.Background
 
         public void Tick(float dt)
         {
-            phase += twinkleSpeed;
+            phase += dt * twinkleSpeed;
             Alpha = config.Twinkle ? alphaBase * (1f - twinkleDepth + twinkleDepth * Mathf.Sin(phase)) : alphaBase;
         }
 
