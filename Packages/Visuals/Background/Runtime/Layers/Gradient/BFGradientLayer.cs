@@ -86,14 +86,33 @@ namespace BFTools.Visuals.Background
             };
 
             Gradient gradient = config.ColorGradient;
+            float midpoint = config.Midpoint;
+            float spread = config.Spread;
+
             for (int i = 0; i < RampResolution; i++)
             {
                 float t = i / (RampResolution - 1f);
-                texture.SetPixel(0, i, gradient.Evaluate(t));
+                float shaped = Gain(t, 1f - spread);
+                float remapped = Bias(shaped, midpoint);
+                texture.SetPixel(0, i, gradient.Evaluate(remapped));
             }
 
             texture.Apply(false);
             return texture;
+        }
+
+        private static float Bias(float t, float b)
+        {
+            b = Mathf.Clamp(b, 0.0001f, 0.9999f);
+            return t / ((1f / b - 2f) * (1f - t) + 1f);
+        }
+
+        private static float Gain(float t, float g)
+        {
+            g = Mathf.Clamp(g, 0.0001f, 0.9999f);
+            return t < 0.5f
+                ? Bias(t * 2f, g) * 0.5f
+                : 1f - Bias(2f - t * 2f, g) * 0.5f;
         }
 
         private void UpdateGeometry()
