@@ -9,6 +9,7 @@ namespace BFTools.Visuals.Background
         private static readonly Color32 Color32Opaque = new Color32(255, 255, 255, 255);
 
         private const int RampResolution = 256;
+        private const float MaxRotationOscillationHz = 0.1f;
 
         private readonly BFGradientLayerConfig config;
 
@@ -72,7 +73,7 @@ namespace BFTools.Visuals.Background
                 UpdateVertexPositions();
 
             rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
-            rotationOscillationElapsedTime += dt * config.RotationOscillationSpeed;
+            rotationOscillationElapsedTime += dt * config.RotationOscillationSpeed * MaxRotationOscillationHz;
             float oscillationOffset = Mathf.Sin(rotationOscillationElapsedTime * Mathf.PI * 2f) * config.RotationOscillationAmplitude;
             float animatedAngle = config.Angle + rotationElapsedTime + oscillationOffset;
 
