@@ -85,10 +85,11 @@ namespace BFTools.Visuals.Background
                 filterMode = FilterMode.Bilinear
             };
 
+            Gradient gradient = config.ColorGradient;
             for (int i = 0; i < RampResolution; i++)
             {
                 float t = i / (RampResolution - 1f);
-                texture.SetPixel(0, i, Color.Lerp(config.BottomColor, config.TopColor, t));
+                texture.SetPixel(0, i, gradient.Evaluate(t));
             }
 
             texture.Apply(false);
