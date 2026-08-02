@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.visuals",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "displayName": "BFTools Visuals",
     "description": "Visuals systems for BFTools: Palette, Background.",
     "unity": "2022.3",
