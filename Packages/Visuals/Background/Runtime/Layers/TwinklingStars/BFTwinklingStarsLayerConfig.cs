@@ -4,6 +4,10 @@ namespace BFTools.Visuals.Background
 {
     public class BFTwinklingStarsLayerConfig : BFBackgroundLayerConfig
     {
+        [Header("Color")]
+        [SerializeField, Tooltip("Palette stars sample their tint from, keyed by each star's random position along the ramp.")]
+        private Gradient colorGradient = CreateDefaultGradient();
+
         [Header("Layout")]
         [SerializeField, Range(0, 300), Tooltip("How many stars to place on screen.")]
         private int starCount = 120;
@@ -41,10 +45,7 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0f, 1f), Tooltip("Deepest a star's twinkle dip can be.")]
         private float maxTwinkleDepth = 0.5f;
 
-        [Header("Color")]
-        [SerializeField, Tooltip("Palette stars sample their tint from, keyed by each star's random position along the ramp.")]
-        private Gradient colorGradient = CreateDefaultGradient();
-
+        internal Gradient ColorGradient => colorGradient;
         internal int StarCount => starCount;
         internal int Seed => seed;
         internal float MinSize => minSize;
@@ -56,7 +57,6 @@ namespace BFTools.Visuals.Background
         internal float MaxTwinkleSpeed => maxTwinkleSpeed;
         internal float MinTwinkleDepth => minTwinkleDepth;
         internal float MaxTwinkleDepth => maxTwinkleDepth;
-        internal Gradient ColorGradient => colorGradient;
 
         public override IBFBackgroundLayer CreateLayer()
         {
