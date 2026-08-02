@@ -20,7 +20,6 @@ namespace BFTools.Visuals.Background
 
         private int lastWidth = -1;
         private int lastHeight = -1;
-        private float lastAngle;
         private float elapsedTime;
         private float rotationElapsedTime;
 
@@ -48,7 +47,8 @@ namespace BFTools.Visuals.Background
             MeshFilter filter = obj.AddComponent<MeshFilter>();
             filter.mesh = mesh;
 
-            rampTexture = BuildRampTexture();
+            rampTexture = CreateRampTexture();
+            RefreshRampTexture();
 
             material = new Material(Shader.Find("Sprites/Default")) { mainTexture = rampTexture };
 
@@ -56,22 +56,26 @@ namespace BFTools.Visuals.Background
             meshRenderer.material = material;
             meshRenderer.sortingOrder = sortingOrder;
 
-            UpdateGeometry(config.Angle);
+            UpdateVertexPositions();
+            UpdateUVs(config.Angle, 0f);
 
             BFLogger.Info(LogTags, "BFGradientLayer: initialized.");
         }
 
         public void Tick(float dt)
         {
+            RefreshRampTexture();
+
+            if (Screen.width != lastWidth || Screen.height != lastHeight)
+                UpdateVertexPositions();
+
             rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
             float animatedAngle = config.Angle + rotationElapsedTime;
 
-            if (Screen.width != lastWidth || Screen.height != lastHeight || !Mathf.Approximately(animatedAngle, lastAngle))
-                UpdateGeometry(animatedAngle);
-
             elapsedTime += dt * config.ShiftSpeed;
-            float offset = Mathf.Sin(elapsedTime) * config.ShiftAmplitude;
-            material.mainTextureOffset = new Vector2(0f, offset);
+            float shiftOffset = Mathf.Sin(elapsedTime) * config.ShiftAmplitude;
+
+            UpdateUVs(animatedAngle, shiftOffset);
         }
 
         public void Cleanup()
@@ -92,15 +96,18 @@ namespace BFTools.Visuals.Background
             material = null;
         }
 
-        private Texture2D BuildRampTexture()
+        private static Texture2D CreateRampTexture()
         {
-            Texture2D texture = new Texture2D(1, RampResolution, TextureFormat.RGBA32, false)
+            return new Texture2D(1, RampResolution, TextureFormat.RGBA32, false)
             {
                 name = "BFGradientLayer_Ramp",
                 wrapMode = TextureWrapMode.Clamp,
                 filterMode = FilterMode.Bilinear
             };
+        }
 
+        private void RefreshRampTexture()
+        {
             Gradient gradient = config.ColorGradient;
             float midpoint = config.Midpoint;
             float spread = config.Spread;
@@ -110,11 +117,10 @@ namespace BFTools.Visuals.Background
                 float t = i / (RampResolution - 1f);
                 float shaped = Gain(t, 1f - spread);
                 float remapped = Bias(shaped, midpoint);
-                texture.SetPixel(0, i, gradient.Evaluate(remapped));
+                rampTexture.SetPixel(0, i, gradient.Evaluate(remapped));
             }
 
-            texture.Apply(false);
-            return texture;
+            rampTexture.Apply(false);
         }
 
         private static float Bias(float t, float b)
@@ -131,11 +137,10 @@ namespace BFTools.Visuals.Background
                 : 1f - Bias(2f - t * 2f, g) * 0.5f;
         }
 
-        private void UpdateGeometry(float angleDegrees)
+        private void UpdateVertexPositions()
         {
             lastWidth = Screen.width;
             lastHeight = Screen.height;
-            lastAngle = angleDegrees;
 
             float width = lastWidth;
             float height = lastHeight;
@@ -147,12 +152,15 @@ namespace BFTools.Visuals.Background
             vertices[3] = new Vector3(width, height, 0f);
             mesh.vertices = vertices;
 
-            mesh.uv = BuildAxisUVs(width, height, lastAngle);
-
             mesh.RecalculateBounds();
         }
 
-        private static Vector2[] BuildAxisUVs(float width, float height, float angleDegrees)
+        private void UpdateUVs(float angleDegrees, float shiftOffset)
+        {
+            mesh.uv = BuildAxisUVs(lastWidth, lastHeight, angleDegrees, shiftOffset);
+        }
+
+        private static Vector2[] BuildAxisUVs(float width, float height, float angleDegrees, float shiftOffset)
         {
             float angleRad = angleDegrees * Mathf.Deg2Rad;
             Vector2 direction = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad));
@@ -179,7 +187,7 @@ namespace BFTools.Visuals.Background
             float range = Mathf.Max(max - min, 0.0001f);
             Vector2[] uvs = new Vector2[4];
             for (int i = 0; i < 4; i++)
-                uvs[i] = new Vector2(0f, (projections[i] - min) / range);
+                uvs[i] = new Vector2(0f, (projections[i] - min) / range + shiftOffset);
 
             return uvs;
         }
