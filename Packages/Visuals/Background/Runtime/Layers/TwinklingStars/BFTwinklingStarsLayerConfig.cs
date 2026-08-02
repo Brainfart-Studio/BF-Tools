@@ -12,9 +12,6 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0, 300), Tooltip("How many stars to place on screen.")]
         private int starCount = 120;
 
-        [SerializeField, Tooltip("Seed used to place and shape stars. 0 picks a new random seed every time the layer initializes.")]
-        private int seed;
-
         [Header("Size")]
         [SerializeField, Range(0.1f, 5f), Tooltip("Smallest star size, in pixels.")]
         private float minSize = 0.6f;
@@ -47,7 +44,6 @@ namespace BFTools.Visuals.Background
 
         internal Gradient ColorGradient => colorGradient;
         internal int StarCount => starCount;
-        internal int Seed => seed;
         internal float MinSize => minSize;
         internal float MaxSize => maxSize;
         internal float MinAlpha => minAlpha;
