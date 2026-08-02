@@ -24,7 +24,7 @@ namespace BFTools.Visuals.Background
 
             Position = new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f));
             phase = Random.Range(0f, Mathf.PI * 2f);
-            twinkleDepth = Random.Range(0.3f, 0.5f);
+            twinkleDepth = Random.Range(config.MinTwinkleDepth, config.MaxTwinkleDepth);
             ColorT = Random.Range(0f, 1f);
 
             float noiseX = Position.x * NoiseScale;
@@ -33,9 +33,9 @@ namespace BFTools.Visuals.Background
             float alphaNoise = Mathf.PerlinNoise(noiseX + 100f, noiseY + 100f);
             float speedNoise = Mathf.PerlinNoise(noiseX + 200f, noiseY + 200f);
 
-            Size = Mathf.Lerp(0.6f, 1.8f, sizeNoise);
-            alphaBase = Mathf.Lerp(0.3f, 0.9f, alphaNoise);
-            twinkleSpeed = Mathf.Lerp(0.002f, 0.004f, speedNoise);
+            Size = Mathf.Lerp(config.MinSize, config.MaxSize, sizeNoise);
+            alphaBase = Mathf.Lerp(config.MinAlpha, config.MaxAlpha, alphaNoise);
+            twinkleSpeed = Mathf.Lerp(config.MinTwinkleSpeed, config.MaxTwinkleSpeed, speedNoise);
         }
 
         public void Tick(float dt)

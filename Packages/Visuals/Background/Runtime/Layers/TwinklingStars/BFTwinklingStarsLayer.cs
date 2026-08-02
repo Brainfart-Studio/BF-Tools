@@ -38,8 +38,20 @@ namespace BFTools.Visuals.Background
             root = rootObj.transform;
 
             stars.Clear();
+
+            bool useSeed = config.Seed != 0;
+            Random.State previousRandomState = default;
+            if (useSeed)
+            {
+                previousRandomState = Random.state;
+                Random.InitState(config.Seed);
+            }
+
             for (int i = 0; i < config.StarCount; i++)
                 stars.Add(new BFTwinklingStar(config));
+
+            if (useSeed)
+                Random.state = previousRandomState;
 
             int vertexCount = stars.Count * 4;
             vertices = new Vector3[vertexCount];
