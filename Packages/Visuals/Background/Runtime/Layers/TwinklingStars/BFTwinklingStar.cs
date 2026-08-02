@@ -4,6 +4,8 @@ namespace BFTools.Visuals.Background
 {
     public class BFTwinklingStar
     {
+        private const float NoiseScale = 12f;
+
         private readonly BFTwinklingStarsLayerConfig config;
 
         private float phase;
@@ -20,11 +22,18 @@ namespace BFTools.Visuals.Background
             this.config = config;
 
             Position = new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f));
-            Size = Random.Range(0.6f, 1.8f);
             phase = Random.Range(0f, Mathf.PI * 2f);
-            alphaBase = Random.Range(0.3f, 0.9f);
-            twinkleSpeed = Random.Range(0.002f, 0.004f);
             twinkleDepth = Random.Range(0.3f, 0.5f);
+
+            float noiseX = Position.x * NoiseScale;
+            float noiseY = Position.y * NoiseScale;
+            float sizeNoise = Mathf.PerlinNoise(noiseX, noiseY);
+            float alphaNoise = Mathf.PerlinNoise(noiseX + 100f, noiseY + 100f);
+            float speedNoise = Mathf.PerlinNoise(noiseX + 200f, noiseY + 200f);
+
+            Size = Mathf.Lerp(0.6f, 1.8f, sizeNoise);
+            alphaBase = Mathf.Lerp(0.3f, 0.9f, alphaNoise);
+            twinkleSpeed = Mathf.Lerp(0.002f, 0.004f, speedNoise);
         }
 
         public void Tick(float dt)
