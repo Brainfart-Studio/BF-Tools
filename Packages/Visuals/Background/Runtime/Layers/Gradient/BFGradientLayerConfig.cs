@@ -30,6 +30,12 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0f, 90f), Tooltip("How far the rotation swings from its current angle when oscillating.")]
         private float rotationOscillationAmplitude;
 
+        [SerializeField, Range(0f, 0.25f), Tooltip("How far the transition line displaces from straight. 0 keeps it perfectly straight.")]
+        private float waveAmplitude;
+
+        [SerializeField, Range(0f, 8f), Tooltip("How many wave cycles appear across the gradient.")]
+        private float waveFrequency = 2f;
+
         internal Gradient ColorGradient => colorGradient;
         internal float Midpoint => midpoint;
         internal float Spread => spread;
@@ -39,6 +45,8 @@ namespace BFTools.Visuals.Background
         internal float RotationSpeed => rotationSpeed;
         internal float RotationOscillationSpeed => rotationOscillationSpeed;
         internal float RotationOscillationAmplitude => rotationOscillationAmplitude;
+        internal float WaveAmplitude => waveAmplitude;
+        internal float WaveFrequency => waveFrequency;
 
         public override IBFBackgroundLayer CreateLayer()
         {

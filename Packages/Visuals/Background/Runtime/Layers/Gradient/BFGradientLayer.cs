@@ -11,6 +11,9 @@ namespace BFTools.Visuals.Background
         private const int RampResolution = 256;
         private const float MaxRotationOscillationHz = 0.1f;
 
+        private const int WaveGridResolution = 24;
+        private const int GridVertexCount = (WaveGridResolution + 1) * (WaveGridResolution + 1);
+
         private readonly BFGradientLayerConfig config;
 
         private Transform root;
@@ -43,9 +46,9 @@ namespace BFTools.Visuals.Background
             root = obj.transform;
 
             mesh = new Mesh { name = "BFGradientLayer" };
-            mesh.vertices = new Vector3[4];
-            mesh.colors32 = new[] { Color32Opaque, Color32Opaque, Color32Opaque, Color32Opaque };
-            mesh.triangles = new[] { 0, 2, 1, 2, 3, 1 };
+            mesh.vertices = new Vector3[GridVertexCount];
+            mesh.colors32 = BuildGridColors();
+            mesh.triangles = BuildGridTriangles();
 
             MeshFilter filter = obj.AddComponent<MeshFilter>();
             filter.mesh = mesh;
@@ -150,11 +153,16 @@ namespace BFTools.Visuals.Background
             float width = lastWidth;
             float height = lastHeight;
 
-            Vector3[] vertices = mesh.vertices;
-            vertices[0] = new Vector3(0f, 0f, 0f);
-            vertices[1] = new Vector3(width, 0f, 0f);
-            vertices[2] = new Vector3(0f, height, 0f);
-            vertices[3] = new Vector3(width, height, 0f);
+            Vector3[] vertices = new Vector3[GridVertexCount];
+            for (int row = 0; row <= WaveGridResolution; row++)
+            {
+                float y = height * row / WaveGridResolution;
+                for (int col = 0; col <= WaveGridResolution; col++)
+                {
+                    float x = width * col / WaveGridResolution;
+                    vertices[row * (WaveGridResolution + 1) + col] = new Vector3(x, y, 0f);
+                }
+            }
             mesh.vertices = vertices;
 
             mesh.RecalculateBounds();
@@ -162,13 +170,14 @@ namespace BFTools.Visuals.Background
 
         private void UpdateUVs(float angleDegrees, float shiftOffset)
         {
-            mesh.uv = BuildAxisUVs(lastWidth, lastHeight, angleDegrees, shiftOffset);
+            mesh.uv = BuildGridUVs(lastWidth, lastHeight, angleDegrees, shiftOffset, config.WaveAmplitude, config.WaveFrequency);
         }
 
-        private static Vector2[] BuildAxisUVs(float width, float height, float angleDegrees, float shiftOffset)
+        private static Vector2[] BuildGridUVs(float width, float height, float angleDegrees, float shiftOffset, float waveAmplitude, float waveFrequency)
         {
             float angleRad = angleDegrees * Mathf.Deg2Rad;
             Vector2 direction = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad));
+            Vector2 perpendicular = new Vector2(direction.y, -direction.x);
 
             Vector2[] corners =
             {
@@ -178,23 +187,75 @@ namespace BFTools.Visuals.Background
                 new Vector2(width * 0.5f, height * 0.5f)
             };
 
-            float[] projections = new float[4];
-            float min = float.MaxValue;
-            float max = float.MinValue;
+            float axisMin = float.MaxValue, axisMax = float.MinValue;
+            float perpMin = float.MaxValue, perpMax = float.MinValue;
             for (int i = 0; i < 4; i++)
             {
-                float p = corners[i].x * direction.x + corners[i].y * direction.y;
-                projections[i] = p;
-                min = Mathf.Min(min, p);
-                max = Mathf.Max(max, p);
+                float axisProjection = corners[i].x * direction.x + corners[i].y * direction.y;
+                float perpProjection = corners[i].x * perpendicular.x + corners[i].y * perpendicular.y;
+                axisMin = Mathf.Min(axisMin, axisProjection);
+                axisMax = Mathf.Max(axisMax, axisProjection);
+                perpMin = Mathf.Min(perpMin, perpProjection);
+                perpMax = Mathf.Max(perpMax, perpProjection);
             }
 
-            float range = Mathf.Max(max - min, 0.0001f);
-            Vector2[] uvs = new Vector2[4];
-            for (int i = 0; i < 4; i++)
-                uvs[i] = new Vector2(0f, (projections[i] - min) / range + shiftOffset);
+            float axisRange = Mathf.Max(axisMax - axisMin, 0.0001f);
+            float perpRange = Mathf.Max(perpMax - perpMin, 0.0001f);
+
+            Vector2[] uvs = new Vector2[GridVertexCount];
+            for (int row = 0; row <= WaveGridResolution; row++)
+            {
+                float y = height * row / WaveGridResolution - height * 0.5f;
+                for (int col = 0; col <= WaveGridResolution; col++)
+                {
+                    float x = width * col / WaveGridResolution - width * 0.5f;
+
+                    float axisProjection = x * direction.x + y * direction.y;
+                    float perpProjection = x * perpendicular.x + y * perpendicular.y;
+
+                    float axisT = (axisProjection - axisMin) / axisRange;
+                    float perpT = (perpProjection - perpMin) / perpRange;
+
+                    float wave = Mathf.Sin(perpT * waveFrequency * Mathf.PI * 2f) * waveAmplitude;
+
+                    uvs[row * (WaveGridResolution + 1) + col] = new Vector2(0f, axisT + wave + shiftOffset);
+                }
+            }
 
             return uvs;
+        }
+
+        private static Color32[] BuildGridColors()
+        {
+            Color32[] colors = new Color32[GridVertexCount];
+            for (int i = 0; i < colors.Length; i++)
+                colors[i] = Color32Opaque;
+            return colors;
+        }
+
+        private static int[] BuildGridTriangles()
+        {
+            int[] triangles = new int[WaveGridResolution * WaveGridResolution * 6];
+            int t = 0;
+            for (int row = 0; row < WaveGridResolution; row++)
+            {
+                for (int col = 0; col < WaveGridResolution; col++)
+                {
+                    int bl = row * (WaveGridResolution + 1) + col;
+                    int br = bl + 1;
+                    int tl = bl + (WaveGridResolution + 1);
+                    int tr = tl + 1;
+
+                    triangles[t++] = bl;
+                    triangles[t++] = tl;
+                    triangles[t++] = br;
+
+                    triangles[t++] = tl;
+                    triangles[t++] = tr;
+                    triangles[t++] = br;
+                }
+            }
+            return triangles;
         }
     }
 }
