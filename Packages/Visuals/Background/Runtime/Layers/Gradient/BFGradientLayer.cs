@@ -73,7 +73,7 @@ namespace BFTools.Visuals.Background
 
             rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
             rotationOscillationElapsedTime += dt * config.RotationOscillationSpeed;
-            float oscillationOffset = Mathf.Sin(rotationOscillationElapsedTime) * config.RotationOscillationAmplitude;
+            float oscillationOffset = Mathf.Sin(rotationOscillationElapsedTime * Mathf.PI * 2f) * config.RotationOscillationAmplitude;
             float animatedAngle = config.Angle + rotationElapsedTime + oscillationOffset;
 
             elapsedTime += dt * config.ShiftSpeed;
