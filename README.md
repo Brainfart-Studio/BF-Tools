@@ -27,7 +27,7 @@ Event-driven player feedback.
 
 Depends on `com.bftools.core` (0.7.2) and `com.unity.inputsystem` (1.7.0).
 
-### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.3.0)
+### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.4.0)
 Live-editable, config-driven visual systems.
 - **Palette**: live-editable color palette for rapid prototyping, driven by named entries on a config asset. See [Palette.md](Packages/Visuals/Documentation~/Palette.md).
 - **Background**: layered background rendering, compositing gradient, aurora ribbon, and twinkling star layers behind the scene via a dedicated camera. See [Background.md](Packages/Visuals/Documentation~/Background.md).
