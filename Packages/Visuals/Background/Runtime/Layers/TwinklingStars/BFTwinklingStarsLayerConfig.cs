@@ -19,12 +19,24 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0.1f, 5f), Tooltip("Largest star size, in pixels.")]
         private float maxSize = 1.8f;
 
+        [SerializeField, Range(0.1f, 5f), Tooltip("Where most star sizes cluster, between Min Size and Max Size.")]
+        private float averageSize = 1.2f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("How many stars land out near Min/Max Size instead of clustering around Average Size. 0 groups sizes tightly around the average; 1 spreads them out toward the extremes.")]
+        private float sizeOutliers = 0.5f;
+
         [Header("Brightness")]
         [SerializeField, Range(0f, 1f), Tooltip("Dimmest a star's base brightness can be.")]
         private float minAlpha = 0.3f;
 
         [SerializeField, Range(0f, 1f), Tooltip("Brightest a star's base brightness can be.")]
         private float maxAlpha = 0.9f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Where most star brightness clusters, between Min Brightness and Max Brightness.")]
+        private float averageAlpha = 0.6f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("How many stars land out near Min/Max Brightness instead of clustering around Average Brightness. 0 groups brightness tightly around the average; 1 spreads it out toward the extremes.")]
+        private float alphaOutliers = 0.5f;
 
         [Header("Twinkle")]
         [SerializeField, Tooltip("Whether stars pulse in brightness over time.")]
@@ -46,8 +58,12 @@ namespace BFTools.Visuals.Background
         internal int StarCount => starCount;
         internal float MinSize => minSize;
         internal float MaxSize => maxSize;
+        internal float AverageSize => averageSize;
+        internal float SizeOutliers => sizeOutliers;
         internal float MinAlpha => minAlpha;
         internal float MaxAlpha => maxAlpha;
+        internal float AverageAlpha => averageAlpha;
+        internal float AlphaOutliers => alphaOutliers;
         internal bool Twinkle => twinkle;
         internal float MinTwinkleSpeed => minTwinkleSpeed;
         internal float MaxTwinkleSpeed => maxTwinkleSpeed;
