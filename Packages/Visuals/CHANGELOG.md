@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.0] - Gradient Layer Expansion
+
+### Added
+- Multi-key color support for the Gradient layer via a full `Gradient`, replacing the fixed top/bottom `Color` pair
+- Layout controls for the Gradient layer: Midpoint and Spread, tuning where the color blend sits along the axis and how gradual it is
+- Angle control, rotating the Gradient layer's axis
+- Drift animation (Shift Speed, Shift Amplitude), moving the gradient back and forth along its axis over time
+- Rotation animation (Rotation Speed, Rotation Oscillation Speed, Rotation Oscillation Amplitude)
+- Wave shape and animation controls (Wave Amplitude, Wave Frequency, Wave Frequency Oscillation Speed/Amplitude, Wave Amplitude Randomness, Wave Amplitude Randomness Speed), displacing the gradient's transition line into an animated wave
+- Tooltips on every BFGradientLayerConfig field
+
+### Changed
+- BFGradientLayerConfig groups its fields into labeled inspector sections (Color, Layout, Drift Animation, Rotation Animation, Wave Shape, Wave Animation) via Header attributes
+- Replaced BFGradientLayerConfig's TopColor/BottomColor properties with ColorGradient (breaking change for existing Gradient layer configs and any code referencing the old properties)
+
 ## [0.2.0] - Background
 
 ### Added
