@@ -19,6 +19,7 @@ namespace BFTools.Visuals.Background
 
         private int lastWidth = -1;
         private int lastHeight = -1;
+        private float lastAngle;
 
         public BFGradientLayer(BFGradientLayerConfig config)
         {
@@ -35,7 +36,6 @@ namespace BFTools.Visuals.Background
 
             mesh = new Mesh { name = "BFGradientLayer" };
             mesh.vertices = new Vector3[4];
-            mesh.uv = new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, 1f), new Vector2(1f, 1f) };
             mesh.colors32 = new[] { Color32Opaque, Color32Opaque, Color32Opaque, Color32Opaque };
             mesh.triangles = new[] { 0, 2, 1, 2, 3, 1 };
 
@@ -55,7 +55,7 @@ namespace BFTools.Visuals.Background
 
         public void Tick(float dt)
         {
-            if (Screen.width != lastWidth || Screen.height != lastHeight)
+            if (Screen.width != lastWidth || Screen.height != lastHeight || !Mathf.Approximately(config.Angle, lastAngle))
                 UpdateGeometry();
         }
 
@@ -119,6 +119,7 @@ namespace BFTools.Visuals.Background
         {
             lastWidth = Screen.width;
             lastHeight = Screen.height;
+            lastAngle = config.Angle;
 
             float width = lastWidth;
             float height = lastHeight;
@@ -129,7 +130,42 @@ namespace BFTools.Visuals.Background
             vertices[2] = new Vector3(0f, height, 0f);
             vertices[3] = new Vector3(width, height, 0f);
             mesh.vertices = vertices;
+
+            mesh.uv = BuildAxisUVs(width, height, lastAngle);
+
             mesh.RecalculateBounds();
+        }
+
+        private static Vector2[] BuildAxisUVs(float width, float height, float angleDegrees)
+        {
+            float angleRad = angleDegrees * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad));
+
+            Vector2[] corners =
+            {
+                new Vector2(-width * 0.5f, -height * 0.5f),
+                new Vector2(width * 0.5f, -height * 0.5f),
+                new Vector2(-width * 0.5f, height * 0.5f),
+                new Vector2(width * 0.5f, height * 0.5f)
+            };
+
+            float[] projections = new float[4];
+            float min = float.MaxValue;
+            float max = float.MinValue;
+            for (int i = 0; i < 4; i++)
+            {
+                float p = corners[i].x * direction.x + corners[i].y * direction.y;
+                projections[i] = p;
+                min = Mathf.Min(min, p);
+                max = Mathf.Max(max, p);
+            }
+
+            float range = Mathf.Max(max - min, 0.0001f);
+            Vector2[] uvs = new Vector2[4];
+            for (int i = 0; i < 4; i++)
+                uvs[i] = new Vector2(0f, (projections[i] - min) / range);
+
+            return uvs;
         }
     }
 }

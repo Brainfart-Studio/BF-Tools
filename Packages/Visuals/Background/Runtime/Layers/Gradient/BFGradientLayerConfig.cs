@@ -12,9 +12,13 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0f, 1f), Tooltip("How gradual the blend between colors is. 0.5 matches a plain linear gradient; higher values spread the blend across more of the screen, lower values sharpen it.")]
         private float spread = 0.5f;
 
+        [SerializeField, Range(-180f, 180f), Tooltip("Rotates the gradient axis. 0 runs bottom to top, 90 runs left to right, -90 runs right to left, 45 is a diagonal.")]
+        private float angle;
+
         internal Gradient ColorGradient => colorGradient;
         internal float Midpoint => midpoint;
         internal float Spread => spread;
+        internal float Angle => angle;
 
         public override IBFBackgroundLayer CreateLayer()
         {
