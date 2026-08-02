@@ -10,6 +10,8 @@ namespace BFTools.Visuals.Background
 
         private const int RampResolution = 256;
         private const float MaxRotationOscillationHz = 0.1f;
+        private const float MaxWaveFrequencyOscillationHz = 0.1f;
+        private const float MaxWaveAmplitudeDriftHz = 0.1f;
 
         private const int WaveGridResolution = 24;
         private const int GridVertexCount = (WaveGridResolution + 1) * (WaveGridResolution + 1);
@@ -27,6 +29,8 @@ namespace BFTools.Visuals.Background
         private float elapsedTime;
         private float rotationElapsedTime;
         private float rotationOscillationElapsedTime;
+        private float waveFrequencyOscillationElapsedTime;
+        private float waveAmplitudeDriftElapsedTime;
 
         public BFGradientLayer(BFGradientLayerConfig config)
         {
@@ -38,6 +42,8 @@ namespace BFTools.Visuals.Background
             elapsedTime = 0f;
             rotationElapsedTime = 0f;
             rotationOscillationElapsedTime = 0f;
+            waveFrequencyOscillationElapsedTime = 0f;
+            waveAmplitudeDriftElapsedTime = 0f;
 
             GameObject obj = new GameObject("BFGradientLayer");
             obj.transform.SetParent(parent, false);
@@ -63,7 +69,7 @@ namespace BFTools.Visuals.Background
             meshRenderer.sortingOrder = sortingOrder;
 
             UpdateVertexPositions();
-            UpdateUVs(config.Angle, 0f);
+            UpdateUVs(config.Angle, 0f, config.WaveFrequency, 0f);
 
             BFLogger.Info(LogTags, "BFGradientLayer: initialized.");
         }
@@ -83,7 +89,13 @@ namespace BFTools.Visuals.Background
             elapsedTime += dt * config.ShiftSpeed;
             float shiftOffset = Mathf.Sin(elapsedTime) * config.ShiftAmplitude;
 
-            UpdateUVs(animatedAngle, shiftOffset);
+            waveFrequencyOscillationElapsedTime += dt * config.WaveFrequencyOscillationSpeed * MaxWaveFrequencyOscillationHz;
+            float waveFrequencyOffset = Mathf.Sin(waveFrequencyOscillationElapsedTime * Mathf.PI * 2f) * config.WaveFrequencyOscillationAmplitude;
+            float animatedWaveFrequency = config.WaveFrequency + waveFrequencyOffset;
+
+            waveAmplitudeDriftElapsedTime += dt * config.WaveAmplitudeRandomnessSpeed * MaxWaveAmplitudeDriftHz;
+
+            UpdateUVs(animatedAngle, shiftOffset, animatedWaveFrequency, waveAmplitudeDriftElapsedTime);
         }
 
         public void Cleanup()
@@ -168,12 +180,12 @@ namespace BFTools.Visuals.Background
             mesh.RecalculateBounds();
         }
 
-        private void UpdateUVs(float angleDegrees, float shiftOffset)
+        private void UpdateUVs(float angleDegrees, float shiftOffset, float waveFrequency, float waveAmplitudeDriftTime)
         {
-            mesh.uv = BuildGridUVs(lastWidth, lastHeight, angleDegrees, shiftOffset, config.WaveAmplitude, config.WaveFrequency);
+            mesh.uv = BuildGridUVs(lastWidth, lastHeight, angleDegrees, shiftOffset, config.WaveAmplitude, waveFrequency, config.WaveAmplitudeRandomness, waveAmplitudeDriftTime);
         }
 
-        private static Vector2[] BuildGridUVs(float width, float height, float angleDegrees, float shiftOffset, float waveAmplitude, float waveFrequency)
+        private static Vector2[] BuildGridUVs(float width, float height, float angleDegrees, float shiftOffset, float waveAmplitude, float waveFrequency, float waveAmplitudeRandomness, float waveAmplitudeDriftTime)
         {
             float angleRad = angleDegrees * Mathf.Deg2Rad;
             Vector2 direction = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad));
@@ -216,7 +228,9 @@ namespace BFTools.Visuals.Background
                     float axisT = (axisProjection - axisMin) / axisRange;
                     float perpT = (perpProjection - perpMin) / perpRange;
 
-                    float wave = Mathf.Sin(perpT * waveFrequency * Mathf.PI * 2f) * waveAmplitude;
+                    float noise = Mathf.PerlinNoise(perpT * waveFrequency, waveAmplitudeDriftTime);
+                    float amplitudeMultiplier = 1f + (noise * 2f - 1f) * waveAmplitudeRandomness;
+                    float wave = Mathf.Sin(perpT * waveFrequency * Mathf.PI * 2f) * waveAmplitude * amplitudeMultiplier;
 
                     uvs[row * (WaveGridResolution + 1) + col] = new Vector2(0f, axisT + wave + shiftOffset);
                 }

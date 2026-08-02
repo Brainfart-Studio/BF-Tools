@@ -36,6 +36,18 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0f, 8f), Tooltip("How many wave cycles appear across the gradient.")]
         private float waveFrequency = 2f;
 
+        [SerializeField, Range(0f, 1f), Tooltip("How fast the wave's frequency oscillates. 0 disables it.")]
+        private float waveFrequencyOscillationSpeed;
+
+        [SerializeField, Range(0f, 4f), Tooltip("How many extra or fewer wave cycles appear as the frequency oscillates.")]
+        private float waveFrequencyOscillationAmplitude;
+
+        [SerializeField, Range(0f, 1f), Tooltip("How much each individual wave crest varies in height from the others. 0 keeps every crest the same height.")]
+        private float waveAmplitudeRandomness;
+
+        [SerializeField, Range(0f, 1f), Tooltip("How fast the per-crest height variation drifts over time. 0 keeps it static.")]
+        private float waveAmplitudeRandomnessSpeed;
+
         internal Gradient ColorGradient => colorGradient;
         internal float Midpoint => midpoint;
         internal float Spread => spread;
@@ -47,6 +59,10 @@ namespace BFTools.Visuals.Background
         internal float RotationOscillationAmplitude => rotationOscillationAmplitude;
         internal float WaveAmplitude => waveAmplitude;
         internal float WaveFrequency => waveFrequency;
+        internal float WaveFrequencyOscillationSpeed => waveFrequencyOscillationSpeed;
+        internal float WaveFrequencyOscillationAmplitude => waveFrequencyOscillationAmplitude;
+        internal float WaveAmplitudeRandomness => waveAmplitudeRandomness;
+        internal float WaveAmplitudeRandomnessSpeed => waveAmplitudeRandomnessSpeed;
 
         public override IBFBackgroundLayer CreateLayer()
         {
