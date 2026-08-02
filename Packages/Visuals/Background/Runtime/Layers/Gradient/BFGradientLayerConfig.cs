@@ -4,8 +4,10 @@ namespace BFTools.Visuals.Background
 {
     public class BFGradientLayerConfig : BFBackgroundLayerConfig
     {
+        [Header("Color")]
         [SerializeField] private Gradient colorGradient = CreateDefaultGradient();
 
+        [Header("Layout")]
         [SerializeField, Range(0f, 1f), Tooltip("Where the gradient's midpoint sits along the axis. 0.5 is centered; move it toward 0 or 1 to give one color more of the screen.")]
         private float midpoint = 0.5f;
 
@@ -15,12 +17,14 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(-180f, 180f), Tooltip("Rotates the gradient axis. 0 runs bottom to top, 90 runs left to right, -90 runs right to left, 45 is a diagonal.")]
         private float angle;
 
+        [Header("Drift Animation")]
         [SerializeField, Range(0f, 2f), Tooltip("How fast the gradient drifts back and forth along its axis. 0 disables the animation.")]
         private float shiftSpeed;
 
         [SerializeField, Range(0f, 0.5f), Tooltip("How far the gradient drifts from its configured position as it animates.")]
         private float shiftAmplitude;
 
+        [Header("Rotation Animation")]
         [SerializeField, Range(-180f, 180f), Tooltip("Degrees per second the gradient axis rotates. 0 disables rotation; negative values reverse the direction.")]
         private float rotationSpeed;
 
@@ -30,12 +34,14 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0f, 90f), Tooltip("How far the rotation swings from its current angle when oscillating.")]
         private float rotationOscillationAmplitude;
 
+        [Header("Wave Shape")]
         [SerializeField, Range(0f, 0.25f), Tooltip("How far the transition line displaces from straight. 0 keeps it perfectly straight.")]
         private float waveAmplitude;
 
         [SerializeField, Range(0f, 8f), Tooltip("How many wave cycles appear across the gradient.")]
         private float waveFrequency = 2f;
 
+        [Header("Wave Animation")]
         [SerializeField, Range(0f, 1f), Tooltip("How fast the wave's frequency oscillates. 0 disables it.")]
         private float waveFrequencyOscillationSpeed;
 
