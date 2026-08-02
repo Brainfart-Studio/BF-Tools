@@ -16,6 +16,7 @@ namespace BFTools.Visuals.Background
         public Vector2 Position { get; private set; }
         public float Size { get; private set; }
         public float Alpha { get; private set; }
+        public float ColorT { get; private set; }
 
         public BFTwinklingStar(BFTwinklingStarsLayerConfig config)
         {
@@ -24,6 +25,7 @@ namespace BFTools.Visuals.Background
             Position = new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f));
             phase = Random.Range(0f, Mathf.PI * 2f);
             twinkleDepth = Random.Range(0.3f, 0.5f);
+            ColorT = Random.Range(0f, 1f);
 
             float noiseX = Position.x * NoiseScale;
             float noiseY = Position.y * NoiseScale;

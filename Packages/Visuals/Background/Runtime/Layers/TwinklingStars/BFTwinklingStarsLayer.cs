@@ -8,7 +8,7 @@ namespace BFTools.Visuals.Background
     {
         private static readonly string[] LogTags = { "Background", "TwinklingStars" };
 
-        private static Texture2D dotTexture;
+        private const int RampResolution = 256;
 
         private readonly BFTwinklingStarsLayerConfig config;
         private readonly List<BFTwinklingStar> stars = new List<BFTwinklingStar>();
@@ -17,6 +17,7 @@ namespace BFTools.Visuals.Background
         private Mesh mesh;
         private MeshRenderer meshRenderer;
         private Material material;
+        private Texture2D rampTexture;
 
         private Vector3[] vertices;
         private Color32[] colors;
@@ -31,8 +32,6 @@ namespace BFTools.Visuals.Background
 
         public void Init(Transform parent, int sortingOrder)
         {
-            EnsureDotTexture();
-
             GameObject rootObj = new GameObject("BFTwinklingStarsLayer");
             rootObj.transform.SetParent(parent, false);
             rootObj.layer = BFBackgroundStackManager.BackgroundLayer;
@@ -50,13 +49,16 @@ namespace BFTools.Visuals.Background
             mesh.MarkDynamic();
             mesh.vertices = vertices;
             mesh.colors32 = colors;
-            mesh.uv = BuildUVs(stars.Count);
+            mesh.uv = BuildUVs(stars);
             mesh.triangles = BuildTriangles(stars.Count);
 
             MeshFilter filter = rootObj.AddComponent<MeshFilter>();
             filter.mesh = mesh;
 
-            material = new Material(Shader.Find("Sprites/Default")) { mainTexture = dotTexture };
+            rampTexture = CreateRampTexture();
+            RefreshRampTexture();
+
+            material = new Material(Shader.Find("Sprites/Default")) { mainTexture = rampTexture };
 
             meshRenderer = rootObj.AddComponent<MeshRenderer>();
             meshRenderer.material = material;
@@ -104,6 +106,10 @@ namespace BFTools.Visuals.Background
                 Object.Destroy(mesh);
             mesh = null;
 
+            if (rampTexture != null)
+                Object.Destroy(rampTexture);
+            rampTexture = null;
+
             meshRenderer = null;
             material = null;
             vertices = null;
@@ -135,16 +141,17 @@ namespace BFTools.Visuals.Background
             mesh.RecalculateBounds();
         }
 
-        private static Vector2[] BuildUVs(int starCount)
+        private static Vector2[] BuildUVs(List<BFTwinklingStar> stars)
         {
-            Vector2[] uvs = new Vector2[starCount * 4];
-            for (int i = 0; i < starCount; i++)
+            Vector2[] uvs = new Vector2[stars.Count * 4];
+            for (int i = 0; i < stars.Count; i++)
             {
                 int baseIndex = i * 4;
-                uvs[baseIndex] = new Vector2(0f, 0f);
-                uvs[baseIndex + 1] = new Vector2(1f, 0f);
-                uvs[baseIndex + 2] = new Vector2(0f, 1f);
-                uvs[baseIndex + 3] = new Vector2(1f, 1f);
+                Vector2 uv = new Vector2(0f, stars[i].ColorT);
+                uvs[baseIndex] = uv;
+                uvs[baseIndex + 1] = uv;
+                uvs[baseIndex + 2] = uv;
+                uvs[baseIndex + 3] = uv;
             }
             return uvs;
         }
@@ -172,14 +179,27 @@ namespace BFTools.Visuals.Background
             return triangles;
         }
 
-        private static void EnsureDotTexture()
+        private static Texture2D CreateRampTexture()
         {
-            if (dotTexture != null)
-                return;
+            return new Texture2D(1, RampResolution, TextureFormat.RGBA32, false)
+            {
+                name = "BFTwinklingStarsLayer_Ramp",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+        }
 
-            dotTexture = new Texture2D(1, 1) { name = "BFTwinklingStarsLayer_Dot" };
-            dotTexture.SetPixel(0, 0, Color.white);
-            dotTexture.Apply();
+        private void RefreshRampTexture()
+        {
+            Gradient gradient = config.ColorGradient;
+
+            for (int i = 0; i < RampResolution; i++)
+            {
+                float t = i / (RampResolution - 1f);
+                rampTexture.SetPixel(0, i, gradient.Evaluate(t));
+            }
+
+            rampTexture.Apply(false);
         }
     }
 }
