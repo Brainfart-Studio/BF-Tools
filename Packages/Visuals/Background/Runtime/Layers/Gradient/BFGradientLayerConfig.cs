@@ -24,6 +24,12 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(-180f, 180f), Tooltip("Degrees per second the gradient axis rotates. 0 disables rotation; negative values reverse the direction.")]
         private float rotationSpeed;
 
+        [SerializeField, Range(0f, 180f), Tooltip("How fast the rotation oscillates back and forth. 0 disables oscillation.")]
+        private float rotationOscillationSpeed;
+
+        [SerializeField, Range(0f, 90f), Tooltip("How far the rotation swings from its current angle when oscillating.")]
+        private float rotationOscillationAmplitude;
+
         internal Gradient ColorGradient => colorGradient;
         internal float Midpoint => midpoint;
         internal float Spread => spread;
@@ -31,6 +37,8 @@ namespace BFTools.Visuals.Background
         internal float ShiftSpeed => shiftSpeed;
         internal float ShiftAmplitude => shiftAmplitude;
         internal float RotationSpeed => rotationSpeed;
+        internal float RotationOscillationSpeed => rotationOscillationSpeed;
+        internal float RotationOscillationAmplitude => rotationOscillationAmplitude;
 
         public override IBFBackgroundLayer CreateLayer()
         {

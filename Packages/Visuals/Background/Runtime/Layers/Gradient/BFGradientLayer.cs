@@ -22,6 +22,7 @@ namespace BFTools.Visuals.Background
         private int lastHeight = -1;
         private float elapsedTime;
         private float rotationElapsedTime;
+        private float rotationOscillationElapsedTime;
 
         public BFGradientLayer(BFGradientLayerConfig config)
         {
@@ -32,6 +33,7 @@ namespace BFTools.Visuals.Background
         {
             elapsedTime = 0f;
             rotationElapsedTime = 0f;
+            rotationOscillationElapsedTime = 0f;
 
             GameObject obj = new GameObject("BFGradientLayer");
             obj.transform.SetParent(parent, false);
@@ -70,7 +72,9 @@ namespace BFTools.Visuals.Background
                 UpdateVertexPositions();
 
             rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
-            float animatedAngle = config.Angle + rotationElapsedTime;
+            rotationOscillationElapsedTime += dt * config.RotationOscillationSpeed;
+            float oscillationOffset = Mathf.Sin(rotationOscillationElapsedTime) * config.RotationOscillationAmplitude;
+            float animatedAngle = config.Angle + rotationElapsedTime + oscillationOffset;
 
             elapsedTime += dt * config.ShiftSpeed;
             float shiftOffset = Mathf.Sin(elapsedTime) * config.ShiftAmplitude;
