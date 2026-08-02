@@ -22,9 +22,6 @@ namespace BFTools.Visuals.Background
         private Vector3[] vertices;
         private Color32[] colors;
 
-        private int lastWidth = -1;
-        private int lastHeight = -1;
-
         public BFTwinklingStarsLayer(BFTwinklingStarsLayerConfig config)
         {
             this.config = config;
@@ -65,8 +62,6 @@ namespace BFTools.Visuals.Background
             meshRenderer.material = material;
             meshRenderer.sortingOrder = sortingOrder;
 
-            lastWidth = -1;
-            lastHeight = -1;
             UpdateVertexPositions();
 
             BFLogger.Info(LogTags, $"BFTwinklingStarsLayer: initialized with {stars.Count} star(s).");
@@ -74,12 +69,12 @@ namespace BFTools.Visuals.Background
 
         public void Tick(float dt)
         {
-            if (Screen.width != lastWidth || Screen.height != lastHeight)
-                UpdateVertexPositions();
+            RefreshRampTexture();
 
             for (int i = 0; i < stars.Count; i++)
             {
                 BFTwinklingStar star = stars[i];
+                star.Refresh();
                 star.Tick(dt);
 
                 byte alpha = (byte)Mathf.RoundToInt(Mathf.Clamp01(star.Alpha) * 255f);
@@ -93,6 +88,8 @@ namespace BFTools.Visuals.Background
             }
 
             mesh.colors32 = colors;
+
+            UpdateVertexPositions();
         }
 
         public void Cleanup()
@@ -121,15 +118,15 @@ namespace BFTools.Visuals.Background
 
         private void UpdateVertexPositions()
         {
-            lastWidth = Screen.width;
-            lastHeight = Screen.height;
+            int width = Screen.width;
+            int height = Screen.height;
 
             for (int i = 0; i < stars.Count; i++)
             {
                 BFTwinklingStar star = stars[i];
                 float halfSize = star.Size * 0.5f;
-                float x = star.Position.x * lastWidth;
-                float y = star.Position.y * lastHeight;
+                float x = star.Position.x * width;
+                float y = star.Position.y * height;
 
                 int baseIndex = i * 4;
                 vertices[baseIndex] = new Vector3(x - halfSize, y - halfSize, 0f);
