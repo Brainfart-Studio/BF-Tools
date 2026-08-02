@@ -15,11 +15,13 @@ namespace BFTools.Visuals.Background
         private Transform root;
         private Mesh mesh;
         private MeshRenderer meshRenderer;
+        private Material material;
         private Texture2D rampTexture;
 
         private int lastWidth = -1;
         private int lastHeight = -1;
         private float lastAngle;
+        private float elapsedTime;
 
         public BFGradientLayer(BFGradientLayerConfig config)
         {
@@ -28,6 +30,8 @@ namespace BFTools.Visuals.Background
 
         public void Init(Transform parent, int sortingOrder)
         {
+            elapsedTime = 0f;
+
             GameObject obj = new GameObject("BFGradientLayer");
             obj.transform.SetParent(parent, false);
             obj.transform.position = new Vector3(0f, 0f, 10f);
@@ -44,8 +48,10 @@ namespace BFTools.Visuals.Background
 
             rampTexture = BuildRampTexture();
 
+            material = new Material(Shader.Find("Sprites/Default")) { mainTexture = rampTexture };
+
             meshRenderer = obj.AddComponent<MeshRenderer>();
-            meshRenderer.material = new Material(Shader.Find("Sprites/Default")) { mainTexture = rampTexture };
+            meshRenderer.material = material;
             meshRenderer.sortingOrder = sortingOrder;
 
             UpdateGeometry();
@@ -57,6 +63,10 @@ namespace BFTools.Visuals.Background
         {
             if (Screen.width != lastWidth || Screen.height != lastHeight || !Mathf.Approximately(config.Angle, lastAngle))
                 UpdateGeometry();
+
+            elapsedTime += dt * config.ShiftSpeed;
+            float offset = Mathf.Sin(elapsedTime) * config.ShiftAmplitude;
+            material.mainTextureOffset = new Vector2(0f, offset);
         }
 
         public void Cleanup()
@@ -74,6 +84,7 @@ namespace BFTools.Visuals.Background
             rampTexture = null;
 
             meshRenderer = null;
+            material = null;
         }
 
         private Texture2D BuildRampTexture()
