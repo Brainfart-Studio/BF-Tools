@@ -22,6 +22,7 @@ namespace BFTools.Visuals.Background
         private int lastHeight = -1;
         private float lastAngle;
         private float elapsedTime;
+        private float rotationElapsedTime;
 
         public BFGradientLayer(BFGradientLayerConfig config)
         {
@@ -31,6 +32,7 @@ namespace BFTools.Visuals.Background
         public void Init(Transform parent, int sortingOrder)
         {
             elapsedTime = 0f;
+            rotationElapsedTime = 0f;
 
             GameObject obj = new GameObject("BFGradientLayer");
             obj.transform.SetParent(parent, false);
@@ -54,15 +56,18 @@ namespace BFTools.Visuals.Background
             meshRenderer.material = material;
             meshRenderer.sortingOrder = sortingOrder;
 
-            UpdateGeometry();
+            UpdateGeometry(config.Angle);
 
             BFLogger.Info(LogTags, "BFGradientLayer: initialized.");
         }
 
         public void Tick(float dt)
         {
-            if (Screen.width != lastWidth || Screen.height != lastHeight || !Mathf.Approximately(config.Angle, lastAngle))
-                UpdateGeometry();
+            rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
+            float animatedAngle = config.Angle + rotationElapsedTime;
+
+            if (Screen.width != lastWidth || Screen.height != lastHeight || !Mathf.Approximately(animatedAngle, lastAngle))
+                UpdateGeometry(animatedAngle);
 
             elapsedTime += dt * config.ShiftSpeed;
             float offset = Mathf.Sin(elapsedTime) * config.ShiftAmplitude;
@@ -126,11 +131,11 @@ namespace BFTools.Visuals.Background
                 : 1f - Bias(2f - t * 2f, g) * 0.5f;
         }
 
-        private void UpdateGeometry()
+        private void UpdateGeometry(float angleDegrees)
         {
             lastWidth = Screen.width;
             lastHeight = Screen.height;
-            lastAngle = config.Angle;
+            lastAngle = angleDegrees;
 
             float width = lastWidth;
             float height = lastHeight;

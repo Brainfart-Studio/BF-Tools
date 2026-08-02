@@ -21,12 +21,16 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0f, 0.5f), Tooltip("How far the gradient drifts from its configured position as it animates.")]
         private float shiftAmplitude;
 
+        [SerializeField, Range(-180f, 180f), Tooltip("Degrees per second the gradient axis rotates. 0 disables rotation; negative values reverse the direction.")]
+        private float rotationSpeed;
+
         internal Gradient ColorGradient => colorGradient;
         internal float Midpoint => midpoint;
         internal float Spread => spread;
         internal float Angle => angle;
         internal float ShiftSpeed => shiftSpeed;
         internal float ShiftAmplitude => shiftAmplitude;
+        internal float RotationSpeed => rotationSpeed;
 
         public override IBFBackgroundLayer CreateLayer()
         {
