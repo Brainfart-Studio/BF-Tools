@@ -29,7 +29,7 @@ namespace BFTools.Visuals.Background
             freq = Random.Range(0.8f, 1.4f);
             speedMult = Random.Range(0.7f, 1.3f);
             ampMult = Random.Range(0.7f, 1.2f);
-            thicknessMult = Random.Range(0.8f, 1.3f);
+            thicknessMult = Random.Range(config.MinThicknessVariance, config.MaxThicknessVariance);
 
             CurrentThickness = config.Thickness * thicknessMult;
         }

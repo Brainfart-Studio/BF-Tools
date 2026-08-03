@@ -18,6 +18,8 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0.05f, 1.5f)] private float waveSpeed = 0.35f;
         [SerializeField, Range(20f, 260f)] private float amplitude = 110f;
         [SerializeField, Range(1f, 100f)] private float thickness = 3f;
+        [SerializeField, Range(0.1f, 3f)] private float minThicknessVariance = 0.8f;
+        [SerializeField, Range(0.1f, 3f)] private float maxThicknessVariance = 1.3f;
         [SerializeField, Range(0, 60)] private float glow = 18f;
         [SerializeField, Range(0f, 1f)] private float overallOpacity = 1f;
         [SerializeField, Range(-180f, 180f)] private float angle;
@@ -28,6 +30,8 @@ namespace BFTools.Visuals.Background
         internal float WaveSpeed => waveSpeed;
         internal float Amplitude => amplitude;
         internal float Thickness => thickness;
+        internal float MinThicknessVariance => minThicknessVariance;
+        internal float MaxThicknessVariance => maxThicknessVariance;
         internal float Glow => glow;
         internal float OverallOpacity => overallOpacity;
         internal float Angle => angle;
