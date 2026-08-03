@@ -21,6 +21,9 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(20f, 260f)] private float amplitude = 110f;
         [SerializeField, Range(0.1f, 3f)] private float minAmplitudeVariance = 0.7f;
         [SerializeField, Range(0.1f, 3f)] private float maxAmplitudeVariance = 1.2f;
+        [SerializeField, Range(0f, 8f)] private float waveFrequency = 4f;
+        [SerializeField, Range(0.1f, 3f)] private float minFrequencyVariance = 0.8f;
+        [SerializeField, Range(0.1f, 3f)] private float maxFrequencyVariance = 1.4f;
         [SerializeField, Range(1f, 100f)] private float thickness = 3f;
         [SerializeField, Range(0.1f, 3f)] private float minThicknessVariance = 0.8f;
         [SerializeField, Range(0.1f, 3f)] private float maxThicknessVariance = 1.3f;
@@ -37,6 +40,9 @@ namespace BFTools.Visuals.Background
         internal float Amplitude => amplitude;
         internal float MinAmplitudeVariance => minAmplitudeVariance;
         internal float MaxAmplitudeVariance => maxAmplitudeVariance;
+        internal float WaveFrequency => waveFrequency;
+        internal float MinFrequencyVariance => minFrequencyVariance;
+        internal float MaxFrequencyVariance => maxFrequencyVariance;
         internal float Thickness => thickness;
         internal float MinThicknessVariance => minThicknessVariance;
         internal float MaxThicknessVariance => maxThicknessVariance;
