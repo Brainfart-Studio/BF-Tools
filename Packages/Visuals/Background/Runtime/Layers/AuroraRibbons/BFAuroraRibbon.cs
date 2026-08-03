@@ -7,8 +7,8 @@ namespace BFTools.Visuals.Background
         private const float SecondaryFrequencyRatio = 2.75f;
 
         private readonly BFAuroraRibbonsLayerConfig config;
+        private readonly int index;
 
-        private float baseYNormalized;
         private float phase;
         private float freq;
         private float speedMult;
@@ -20,13 +20,12 @@ namespace BFTools.Visuals.Background
 
         public BFAuroraRibbon(int index, BFAuroraRibbonsLayerConfig config)
         {
+            this.index = index;
             this.config = config;
 
             Color = config.RibbonColors.Count > 0
                 ? config.RibbonColors[index % config.RibbonColors.Count]
                 : Color.white;
-            float centerOffset = index - (config.RibbonCount - 1) / 2f;
-            baseYNormalized = 0.5f + centerOffset * config.RibbonSpacing;
             phase = Random.Range(0f, Mathf.PI * 2f);
             freq = Random.Range(config.MinFrequencyVariance, config.MaxFrequencyVariance);
             speedMult = Random.Range(config.MinSpeedVariance, config.MaxSpeedVariance);
@@ -38,6 +37,9 @@ namespace BFTools.Visuals.Background
 
         public float SampleY(float xNormalized, float elapsedTime, float viewHeight)
         {
+            float centerOffset = index - (config.RibbonCount - 1) / 2f;
+            float baseYNormalized = 0.5f + centerOffset * config.RibbonSpacing;
+
             float y = baseYNormalized * viewHeight
                 + Mathf.Sin(xNormalized * config.WaveFrequency * freq + elapsedTime * speedMult + phase) * config.Amplitude * ampMult
                 + Mathf.Sin(xNormalized * config.WaveFrequency * SecondaryFrequencyRatio * freq + elapsedTime * speedMult * config.SecondaryWaveSpeedScale) * config.Amplitude * ampMult * config.SecondaryWaveStrength;

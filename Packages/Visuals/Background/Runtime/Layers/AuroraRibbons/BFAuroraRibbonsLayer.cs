@@ -17,6 +17,8 @@ namespace BFTools.Visuals.Background
         private readonly List<LineRenderer> ribbonRenderers = new List<LineRenderer>();
 
         private Transform root;
+        private Material glowMaterial;
+        private int sortingOrder;
         private float elapsedTime;
         private float rotationElapsedTime;
         private float rotationOscillationElapsedTime;
@@ -31,6 +33,7 @@ namespace BFTools.Visuals.Background
             elapsedTime = 0f;
             rotationElapsedTime = 0f;
             rotationOscillationElapsedTime = 0f;
+            this.sortingOrder = sortingOrder;
 
             if (config.RibbonColors.Count == 0)
                 BFLogger.Error(LogTags, "BFAuroraRibbonsLayer: no ribbon colors configured, ribbons will render white.");
@@ -40,33 +43,19 @@ namespace BFTools.Visuals.Background
             rootObj.layer = BFBackgroundStackManager.BackgroundLayer;
             root = rootObj.transform;
 
-            Material glowMaterial = CreateGlowMaterial();
+            glowMaterial = CreateGlowMaterial();
 
             ribbons.Clear();
             ribbonRenderers.Clear();
-            for (int i = 0; i < config.RibbonCount; i++)
-            {
-                ribbons.Add(new BFAuroraRibbon(i, config));
-
-                GameObject go = new GameObject($"Ribbon_{i}");
-                go.transform.SetParent(root, false);
-                go.layer = BFBackgroundStackManager.BackgroundLayer;
-
-                LineRenderer lr = go.AddComponent<LineRenderer>();
-                lr.positionCount = Segments + 1;
-                lr.useWorldSpace = true;
-                lr.material = glowMaterial;
-                lr.textureMode = LineTextureMode.Stretch;
-                lr.sortingOrder = sortingOrder;
-
-                ribbonRenderers.Add(lr);
-            }
+            SyncRibbonCount();
 
             BFLogger.Info(LogTags, $"BFAuroraRibbonsLayer: initialized with {config.RibbonCount} ribbon(s).");
         }
 
         public void Tick(float dt)
         {
+            SyncRibbonCount();
+
             elapsedTime += dt * config.WaveSpeed;
 
             float viewWidth = Screen.width;
@@ -119,6 +108,45 @@ namespace BFTools.Visuals.Background
 
             ribbons.Clear();
             ribbonRenderers.Clear();
+            glowMaterial = null;
+        }
+
+        // Grows/shrinks the ribbon list and its renderers to match Ribbon Count whenever it changes.
+        private void SyncRibbonCount()
+        {
+            int targetCount = config.RibbonCount;
+            if (ribbons.Count == targetCount)
+                return;
+
+            if (ribbons.Count < targetCount)
+            {
+                for (int i = ribbons.Count; i < targetCount; i++)
+                {
+                    ribbons.Add(new BFAuroraRibbon(i, config));
+
+                    GameObject go = new GameObject($"Ribbon_{i}");
+                    go.transform.SetParent(root, false);
+                    go.layer = BFBackgroundStackManager.BackgroundLayer;
+
+                    LineRenderer lr = go.AddComponent<LineRenderer>();
+                    lr.positionCount = Segments + 1;
+                    lr.useWorldSpace = true;
+                    lr.material = glowMaterial;
+                    lr.textureMode = LineTextureMode.Stretch;
+                    lr.sortingOrder = sortingOrder;
+
+                    ribbonRenderers.Add(lr);
+                }
+            }
+            else
+            {
+                for (int i = ribbons.Count - 1; i >= targetCount; i--)
+                {
+                    Object.Destroy(ribbonRenderers[i].gameObject);
+                    ribbonRenderers.RemoveAt(i);
+                    ribbons.RemoveAt(i);
+                }
+            }
         }
 
         private Color ApplyGlow(Color baseColor)
