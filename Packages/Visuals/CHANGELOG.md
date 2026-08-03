@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.5.0] - Aurora Ribbons Overhaul
+
+### Added
+- Overall Opacity control for the Aurora Ribbons layer, fading every ribbon at once on top of each color's own alpha
+- Ribbon Spacing, controlling the vertical distance between ribbon baselines independent of thickness, replacing the fixed 0.25-0.75 screen band
+- Angle control, rotating the whole ribbon band
+- Rotation animation (Rotation Speed, Rotation Oscillation Speed, Rotation Oscillation Amplitude)
+- Thickness variance range (Min/Max Thickness Variance), replacing the fixed 0.8-1.3 random multiplier
+- Amplitude variance range (Min/Max Amplitude Variance), replacing the fixed 0.7-1.2 random multiplier
+- Wave Frequency control plus a variance range (Min/Max Frequency Variance), replacing a fixed random multiplier and hardcoded frequency constants
+- Secondary Wave Strength and Secondary Wave Speed Scale, exposing the ribbon's second, smaller wave layer
+- Wave Speed variance range (Min/Max Speed Variance), replacing the fixed 0.7-1.3 random multiplier
+- Tooltips on every BFAuroraRibbonsLayerConfig field
+
+### Changed
+- BFAuroraRibbonsLayerConfig groups its fields into labeled inspector sections (Color, Layout, Thickness, Wave Shape, Wave Animation, Rotation Animation, Glow) via Header attributes
+- Thickness now ranges up to 100 instead of 10
+- Ribbons now span the screen diagonal instead of the screen width, keeping their ends hidden off-screen at any rotation angle instead of only at 0°
+
+### Fixed
+- Ribbon count, spacing, color, thickness, and every variance range now refresh live in Play mode when the config changes, instead of only taking effect on the next Init
+
 ## [0.4.0] - Twinkling Stars Overhaul
 
 ### Added
