@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.0] - Twinkling Stars Overhaul
+
+### Added
+- Color Gradient control for the Twinkling Stars layer, tinting each star by sampling a full `Gradient` ramp at a random point per star (previously hardcoded white)
+- Size distribution controls (Min Size, Max Size, Average Size, Size Outliers), replacing the fixed 0.6-1.8 random range
+- Brightness distribution controls (Min Brightness, Max Brightness, Average Brightness, Brightness Outliers), replacing the fixed 0.3-0.9 random range
+- Twinkle speed and depth ranges (Min/Max Twinkle Speed, Min/Max Twinkle Depth), varying each star's twinkle rate and dip instead of one shared formula
+- Tooltips on every BFTwinklingStarsLayerConfig field
+
+### Changed
+- BFTwinklingStarsLayerConfig groups its fields into labeled inspector sections (Color, Layout, Size, Brightness, Twinkle) via Header attributes
+- Twinkling Stars now renders as a single dynamic mesh with a baked color-ramp texture instead of one SpriteRenderer GameObject per star
+- Star size, brightness, and twinkle speed/depth are now derived from Perlin noise sampled at each star's screen position, giving spatially coherent variation instead of independent per-star randomness
+
+### Fixed
+- Star size, brightness, color, count, and twinkle timing now refresh live in Play mode when the config changes, instead of only taking effect on the next Init
+- Twinkle phase now scales by delta time again, fixing twinkle speed that varied with frame rate instead of staying constant across frame rates
+
 ## [0.3.0] - Gradient Layer Expansion
 
 ### Added

@@ -4,29 +4,78 @@ namespace BFTools.Visuals.Background
 {
     public class BFTwinklingStar
     {
+        private const float NoiseScale = 12f;
+
         private readonly BFTwinklingStarsLayerConfig config;
+        private readonly float sizeNoise;
+        private readonly float alphaNoise;
+        private readonly float speedNoise;
+        private readonly float depthNoise;
 
         private float phase;
         private float alphaBase;
+        private float twinkleSpeed;
+        private float twinkleDepth;
 
         public Vector2 Position { get; private set; }
         public float Size { get; private set; }
         public float Alpha { get; private set; }
+        public float ColorT { get; private set; }
 
         public BFTwinklingStar(BFTwinklingStarsLayerConfig config)
         {
             this.config = config;
 
             Position = new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f));
-            Size = Random.Range(0.6f, 1.8f);
             phase = Random.Range(0f, Mathf.PI * 2f);
-            alphaBase = Random.Range(0.3f, 0.9f);
+            ColorT = Random.Range(0f, 1f);
+
+            float noiseX = Position.x * NoiseScale;
+            float noiseY = Position.y * NoiseScale;
+            sizeNoise = Mathf.PerlinNoise(noiseX, noiseY);
+            alphaNoise = Mathf.PerlinNoise(noiseX + 100f, noiseY + 100f);
+            speedNoise = Mathf.PerlinNoise(noiseX + 200f, noiseY + 200f);
+            depthNoise = Mathf.PerlinNoise(noiseX + 300f, noiseY + 300f);
+
+            Refresh();
+        }
+
+        // Re-samples every config-derived trait from the current config, keeping each star's underlying
+        // noise fixed so live edits reshape the distribution instead of re-rolling every star.
+        public void Refresh()
+        {
+            float sizeT = Shape(sizeNoise, config.MinSize, config.MaxSize, config.AverageSize, config.SizeOutliers);
+            float alphaT = Shape(alphaNoise, config.MinAlpha, config.MaxAlpha, config.AverageAlpha, config.AlphaOutliers);
+
+            Size = Mathf.Lerp(config.MinSize, config.MaxSize, sizeT);
+            alphaBase = Mathf.Lerp(config.MinAlpha, config.MaxAlpha, alphaT);
+            twinkleSpeed = Mathf.Lerp(config.MinTwinkleSpeed, config.MaxTwinkleSpeed, speedNoise);
+            twinkleDepth = Mathf.Lerp(config.MinTwinkleDepth, config.MaxTwinkleDepth, depthNoise);
         }
 
         public void Tick(float dt)
         {
-            phase += dt * 0.003f;
-            Alpha = config.Twinkle ? alphaBase * (0.6f + 0.4f * Mathf.Sin(phase)) : alphaBase;
+            phase += dt * twinkleSpeed;
+            Alpha = config.Twinkle ? alphaBase * (1f - twinkleDepth + twinkleDepth * Mathf.Sin(phase)) : alphaBase;
+        }
+
+        private static float Shape(float t, float min, float max, float average, float outliers)
+        {
+            float averageT = Mathf.InverseLerp(min, max, average);
+            return Bias(Gain(t, outliers), averageT);
+        }
+
+        private static float Bias(float t, float b)
+        {
+            b = Mathf.Clamp(b, 0.0001f, 0.9999f);
+            return t / ((1f / b - 2f) * (1f - t) + 1f);
+        }
+
+        private static float Gain(float t, float g)
+        {
+            if (t < 0.5f)
+                return Bias(t * 2f, g) * 0.5f;
+            return Bias(t * 2f - 1f, 1f - g) * 0.5f + 0.5f;
         }
     }
 }

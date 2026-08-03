@@ -21,7 +21,7 @@ Only one `BFBackgroundStackManager` may be enabled at a time; enabling a second 
 - Three concrete layers ship today.
   - **Gradient** renders a full-screen subdivided mesh sampling a multi-key `Gradient` ramp along a configurable axis, with Midpoint and Spread controlling where the blend sits and how gradual it is. The axis can be rotated (Angle) and animated (drift, rotation, rotation oscillation), and the color transition line can be displaced into an animated wave (wave amplitude/frequency, wave oscillation, wave amplitude randomness).
   - **Aurora Ribbons** renders a configurable number of animated, additively-glowing `LineRenderer` ribbons.
-  - **Twinkling Stars** renders a configurable number of `SpriteRenderer` dots, each with its own twinkle phase.
+  - **Twinkling Stars** renders a configurable number of stars as a single dynamic mesh, tinted by sampling a `Gradient` ramp at a random point per star. Each star's size, brightness, and twinkle speed/depth are drawn from Min/Max/Average/Outliers ranges via Perlin noise sampled at its screen position, so nearby stars vary together instead of independently. All of the above refresh live in Play mode as the config changes.
 - All logging in this module goes through `BFLogger` under the `"Background"` tag; the three concrete layers additionally tag their own logs with their layer name (`"Gradient"`, `"AuroraRibbons"`, `"TwinklingStars"`) so a single layer can be isolated during debugging without silencing the rest of the system.
 
 ## Notes

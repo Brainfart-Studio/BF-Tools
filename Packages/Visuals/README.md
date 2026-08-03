@@ -3,7 +3,7 @@
 Visual systems for BFTools. Live-editable, config-driven color palettes, plus a layered background rendering system.
 
 ## Version
-0.3.0
+0.4.0
 
 ## Contents
 
@@ -44,7 +44,7 @@ Reference `com.bftools.visuals` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.visuals": "0.3.0"
+  "com.bftools.visuals": "0.4.0"
 }
 ```
 
