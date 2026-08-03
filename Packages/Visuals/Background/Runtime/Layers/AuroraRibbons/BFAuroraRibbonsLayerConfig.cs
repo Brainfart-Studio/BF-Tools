@@ -16,7 +16,11 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(1, 8)] private int ribbonCount = 4;
         [SerializeField, Range(0f, 0.5f)] private float ribbonSpacing = 0.125f;
         [SerializeField, Range(0.05f, 1.5f)] private float waveSpeed = 0.35f;
+        [SerializeField, Range(0.1f, 3f)] private float minSpeedVariance = 0.7f;
+        [SerializeField, Range(0.1f, 3f)] private float maxSpeedVariance = 1.3f;
         [SerializeField, Range(20f, 260f)] private float amplitude = 110f;
+        [SerializeField, Range(0.1f, 3f)] private float minAmplitudeVariance = 0.7f;
+        [SerializeField, Range(0.1f, 3f)] private float maxAmplitudeVariance = 1.2f;
         [SerializeField, Range(1f, 100f)] private float thickness = 3f;
         [SerializeField, Range(0.1f, 3f)] private float minThicknessVariance = 0.8f;
         [SerializeField, Range(0.1f, 3f)] private float maxThicknessVariance = 1.3f;
@@ -28,7 +32,11 @@ namespace BFTools.Visuals.Background
         internal int RibbonCount => ribbonCount;
         internal float RibbonSpacing => ribbonSpacing;
         internal float WaveSpeed => waveSpeed;
+        internal float MinSpeedVariance => minSpeedVariance;
+        internal float MaxSpeedVariance => maxSpeedVariance;
         internal float Amplitude => amplitude;
+        internal float MinAmplitudeVariance => minAmplitudeVariance;
+        internal float MaxAmplitudeVariance => maxAmplitudeVariance;
         internal float Thickness => thickness;
         internal float MinThicknessVariance => minThicknessVariance;
         internal float MaxThicknessVariance => maxThicknessVariance;

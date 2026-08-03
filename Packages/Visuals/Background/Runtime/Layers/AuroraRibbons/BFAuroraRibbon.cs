@@ -27,8 +27,8 @@ namespace BFTools.Visuals.Background
             baseYNormalized = 0.5f + centerOffset * config.RibbonSpacing;
             phase = Random.Range(0f, Mathf.PI * 2f);
             freq = Random.Range(0.8f, 1.4f);
-            speedMult = Random.Range(0.7f, 1.3f);
-            ampMult = Random.Range(0.7f, 1.2f);
+            speedMult = Random.Range(config.MinSpeedVariance, config.MaxSpeedVariance);
+            ampMult = Random.Range(config.MinAmplitudeVariance, config.MaxAmplitudeVariance);
             thicknessMult = Random.Range(config.MinThicknessVariance, config.MaxThicknessVariance);
 
             CurrentThickness = config.Thickness * thicknessMult;
