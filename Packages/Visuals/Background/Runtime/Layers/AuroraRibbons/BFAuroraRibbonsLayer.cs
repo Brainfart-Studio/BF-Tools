@@ -66,6 +66,11 @@ namespace BFTools.Visuals.Background
 
             float viewWidth = Screen.width;
             float viewHeight = Screen.height;
+            Vector2 center = new Vector2(viewWidth, viewHeight) * 0.5f;
+
+            float angleRad = config.Angle * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(angleRad);
+            float sin = Mathf.Sin(angleRad);
 
             for (int i = 0; i < ribbonRenderers.Count; i++)
             {
@@ -83,7 +88,13 @@ namespace BFTools.Visuals.Background
                     float xNorm = s / (float)Segments;
                     float x = xNorm * viewWidth;
                     float y = ribbon.SampleY(xNorm, elapsedTime, viewHeight);
-                    lr.SetPosition(s, new Vector3(x, y, 0f));
+
+                    float offsetX = x - center.x;
+                    float offsetY = y - center.y;
+                    float rotatedX = offsetX * cos - offsetY * sin;
+                    float rotatedY = offsetX * sin + offsetY * cos;
+
+                    lr.SetPosition(s, new Vector3(center.x + rotatedX, center.y + rotatedY, 0f));
                 }
             }
         }
