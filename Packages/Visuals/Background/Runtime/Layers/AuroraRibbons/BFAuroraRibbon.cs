@@ -40,7 +40,7 @@ namespace BFTools.Visuals.Background
         {
             float y = baseYNormalized * viewHeight
                 + Mathf.Sin(xNormalized * config.WaveFrequency * freq + elapsedTime * speedMult + phase) * config.Amplitude * ampMult
-                + Mathf.Sin(xNormalized * config.WaveFrequency * SecondaryFrequencyRatio * freq + elapsedTime * speedMult * 0.6f) * config.Amplitude * ampMult * 0.35f;
+                + Mathf.Sin(xNormalized * config.WaveFrequency * SecondaryFrequencyRatio * freq + elapsedTime * speedMult * config.SecondaryWaveSpeedScale) * config.Amplitude * ampMult * config.SecondaryWaveStrength;
             return y;
         }
     }
