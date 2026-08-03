@@ -32,6 +32,9 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(0, 60)] private float glow = 18f;
         [SerializeField, Range(0f, 1f)] private float overallOpacity = 1f;
         [SerializeField, Range(-180f, 180f)] private float angle;
+        [SerializeField, Range(-180f, 180f)] private float rotationSpeed;
+        [SerializeField, Range(0f, 1f)] private float rotationOscillationSpeed;
+        [SerializeField, Range(0f, 90f)] private float rotationOscillationAmplitude;
 
         internal IReadOnlyList<Color> RibbonColors => ribbonColors;
         internal int RibbonCount => ribbonCount;
@@ -53,6 +56,9 @@ namespace BFTools.Visuals.Background
         internal float Glow => glow;
         internal float OverallOpacity => overallOpacity;
         internal float Angle => angle;
+        internal float RotationSpeed => rotationSpeed;
+        internal float RotationOscillationSpeed => rotationOscillationSpeed;
+        internal float RotationOscillationAmplitude => rotationOscillationAmplitude;
 
         public override IBFBackgroundLayer CreateLayer()
         {

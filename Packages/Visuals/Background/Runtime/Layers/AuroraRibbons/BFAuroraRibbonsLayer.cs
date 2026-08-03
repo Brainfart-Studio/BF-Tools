@@ -8,6 +8,7 @@ namespace BFTools.Visuals.Background
     {
         private const int Segments = 80;
         private const string GlowShaderName = "Legacy Shaders/Particles/Additive";
+        private const float MaxRotationOscillationHz = 0.1f;
 
         private static readonly string[] LogTags = { "Background", "AuroraRibbons" };
 
@@ -17,6 +18,8 @@ namespace BFTools.Visuals.Background
 
         private Transform root;
         private float elapsedTime;
+        private float rotationElapsedTime;
+        private float rotationOscillationElapsedTime;
 
         public BFAuroraRibbonsLayer(BFAuroraRibbonsLayerConfig config)
         {
@@ -26,6 +29,8 @@ namespace BFTools.Visuals.Background
         public void Init(Transform parent, int sortingOrder)
         {
             elapsedTime = 0f;
+            rotationElapsedTime = 0f;
+            rotationOscillationElapsedTime = 0f;
 
             if (config.RibbonColors.Count == 0)
                 BFLogger.Error(LogTags, "BFAuroraRibbonsLayer: no ribbon colors configured, ribbons will render white.");
@@ -68,7 +73,12 @@ namespace BFTools.Visuals.Background
             float viewHeight = Screen.height;
             Vector2 center = new Vector2(viewWidth, viewHeight) * 0.5f;
 
-            float angleRad = config.Angle * Mathf.Deg2Rad;
+            rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
+            rotationOscillationElapsedTime += dt * config.RotationOscillationSpeed * MaxRotationOscillationHz;
+            float oscillationOffset = Mathf.Sin(rotationOscillationElapsedTime * Mathf.PI * 2f) * config.RotationOscillationAmplitude;
+            float animatedAngle = config.Angle + rotationElapsedTime + oscillationOffset;
+
+            float angleRad = animatedAngle * Mathf.Deg2Rad;
             float cos = Mathf.Cos(angleRad);
             float sin = Mathf.Sin(angleRad);
 
