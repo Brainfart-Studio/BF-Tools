@@ -79,6 +79,8 @@ namespace BFTools.Visuals.Background
                 BFAuroraRibbon ribbon = ribbons[i];
                 LineRenderer lr = ribbonRenderers[i];
 
+                ribbon.Refresh();
+
                 Color glowColor = ApplyGlow(ribbon.Color);
                 lr.startColor = glowColor;
                 lr.endColor = glowColor;
