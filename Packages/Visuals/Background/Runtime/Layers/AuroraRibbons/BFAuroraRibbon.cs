@@ -23,7 +23,8 @@ namespace BFTools.Visuals.Background
             Color = config.RibbonColors.Count > 0
                 ? config.RibbonColors[index % config.RibbonColors.Count]
                 : Color.white;
-            baseYNormalized = 0.25f + (index / Mathf.Max((float)config.RibbonCount, 1f)) * 0.5f;
+            float centerOffset = index - (config.RibbonCount - 1) / 2f;
+            baseYNormalized = 0.5f + centerOffset * config.RibbonSpacing;
             phase = Random.Range(0f, Mathf.PI * 2f);
             freq = Random.Range(0.8f, 1.4f);
             speedMult = Random.Range(0.7f, 1.3f);
