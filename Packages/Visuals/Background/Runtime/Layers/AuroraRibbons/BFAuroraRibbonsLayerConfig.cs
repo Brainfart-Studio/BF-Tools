@@ -16,7 +16,7 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(1, 8)] private int ribbonCount = 4;
         [SerializeField, Range(0.05f, 1.5f)] private float waveSpeed = 0.35f;
         [SerializeField, Range(20f, 260f)] private float amplitude = 110f;
-        [SerializeField, Range(1f, 10f)] private float thickness = 3f;
+        [SerializeField, Range(1f, 100f)] private float thickness = 3f;
         [SerializeField, Range(0, 60)] private float glow = 18f;
 
         internal IReadOnlyList<Color> RibbonColors => ribbonColors;
