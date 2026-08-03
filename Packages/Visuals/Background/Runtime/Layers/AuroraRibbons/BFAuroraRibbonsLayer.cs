@@ -104,7 +104,7 @@ namespace BFTools.Visuals.Background
         {
             float glowIntensity = Mathf.Clamp01(config.Glow / 60f);
             Color glowColor = baseColor * (1f + glowIntensity * 1.5f);
-            glowColor.a = Mathf.Lerp(0.6f, 1f, glowIntensity);
+            glowColor.a = Mathf.Lerp(0.6f, 1f, glowIntensity) * config.OverallOpacity;
             return glowColor;
         }
 

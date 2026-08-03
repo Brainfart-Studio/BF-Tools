@@ -18,6 +18,7 @@ namespace BFTools.Visuals.Background
         [SerializeField, Range(20f, 260f)] private float amplitude = 110f;
         [SerializeField, Range(1f, 100f)] private float thickness = 3f;
         [SerializeField, Range(0, 60)] private float glow = 18f;
+        [SerializeField, Range(0f, 1f)] private float overallOpacity = 1f;
 
         internal IReadOnlyList<Color> RibbonColors => ribbonColors;
         internal int RibbonCount => ribbonCount;
@@ -25,6 +26,7 @@ namespace BFTools.Visuals.Background
         internal float Amplitude => amplitude;
         internal float Thickness => thickness;
         internal float Glow => glow;
+        internal float OverallOpacity => overallOpacity;
 
         public override IBFBackgroundLayer CreateLayer()
         {
