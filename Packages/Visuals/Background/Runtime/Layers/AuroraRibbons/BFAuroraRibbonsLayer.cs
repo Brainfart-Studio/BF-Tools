@@ -62,14 +62,17 @@ namespace BFTools.Visuals.Background
             float viewHeight = Screen.height;
             Vector2 center = new Vector2(viewWidth, viewHeight) * 0.5f;
 
+            // A line this long, centered on screen, reaches past the visible bounds no matter which way it's rotated.
+            float spanLength = Mathf.Sqrt(viewWidth * viewWidth + viewHeight * viewHeight);
+
             rotationElapsedTime = (rotationElapsedTime + dt * config.RotationSpeed) % 360f;
             rotationOscillationElapsedTime += dt * config.RotationOscillationSpeed * MaxRotationOscillationHz;
             float oscillationOffset = Mathf.Sin(rotationOscillationElapsedTime * Mathf.PI * 2f) * config.RotationOscillationAmplitude;
             float animatedAngle = config.Angle + rotationElapsedTime + oscillationOffset;
 
             float angleRad = animatedAngle * Mathf.Deg2Rad;
-            float cos = Mathf.Cos(angleRad);
-            float sin = Mathf.Sin(angleRad);
+            Vector2 along = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+            Vector2 perpendicular = new Vector2(-along.y, along.x);
 
             for (int i = 0; i < ribbonRenderers.Count; i++)
             {
@@ -85,15 +88,12 @@ namespace BFTools.Visuals.Background
                 for (int s = 0; s <= Segments; s++)
                 {
                     float xNorm = s / (float)Segments;
-                    float x = xNorm * viewWidth;
+                    float alongOffset = (xNorm - 0.5f) * spanLength;
                     float y = ribbon.SampleY(xNorm, elapsedTime, viewHeight);
+                    float perpOffset = y - center.y;
 
-                    float offsetX = x - center.x;
-                    float offsetY = y - center.y;
-                    float rotatedX = offsetX * cos - offsetY * sin;
-                    float rotatedY = offsetX * sin + offsetY * cos;
-
-                    lr.SetPosition(s, new Vector3(center.x + rotatedX, center.y + rotatedY, 0f));
+                    Vector2 point = center + along * alongOffset + perpendicular * perpOffset;
+                    lr.SetPosition(s, new Vector3(point.x, point.y, 0f));
                 }
             }
         }
