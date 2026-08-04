@@ -3,8 +3,8 @@
 Additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and two trigger components for room-to-room streaming.
 
 ## Setup
-1. `Assets/Create/BFTools/Core/Config/Scene Load Request` creates a `BFSceneLoadRequest` asset at `Assets/Configs/Core/SceneManager`. Set `Scene Name`, `Load Mode`, `Show Loading Screen`, and `Minimum Display Time`.
-2. `Assets/Create/BFTools/Core/Prefabs/Scene Transition Controller` creates a prefab variant of the base `SceneTransitionController` prefab at `Assets/Prefabs/Core`. The base prefab already includes a full-screen fade Canvas wired to `BFFadeTransition`, adjust `Fade Out Duration` / `Fade In Duration` on the variant if needed.
+1. `Assets/Create/BFTools/Systems/Config/Scene Load Request` creates a `BFSceneLoadRequest` asset at `Assets/Configs/Systems/SceneManager`. Set `Scene Name`, `Load Mode`, `Show Loading Screen`, and `Minimum Display Time`.
+2. `Assets/Create/BFTools/Systems/Prefabs/Scene Transition Controller` creates a prefab variant of the base `SceneTransitionController` prefab at `Assets/Prefabs/Systems`. The base prefab already includes a full-screen fade Canvas wired to `BFFadeTransition`, adjust `Fade Out Duration` / `Fade In Duration` on the variant if needed.
 3. Place the variant in the scene, or wire it into the Global Bootstrapper so it survives scene loads.
 4. Add `BFDoorActivationTrigger` or `BFPreloadZoneTrigger` to a 2D trigger collider, assign a `BFSceneLoadRequest`, and set `Player Tag`.
 

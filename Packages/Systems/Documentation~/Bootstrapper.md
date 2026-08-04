@@ -7,7 +7,7 @@ Two independent bootstrap systems: **Global** (app-lifetime systems, initialized
 Instantiates persistent system prefabs once, before the first scene loads. Prefabs are parented to root and marked `DontDestroyOnLoad`.
 
 ### Setup
-1. `Assets/Create/BFTools/Core/Config/Global Bootstrap Config` creates config at `Assets/Resources/BFTools/GlobalBootstrapConfig.asset`.
+1. `Assets/Create/BFTools/Systems/Config/Global Bootstrap Config` creates config at `Assets/Resources/BFTools/GlobalBootstrapConfig.asset`.
 2. Assign system prefabs to the config's `System Prefabs` array.
 
 ### How it works
@@ -18,15 +18,15 @@ Instantiates persistent system prefabs once, before the first scene loads. Prefa
 
 ### Notes
 - Config must live in `Resources/`. Nothing exists at boot to hold a direct reference.
-- `SystemPrefabs` is `internal`, only accessible within the Core assembly.
+- `SystemPrefabs` is `internal`, only accessible within the Systems assembly.
 
 ## Level Bootstrapper
 
 Instantiates scene-specific prefabs via `Awake()` on a `MonoBehaviour`, using a directly assigned config (no `Resources.Load`).
 
 ### Setup
-1. `Assets/Create/BFTools/Core/Config/Level Bootstrap Config` creates config at `Assets/Configs/Core/LevelBootstrapper/LevelBootstrapConfig.asset`.
-2. `Assets/Create/BFTools/Core/Prefabs/Level Bootstrapper` creates a prefab variant of the base `LevelBootstrapper` prefab at `Assets/Prefabs/Core/LevelBootstrapper.prefab`.
+1. `Assets/Create/BFTools/Systems/Config/Level Bootstrap Config` creates config at `Assets/Configs/Systems/LevelBootstrapper/LevelBootstrapConfig.asset`.
+2. `Assets/Create/BFTools/Systems/Prefabs/Level Bootstrapper` creates a prefab variant of the base `LevelBootstrapper` prefab at `Assets/Prefabs/Systems/LevelBootstrapper.prefab`.
 3. Place the prefab variant in the scene, assign the config to its `Config` field.
 
 ### How it works
@@ -35,4 +35,4 @@ Instantiates scene-specific prefabs via `Awake()` on a `MonoBehaviour`, using a 
 
 ### Notes
 - Unlike Global, config is a direct serialized reference. No `Resources/` folder needed.
-- Prefab variant creator instantiates the base prefab (`Packages/com.bftools.core/LevelBootstrapper/Prefabs/LevelBootstrapper.prefab`), saves as a new asset, and destroys the temp instance.
+- Prefab variant creator instantiates the base prefab (`Packages/com.bftools.systems/LevelBootstrapper/Prefabs/LevelBootstrapper.prefab`), saves as a new asset, and destroys the temp instance.

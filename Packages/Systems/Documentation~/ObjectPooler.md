@@ -27,5 +27,5 @@ pooler.Release(instance);
 - No pool shrinking. Instances created to cover exhaustion stay in rotation after being released.
 
 ## Editor tooling
-- **Assets/Create/BFTools/Core/Config/Object Pool Config**. Creates a `BFObjectPoolConfig` asset under `Assets/Configs/Core/ObjectPooler`.
-- **Assets/Create/BFTools/Core/Prefabs/Object Pooler**. Creates a prefab variant of the base `ObjectPooler` prefab under `Assets/Prefabs/Core`.
+- **Assets/Create/BFTools/Systems/Config/Object Pool Config**. Creates a `BFObjectPoolConfig` asset under `Assets/Configs/Systems/ObjectPooler`.
+- **Assets/Create/BFTools/Systems/Prefabs/Object Pooler**. Creates a prefab variant of the base `ObjectPooler` prefab under `Assets/Prefabs/Systems`.
