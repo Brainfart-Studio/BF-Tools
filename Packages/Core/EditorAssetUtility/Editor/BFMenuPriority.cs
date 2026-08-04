@@ -15,6 +15,7 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             public const int LevelBootstrapper = 2;
             public const int ObjectPooler = 3;
             public const int Logger = 4;
+            public const int SceneManager = 5;
 
             // Feedback
             public const int Haptics = 1;
