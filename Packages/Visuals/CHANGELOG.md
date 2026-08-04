@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0] - Parallax
+
+### Added
+- Parallax package, a layered parallax scrolling system (Stack Manager, Stack Config, per-layer configs)
+- BFParallaxStackManager, enforcing a single active instance and tracking camera displacement via BFParallaxCameraTracker
+- BFParallaxStack and the BFParallaxLayerConfig/IBFParallaxLayer factory pattern for per-layer instantiation
+- BFParallaxSpriteLayer, with independent horizontal and vertical parallax factor, auto-scroll speed, looping with tile size override, and BFParallaxAxisLock for one-way movement
+- BFParallaxStackConfigCreator, BFParallaxSpriteLayerConfigCreator, and BFParallaxStackManagerVariantCreator editor menu tools
+- BFTools.Visuals.Parallax runtime and editor asmdefs
+- Module.Parallax constant added to BFMenuPriority (Core)
+- BFLogger tracing throughout, tagged "Parallax" plus a "Sprite" tag on the Sprite layer
+
+### Changed
+- Renamed BFParallaxConfig.cs to BFParallaxLayerConfig.cs for naming consistency with its class
+- Moved the Sprite layer's config and layer files into a Layers/Sprite subfolder, matching Background's per-layer-type folder convention
+
 ## [0.5.0] - Aurora Ribbons Overhaul
 
 ### Added

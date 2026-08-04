@@ -6,7 +6,7 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.8.0)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.8.1)
 Foundational systems every other package builds on.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Core/Documentation~/Bootstrapper.md).
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
@@ -28,12 +28,13 @@ Event-driven player feedback.
 
 Depends on `com.bftools.core` (0.7.2) and `com.unity.inputsystem` (1.7.0).
 
-### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.5.0)
+### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.6.0)
 Live-editable, config-driven visual systems.
 - **Palette**: live-editable color palette for rapid prototyping, driven by named entries on a config asset. See [Palette.md](Packages/Visuals/Documentation~/Palette.md).
 - **Background**: layered background rendering, compositing gradient, aurora ribbon, and twinkling star layers behind the scene via a dedicated camera. See [Background.md](Packages/Visuals/Documentation~/Background.md).
+- **Parallax**: layered parallax scrolling, moving a stack of sprite layers at different rates relative to the camera, with per-layer looping and one-way movement lock. See [Parallax.md](Packages/Visuals/Documentation~/Parallax.md).
 
-Depends on `com.bftools.core` (0.7.4).
+Depends on `com.bftools.core` (0.8.1).
 
 ## Structure
 ```
@@ -57,6 +58,7 @@ Packages/
   Visuals/                 com.bftools.visuals
     Palette/                 Editor/, Runtime/
     Background/              Editor/, Runtime/, Prefabs/
+    Parallax/                Editor/, Runtime/, Prefabs/
     Documentation~/
 ```
 
