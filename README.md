@@ -6,7 +6,7 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.7.4)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.8.0)
 Foundational systems every other package builds on.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Core/Documentation~/Bootstrapper.md).
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
@@ -15,6 +15,7 @@ Foundational systems every other package builds on.
 - **Service Locator**: static registry for locating shared services by type at runtime. See [ServiceLocator.md](Packages/Core/Documentation~/ServiceLocator.md).
 - **Object Pooler**: config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [ObjectPooler.md](Packages/Core/Documentation~/ObjectPooler.md).
 - **Save System**: ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [SaveSystem.md](Packages/Core/Documentation~/SaveSystem.md).
+- **Scene Manager**: additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [SceneManager.md](Packages/Core/Documentation~/SceneManager.md).
 
 No dependencies.
 
@@ -45,6 +46,7 @@ Packages/
     ServiceLocator/          Runtime/
     ObjectPooler/            Editor/, Runtime/, Prefabs/
     SaveSystem/              Runtime/
+    SceneManager/            Editor/, Runtime/, Prefabs/
     Documentation~/
   Feedback/                com.bftools.feedback
     Haptics/                 Editor/, Runtime/, Prefabs/
