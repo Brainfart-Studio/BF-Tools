@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
+using BFTools.Core.Logger.TestUtilities;
 using BFTools.Feedback.ScreenShake;
 
 namespace BFTools.Feedback.ScreenShake.PlayModeTests
@@ -37,18 +38,7 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
             foreach (Object asset in createdAssets)
                 Object.Destroy(asset);
 
-            ResetLoggerState();
-        }
-
-        private static void ResetLoggerState()
-        {
-            System.Type loggerType = typeof(BFLogger);
-            loggerType.GetField("initialized", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, false);
-            loggerType.GetField("config", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, null);
-            List<IBFLoggerSink> sinks = (List<IBFLoggerSink>)loggerType
-                .GetField("sinks", BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
-            sinks.Clear();
+            BFLoggerTestUtility.ResetState();
         }
 
         private static BFScreenShakeConfig CreateConfig(params (string eventName, float amplitude, float duration)[] entries)
