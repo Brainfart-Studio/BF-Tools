@@ -1,8 +1,8 @@
 {
-    "name": "BFTools.Core.ObjectPooler.Editor",
-    "rootNamespace": "BFTools.Core.ObjectPooler.Editor",
+    "name": "BFTools.Systems.ObjectPooler.Editor",
+    "rootNamespace": "BFTools.Systems.ObjectPooler.Editor",
     "references": [
-        "BFTools.Core.ObjectPooler",
+        "BFTools.Systems.ObjectPooler",
         "BFTools.Core.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [

@@ -1,6 +1,6 @@
 {
-    "name": "BFTools.Core.ObjectPooler",
-    "rootNamespace": "BFTools.Core.ObjectPooler",
+    "name": "BFTools.Systems.ObjectPooler",
+    "rootNamespace": "BFTools.Systems.ObjectPooler",
     "references": [
         "BFTools.Core.Logger",
         "BFTools.Core.ServiceLocator"

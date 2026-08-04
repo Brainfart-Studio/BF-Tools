@@ -3,7 +3,7 @@ using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
 using UnityEngine;
 
-namespace BFTools.Core.ObjectPooler
+namespace BFTools.Systems.ObjectPooler
 {
     public class BFObjectPooler : MonoBehaviour
     {

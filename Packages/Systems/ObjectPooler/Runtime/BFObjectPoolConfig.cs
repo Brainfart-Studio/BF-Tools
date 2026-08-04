@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BFTools.Core.ObjectPooler
+namespace BFTools.Systems.ObjectPooler
 {
     public class BFObjectPoolConfig : ScriptableObject
     {
