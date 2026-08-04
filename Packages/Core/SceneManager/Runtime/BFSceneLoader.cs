@@ -67,6 +67,13 @@ namespace BFTools.Core.SceneManager
         public static Task UnloadAsync(string sceneName)
         {
             operations.Remove(sceneName);
+
+            if (!UnityEngine.SceneManagement.SceneManager.GetSceneByName(sceneName).isLoaded)
+            {
+                BFLogger.Debug(LogTag, $"'{sceneName}' is not loaded. Skipping unload.");
+                return Task.CompletedTask;
+            }
+
             BFLogger.Debug(LogTag, $"Unloading '{sceneName}'.");
 
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(sceneName);
