@@ -1,10 +1,26 @@
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 
 namespace BFTools.Core.SceneManager
 {
+    public struct BFSceneTransitionStartedEvent
+    {
+        public string sceneName;
+    }
+
+    public struct BFSceneLoadedEvent
+    {
+        public string sceneName;
+    }
+
+    public struct BFSceneTransitionCompleteEvent
+    {
+        public string sceneName;
+    }
+
     public class BFSceneTransitionController : MonoBehaviour
     {
         private const string LogTag = "SceneManager";
@@ -32,12 +48,16 @@ namespace BFTools.Core.SceneManager
             isTransitioning = true;
             string sceneName = request.SceneName;
 
+            EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent { sceneName = sceneName });
+
             yield return Transition.PlayOut();
 
             if (BFSceneLoader.IsTracked(sceneName))
                 yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
             else
                 yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
+
+            EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
 
             yield return Transition.PlayIn();
 
@@ -46,6 +66,8 @@ namespace BFTools.Core.SceneManager
 
             currentSceneName = sceneName;
             isTransitioning = false;
+
+            EventBus<BFSceneTransitionCompleteEvent>.Fire(new BFSceneTransitionCompleteEvent { sceneName = sceneName });
         }
 
         private static IEnumerator WaitForTask(Task task)
