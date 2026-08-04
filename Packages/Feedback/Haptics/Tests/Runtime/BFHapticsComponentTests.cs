@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
+using BFTools.Core.Logger.TestUtilities;
 using BFTools.Feedback.Haptics;
 
 namespace BFTools.Feedback.Haptics.Tests
@@ -30,18 +31,7 @@ namespace BFTools.Feedback.Haptics.Tests
             foreach (Object asset in createdAssets)
                 Object.DestroyImmediate(asset);
 
-            ResetLoggerState();
-        }
-
-        private static void ResetLoggerState()
-        {
-            System.Type loggerType = typeof(BFLogger);
-            loggerType.GetField("initialized", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, false);
-            loggerType.GetField("config", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, null);
-            List<IBFLoggerSink> sinks = (List<IBFLoggerSink>)loggerType
-                .GetField("sinks", BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
-            sinks.Clear();
+            BFLoggerTestUtility.ResetState();
         }
 
         private static BFHapticsConfig CreateConfig(params (string eventName, float intensity, float duration)[] entries)

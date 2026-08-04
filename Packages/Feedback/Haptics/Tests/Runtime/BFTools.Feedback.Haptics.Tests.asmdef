@@ -5,6 +5,7 @@
         "BFTools.Feedback.Haptics",
         "BFTools.Core.EventBus",
         "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
