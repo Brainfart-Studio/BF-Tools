@@ -5,6 +5,7 @@
         "BFTools.Feedback.ScreenFlash",
         "BFTools.Core.EventBus",
         "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
         "UnityEngine.TestRunner",
         "UnityEngine.UI"
     ],
