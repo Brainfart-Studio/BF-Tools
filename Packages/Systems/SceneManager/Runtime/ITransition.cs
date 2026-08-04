@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace BFTools.Core.SceneManager
+namespace BFTools.Systems.SceneManager
 {
     public interface ITransition
     {

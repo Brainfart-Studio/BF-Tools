@@ -1,7 +1,7 @@
 using UnityEngine;
 using BFTools.Core.Logger;
 
-namespace BFTools.Core.SceneManager
+namespace BFTools.Systems.SceneManager
 {
     public class BFPreloadZoneTrigger : MonoBehaviour
     {

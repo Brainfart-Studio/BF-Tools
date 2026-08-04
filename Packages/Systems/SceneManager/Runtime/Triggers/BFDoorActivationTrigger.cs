@@ -2,7 +2,7 @@ using UnityEngine;
 using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
 
-namespace BFTools.Core.SceneManager
+namespace BFTools.Systems.SceneManager
 {
     public class BFDoorActivationTrigger : MonoBehaviour
     {

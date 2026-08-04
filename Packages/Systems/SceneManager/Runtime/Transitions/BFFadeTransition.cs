@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace BFTools.Core.SceneManager
+namespace BFTools.Systems.SceneManager
 {
     public class BFFadeTransition : MonoBehaviour, ITransition
     {

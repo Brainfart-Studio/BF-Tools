@@ -1,6 +1,6 @@
 {
-    "name": "BFTools.Core.SceneManager",
-    "rootNamespace": "BFTools.Core.SceneManager",
+    "name": "BFTools.Systems.SceneManager",
+    "rootNamespace": "BFTools.Systems.SceneManager",
     "references": [
         "BFTools.Core.Logger",
         "BFTools.Core.EventBus",

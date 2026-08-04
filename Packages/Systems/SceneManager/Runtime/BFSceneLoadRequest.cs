@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace BFTools.Core.SceneManager
+namespace BFTools.Systems.SceneManager
 {
     public class BFSceneLoadRequest : ScriptableObject
     {

@@ -13,12 +13,12 @@ namespace BFTools.Core.EditorAssetUtility.Editor
         {
             // Core
             public const int Logger = 4;
-            public const int SceneManager = 5;
 
             // Systems
             public const int GlobalBootstrapper = 1;
             public const int LevelBootstrapper = 2;
             public const int ObjectPooler = 3;
+            public const int SceneManager = 5;
 
             // Feedback
             public const int Haptics = 1;

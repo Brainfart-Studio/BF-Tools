@@ -1,8 +1,8 @@
 {
-    "name": "BFTools.Core.SceneManager.Editor",
-    "rootNamespace": "BFTools.Core.SceneManager.Editor",
+    "name": "BFTools.Systems.SceneManager.Editor",
+    "rootNamespace": "BFTools.Systems.SceneManager.Editor",
     "references": [
-        "BFTools.Core.SceneManager",
+        "BFTools.Systems.SceneManager",
         "BFTools.Core.EditorAssetUtility.Editor",
         "BFTools.Core.Logger"
     ],
