@@ -41,6 +41,27 @@ namespace BFTools.Core.SceneManager
             BFLogger.Debug(LogTag, $"Preloading '{sceneName}' ({mode}).");
         }
 
+        public static Task ActivateAsync(string sceneName)
+        {
+            if (!operations.TryGetValue(sceneName, out AsyncOperation operation))
+            {
+                BFLogger.Error(LogTag, $"Activate requested for '{sceneName}' but it is not preloaded.");
+                return Task.CompletedTask;
+            }
+
+            BFLogger.Debug(LogTag, $"Activating '{sceneName}'.");
+            operation.allowSceneActivation = true;
+            return AwaitCompletion(sceneName, operation);
+        }
+
+        public static float GetProgress(string sceneName)
+        {
+            if (!operations.TryGetValue(sceneName, out AsyncOperation operation))
+                return 1f;
+
+            return operation.progress;
+        }
+
         public static Task UnloadAsync(string sceneName)
         {
             operations.Remove(sceneName);
