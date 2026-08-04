@@ -5,16 +5,19 @@ namespace BFTools.Core.EditorAssetUtility.Editor
         public static class Group
         {
             public const int Core = -100;
+            public const int Systems = -90;
             public const int Feedback = -80;
             public const int Visuals = -60;
         }
         public static class Module
         {
             // Core
+            public const int Logger = 4;
+
+            // Systems
             public const int GlobalBootstrapper = 1;
             public const int LevelBootstrapper = 2;
             public const int ObjectPooler = 3;
-            public const int Logger = 4;
             public const int SceneManager = 5;
 
             // Feedback

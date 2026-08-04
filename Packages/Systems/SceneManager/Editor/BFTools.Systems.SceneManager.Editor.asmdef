@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Systems.SceneManager.Editor",
+    "rootNamespace": "BFTools.Systems.SceneManager.Editor",
+    "references": [
+        "BFTools.Systems.SceneManager",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

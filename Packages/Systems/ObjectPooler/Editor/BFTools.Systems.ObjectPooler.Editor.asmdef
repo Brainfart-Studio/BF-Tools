@@ -1,0 +1,19 @@
+{
+    "name": "BFTools.Systems.ObjectPooler.Editor",
+    "rootNamespace": "BFTools.Systems.ObjectPooler.Editor",
+    "references": [
+        "BFTools.Systems.ObjectPooler",
+        "BFTools.Core.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

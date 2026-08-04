@@ -1,14 +1,11 @@
 # BFTools Core (`com.bftools.core`)
 
-Foundational systems for BFTools, covering bootstrapping, event communication, and logging.
+Foundational systems for BFTools, covering logging, event communication, and shared editor tooling used by the rest of the library.
 
 ## Version
-0.8.1
+0.9.0
 
 ## Contents
-
-### Bootstrapper
-Global (app-lifetime) and Level (per-scene) system initialization. See [Documentation~/Bootstrapper.md](Documentation~/Bootstrapper.md).
 
 ### Event Bus
 Generic static pub/sub system for struct-based events. See [Documentation~/EventBus.md](Documentation~/EventBus.md).
@@ -21,15 +18,6 @@ Tag-based logging with per-tag level overrides and pluggable sinks. See [Documen
 
 ### Service Locator
 Static registry for locating shared services by type at runtime. See [Documentation~/ServiceLocator.md](Documentation~/ServiceLocator.md).
-
-### Object Pooler
-Config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [Documentation~/ObjectPooler.md](Documentation~/ObjectPooler.md).
-
-### Save System
-ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [Documentation~/SaveSystem.md](Documentation~/SaveSystem.md).
-
-### Scene Manager
-Additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [Documentation~/SceneManager.md](Documentation~/SceneManager.md).
 
 ## Dependencies
 None.
@@ -55,12 +43,12 @@ Add the entry directly to your project's `Packages/manifest.json`.
 ```
 
 ### As a dependency of another package
-Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Feedback/package.json](../Feedback/package.json) for an example).
+Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Systems/package.json](../Systems/package.json) for an example).
 ```json
 "dependencies": {
-  "com.bftools.core": "0.8.1"
+  "com.bftools.core": "0.9.0"
 }
 ```
 
 ### Note on embedding
-Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.core`), which is what the editor tooling's hardcoded asset paths (e.g. the Level Bootstrapper prefab variant creator) expect. A directly embedded folder is mounted by its on-disk name (`Core`) instead, which will break those paths.
+Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.core`); a directly embedded folder is mounted by its on-disk name (`Core`) instead. None of Core's current modules hardcode a `Packages/com.bftools.core/...` asset path, but downstream packages (Feedback, Visuals, Systems) that depend on Core assume it's mounted under its declared name, so embedding it directly can still break those.

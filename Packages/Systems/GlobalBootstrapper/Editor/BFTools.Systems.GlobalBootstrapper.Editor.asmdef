@@ -1,0 +1,15 @@
+{
+    "name": "BFTools.Systems.GlobalBootstrapper.Editor",
+    "rootNamespace": "BFTools.Systems.GlobalBootstrapper.Editor",
+    "references": [
+        "BFTools.Systems.GlobalBootstrapper",
+        "BFTools.Core.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
