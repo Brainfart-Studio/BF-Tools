@@ -1,9 +1,9 @@
 # BFTools Visuals (`com.bftools.visuals`)
 
-Visual systems for BFTools. Live-editable, config-driven color palettes, plus a layered background rendering system.
+Visual systems for BFTools. Live-editable, config-driven color palettes, plus layered background and parallax scrolling systems.
 
 ## Version
-0.5.0
+0.6.0
 
 ## Contents
 
@@ -13,8 +13,11 @@ Live-editable color palette for rapid prototyping. Pick a named color per `Sprit
 ### Background
 Layered background rendering. Composite gradient, aurora ribbon, and twinkling star layers behind the scene using a dedicated camera. See [Documentation~/Background.md](Documentation~/Background.md).
 
+### Parallax
+Layered parallax scrolling. Move a stack of sprite layers at different rates relative to the camera, with per-layer looping and one-way movement lock. See [Documentation~/Parallax.md](Documentation~/Parallax.md).
+
 ## Dependencies
-- `com.bftools.core` @ 0.7.4
+- `com.bftools.core` @ 0.8.1
 
 ## Installation
 
@@ -44,7 +47,7 @@ Reference `com.bftools.visuals` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.visuals": "0.5.0"
+  "com.bftools.visuals": "0.6.0"
 }
 ```
 

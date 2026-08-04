@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.1] - Menu Priority Update
+
+### Changed
+- Added `Module.Parallax` constant to `BFMenuPriority`, required for the Visuals package's Parallax config and prefab variant creators
+
 ## [0.8.0] - Scene Manager
 
 ### Added
