@@ -1,14 +1,14 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
 
-namespace BFTools.Core.LevelBootstrapper.Editor
+namespace BFTools.Systems.LevelBootstrapper.Editor
 {
     public static class BFLevelBootstrapConfigCreator
     {
-        private const string TargetPath = "Assets/Configs/Core/LevelBootstrapper";
+        private const string TargetPath = "Assets/Configs/Systems/LevelBootstrapper";
         private const string AssetName = "LevelBootstrapConfig.asset";
 
-        [MenuItem("Assets/Create/BFTools/Core/Config/Level Bootstrap Config", priority = BFMenuPriority.Group.Core + BFMenuPriority.Module.LevelBootstrapper)]
+        [MenuItem("Assets/Create/BFTools/Systems/Config/Level Bootstrap Config", priority = BFMenuPriority.Group.Systems + BFMenuPriority.Module.LevelBootstrapper)]
         private static void Create()
         {
             BFEditorAssetUtility.CreateConfigAsset<BFLevelBootstrapConfig>(TargetPath, AssetName);

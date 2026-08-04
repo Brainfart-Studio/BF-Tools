@@ -1,7 +1,7 @@
 using UnityEngine;
 using BFTools.Core.Logger;
 
-namespace BFTools.Core.LevelBootstrapper
+namespace BFTools.Systems.LevelBootstrapper
 {
     public class BFLevelBootstrapper : MonoBehaviour
     {

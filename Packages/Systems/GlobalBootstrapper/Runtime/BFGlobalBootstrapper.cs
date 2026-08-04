@@ -1,7 +1,7 @@
 using UnityEngine;
 using BFTools.Core.Logger;
 
-namespace BFTools.Core.GlobalBootstrapper
+namespace BFTools.Systems.GlobalBootstrapper
 {
     public static class BFGlobalBootstrapper
     {

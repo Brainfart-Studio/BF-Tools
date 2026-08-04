@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace BFTools.Core.GlobalBootstrapper
+namespace BFTools.Systems.GlobalBootstrapper
 {
     public class BFGlobalBootstrapperConfig : ScriptableObject
     {
