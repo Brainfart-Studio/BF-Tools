@@ -3,6 +3,8 @@
     "rootNamespace": "BFTools.Feedback.Haptics.Tests",
     "references": [
         "BFTools.Feedback.Haptics",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
