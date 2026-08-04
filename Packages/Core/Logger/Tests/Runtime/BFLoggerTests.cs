@@ -2,11 +2,18 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using BFTools.Core.Logger;
+using BFTools.Core.Logger.TestUtilities;
 
 namespace BFTools.Core.Logger.Tests
 {
     public class BFLoggerTests
     {
+        [TearDown]
+        public void TearDown()
+        {
+            BFLoggerTestUtility.ResetState();
+        }
+
         private static BFLoggerConfig CreateConfig(
             LogLevel globalMinimumLevel = LogLevel.Info,
             bool useTagAllowlist = false,

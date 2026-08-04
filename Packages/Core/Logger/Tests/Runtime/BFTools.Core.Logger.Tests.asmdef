@@ -3,6 +3,7 @@
     "rootNamespace": "BFTools.Core.Logger.Tests",
     "references": [
         "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
