@@ -1,13 +1,11 @@
 {
     "name": "com.bftools.core",
-    "version": "0.8.1",
+    "version": "0.9.0",
     "displayName": "BFTools Core",
-    "description": "Core systems for BFTools: Bootstrapper, Event Bus, Service Locator, Object Pooler, Settings, Keybindings, Save/Load.",
+    "description": "Foundational systems for BFTools: Logger, Event Bus, Service Locator, Editor Asset Utility.",
     "unity": "2022.3",
     "author": {
         "name": "Brainfart Studio"
     },
-    "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.2.1"
-    }
+    "dependencies": {}
 }

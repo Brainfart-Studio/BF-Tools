@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.0] - Systems Package Split
+
+### Removed
+- Global Bootstrapper, Level Bootstrapper, Object Pooler, Scene Manager, and Save System, moved to the new `com.bftools.systems` package; see that package's CHANGELOG for their continued history
+- `com.unity.nuget.newtonsoft-json` dependency, no longer needed now that Save System has moved out
+
+### Added
+- `Group.Systems` constant to `BFMenuPriority`, supporting the new Systems package's Create menu entries
+
 ## [0.8.1] - Menu Priority Update
 
 ### Changed
