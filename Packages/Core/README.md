@@ -3,7 +3,7 @@
 Foundational systems for BFTools, covering bootstrapping, event communication, and logging.
 
 ## Version
-0.7.4
+0.8.0
 
 ## Contents
 
@@ -27,6 +27,9 @@ Config-driven object pooling with prewarming and Get/Release, registered with th
 
 ### Save System
 ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [Documentation~/SaveSystem.md](Documentation~/SaveSystem.md).
+
+### Scene Manager
+Additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [Documentation~/SceneManager.md](Documentation~/SceneManager.md).
 
 ## Dependencies
 None.
@@ -55,7 +58,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Feedback/package.json](../Feedback/package.json) for an example).
 ```json
 "dependencies": {
-  "com.bftools.core": "0.7.4"
+  "com.bftools.core": "0.8.0"
 }
 ```
 

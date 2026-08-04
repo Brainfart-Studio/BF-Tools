@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.8.0] - Scene Manager
+
+### Added
+- ITransition interface
+- BFSceneLoadRequest config (scene name, load mode, show loading screen, minimum display time)
+- BFSceneLoader static loader with dictionary-tracked concurrent preloads, Activate and progress reporting
+- BFFadeTransition component (CanvasGroup-driven fade in/out)
+- BFSceneTransitionController orchestration, wired to EventBus (BFSceneTransitionStartedEvent, BFSceneLoadedEvent, BFSceneTransitionCompleteEvent)
+- BFDoorActivationTrigger with debounced activation-on-enter
+- BFPreloadZoneTrigger with debounced preload-on-enter
+- BFSceneLoadRequestCreator editor tool
+- BFSceneTransitionControllerVariantCreator editor tool
+- Base SceneTransitionController prefab, with a full-screen fade Canvas and CanvasGroup wired to BFFadeTransition
+- `Module.SceneManager` constant added to `BFMenuPriority`
+
+### Changed
+- Renamed SceneLoadRequest to BFSceneLoadRequest for naming consistency
+- Moved BFFadeTransition and trigger scripts into Transitions/Triggers subfolders
+- Renamed the SceneTransitionController prefab generator to BFSceneTransitionControllerVariantCreator to match the VariantCreator naming convention used by other modules
+
+### Fixed
+- BFSceneLoader.UnloadAsync now checks whether the scene is actually loaded before calling UnloadSceneAsync, preventing a null reference exception (and a permanently stuck transition) when a Single-mode load has already unloaded it
+- BFSceneLoadRequest's ShowLoadingScreen and MinimumDisplayTime fields are now read by BFSceneTransitionController instead of being ignored
+- SceneTransitionController prefab shipped without a fade Canvas or CanvasGroup, causing a null reference exception on the first transition
+
 ## [0.7.4] - Menu Priority Update
 
 ### Changed
