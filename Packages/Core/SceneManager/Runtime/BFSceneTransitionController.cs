@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
+using BFTools.Core.ServiceLocator;
 
 namespace BFTools.Core.SceneManager
 {
@@ -31,6 +32,18 @@ namespace BFTools.Core.SceneManager
         private bool isTransitioning;
 
         private ITransition Transition => fadeTransition;
+
+        private void Awake()
+        {
+            BFServiceLocator.Register(this);
+            BFLogger.Trace(LogTag, "Registered with ServiceLocator");
+        }
+
+        private void OnDestroy()
+        {
+            BFServiceLocator.Unregister<BFSceneTransitionController>();
+            BFLogger.Trace(LogTag, "Unregistered from ServiceLocator");
+        }
 
         public void BeginTransition(BFSceneLoadRequest request)
         {
