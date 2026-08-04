@@ -1,0 +1,12 @@
+{
+    "name": "BFTools.Visuals.Parallax",
+    "rootNamespace": "BFTools.Visuals.Parallax",
+    "references": [
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
