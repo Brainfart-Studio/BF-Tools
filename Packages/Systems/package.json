@@ -8,6 +8,7 @@
         "name": "Brainfart Studio"
     },
     "dependencies": {
-        "com.bftools.core": "0.8.1"
+        "com.bftools.core": "0.8.1",
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
     }
 }

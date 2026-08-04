@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BFTools.Core.SaveSystem
+namespace BFTools.Systems.SaveSystem
 {
     public static class BFSaveChecksum
     {

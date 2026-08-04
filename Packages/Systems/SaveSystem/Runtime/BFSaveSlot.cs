@@ -1,4 +1,4 @@
-namespace BFTools.Core.SaveSystem
+namespace BFTools.Systems.SaveSystem
 {
     public struct BFSaveSlot
     {

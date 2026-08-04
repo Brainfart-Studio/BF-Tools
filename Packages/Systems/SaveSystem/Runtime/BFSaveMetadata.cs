@@ -1,6 +1,6 @@
 using System;
 
-namespace BFTools.Core.SaveSystem
+namespace BFTools.Systems.SaveSystem
 {
     [Serializable]
     public struct BFSaveMetadata

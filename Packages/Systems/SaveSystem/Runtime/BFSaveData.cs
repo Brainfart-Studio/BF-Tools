@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BFTools.Core.SaveSystem
+namespace BFTools.Systems.SaveSystem
 {
     [Serializable]
     public class BFSaveData

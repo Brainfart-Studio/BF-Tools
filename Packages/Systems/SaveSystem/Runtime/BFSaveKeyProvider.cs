@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using BFTools.Core.Logger;
 
-namespace BFTools.Core.SaveSystem
+namespace BFTools.Systems.SaveSystem
 {
     public static class BFSaveKeyProvider
     {

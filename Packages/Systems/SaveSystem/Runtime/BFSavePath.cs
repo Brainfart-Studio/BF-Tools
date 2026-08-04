@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BFTools.Core.SaveSystem
+namespace BFTools.Systems.SaveSystem
 {
     public static class BFSavePath
     {
