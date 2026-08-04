@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace BFTools.Core.SceneManager
 {
-    public class SceneLoadRequest : ScriptableObject
+    public class BFSceneLoadRequest : ScriptableObject
     {
         [SerializeField] private string sceneName;
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Additive;
