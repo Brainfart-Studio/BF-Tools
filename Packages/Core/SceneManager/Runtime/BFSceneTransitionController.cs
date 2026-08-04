@@ -10,6 +10,7 @@ namespace BFTools.Core.SceneManager
     public struct BFSceneTransitionStartedEvent
     {
         public string sceneName;
+        public bool showLoadingScreen;
     }
 
     public struct BFSceneLoadedEvent
@@ -61,14 +62,24 @@ namespace BFTools.Core.SceneManager
             isTransitioning = true;
             string sceneName = request.SceneName;
 
-            EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent { sceneName = sceneName });
+            EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent
+            {
+                sceneName = sceneName,
+                showLoadingScreen = request.ShowLoadingScreen
+            });
 
             yield return Transition.PlayOut();
+
+            float loadStartTime = Time.time;
 
             if (BFSceneLoader.IsTracked(sceneName))
                 yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
             else
                 yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
+
+            float remainingDisplayTime = request.MinimumDisplayTime - (Time.time - loadStartTime);
+            if (remainingDisplayTime > 0f)
+                yield return new WaitForSeconds(remainingDisplayTime);
 
             EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
 
