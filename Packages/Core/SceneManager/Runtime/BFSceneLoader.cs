@@ -54,6 +54,8 @@ namespace BFTools.Core.SceneManager
             return AwaitCompletion(sceneName, operation);
         }
 
+        public static bool IsTracked(string sceneName) => operations.ContainsKey(sceneName);
+
         public static float GetProgress(string sceneName)
         {
             if (!operations.TryGetValue(sceneName, out AsyncOperation operation))
