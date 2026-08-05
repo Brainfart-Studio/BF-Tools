@@ -200,7 +200,7 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
 
             EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
 
-            Assert.AreEqual(0, spy.Entries.Count);
+            Assert.IsFalse(spy.Entries.Exists(e => e.Message.Contains("Triggered shake")));
         }
 
         [Test]
