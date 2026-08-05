@@ -7,22 +7,29 @@ using BFTools.Core.Logger;
 using BFTools.Core.Logger.TestUtilities;
 using Assert = NUnit.Framework.Assert;
 
-namespace BFTools.Systems.GlobalBootstrapper.Tests
+namespace BFTools.Systems.GlobalBootstrapper.PlayModeTests
 {
-    public class BFGlobalBootstrapperTests
+    public class BFGlobalBootstrapperPlayModeTests
     {
-        private const string Root = "Assets/_BFGlobalBootstrapperTests";
+        private const string Root = "Assets/_BFGlobalBootstrapperPlayModeTests";
         private const string ConfigResourcePath = "BFTools/GlobalBootstrapConfig";
+
+        private List<GameObject> spawnedInstances;
 
         [SetUp]
         public void SetUp()
         {
+            spawnedInstances = new List<GameObject>();
             CleanupRoot();
         }
 
         [TearDown]
         public void TearDown()
         {
+            foreach (GameObject instance in spawnedInstances)
+                if (instance != null)
+                    Object.DestroyImmediate(instance);
+
             CleanupRoot();
             BFLoggerTestUtility.ResetState();
         }
@@ -47,6 +54,16 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
                     AssetDatabase.CreateFolder(current, parts[i]);
                 current = next;
             }
+        }
+
+        private static GameObject CreatePrefab(string name)
+        {
+            EnsureFolder(Root);
+
+            GameObject go = new GameObject(name);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(go, $"{Root}/{name}.prefab");
+            Object.DestroyImmediate(go);
+            return prefab;
         }
 
         private static void CreateConfigAsset(params GameObject[] prefabs)
@@ -83,22 +100,23 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
         }
 
         [Test]
-        public void Initialize_NoConfigFound_LogsError()
+        public void Initialize_WithPrefabs_InstantiatesNonNullPrefabsAndLogsCount()
         {
             SpyLoggerSink spy = InitializeLogging();
+            GameObject prefabA = CreatePrefab("PrefabA");
+            GameObject prefabB = CreatePrefab("PrefabB");
+            CreateConfigAsset(prefabA, null, prefabB);
 
             InvokeInitialize();
 
-            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No GlobalBootstrapConfig found")));
-        }
+            GameObject instanceA = GameObject.Find("PrefabA(Clone)");
+            GameObject instanceB = GameObject.Find("PrefabB(Clone)");
+            spawnedInstances.Add(instanceA);
+            spawnedInstances.Add(instanceB);
 
-        [Test]
-        public void Initialize_NullPrefabEntries_AreSkipped()
-        {
-            InitializeLogging();
-            CreateConfigAsset(null, null);
-
-            Assert.DoesNotThrow(InvokeInitialize);
+            Assert.IsNotNull(instanceA);
+            Assert.IsNotNull(instanceB);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 2 system prefab(s).")));
         }
     }
 }
