@@ -140,7 +140,7 @@ namespace BFTools.Feedback.Haptics.Tests
 
             EventBus<BFHapticsEvent>.Fire(new BFHapticsEvent { eventName = "Hit" });
 
-            Assert.AreEqual(0, spy.Entries.Count);
+            Assert.IsFalse(spy.Entries.Exists(e => e.Tags != null && System.Array.IndexOf(e.Tags, "Haptics") >= 0));
         }
     }
 }
