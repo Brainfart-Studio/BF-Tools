@@ -38,6 +38,8 @@ namespace BFTools.Core.EditorAssetUtility.Tests
 
         private static void CreateBasePrefab(string path)
         {
+            BFEditorAssetUtility.EnsureFolderExists(Root);
+
             GameObject go = new GameObject("Base");
             PrefabUtility.SaveAsPrefabAsset(go, path);
             Object.DestroyImmediate(go);
