@@ -57,6 +57,11 @@ namespace BFTools.Systems.LevelBootstrapper.Tests
                 .SetValue(bootstrapper, config);
 
             go.SetActive(true);
+
+            typeof(BFLevelBootstrapper)
+                .GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(bootstrapper, null);
+
             return bootstrapper;
         }
 
