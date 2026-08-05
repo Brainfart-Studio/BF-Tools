@@ -7,9 +7,7 @@
         "BFTools.Core.Logger.TestUtilities",
         "UnityEngine.TestRunner"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
