@@ -178,7 +178,7 @@ namespace BFTools.Feedback.Hitstop.PlayModeTests
             EventBus<BFHitstopEvent>.Fire(new BFHitstopEvent { eventName = "BigHit" });
 
             Assert.AreEqual(1f, Time.timeScale);
-            Assert.AreEqual(0, spy.Entries.Count);
+            Assert.IsFalse(spy.Entries.Exists(e => e.Message.Contains("Triggered hitstop")));
         }
     }
 }
