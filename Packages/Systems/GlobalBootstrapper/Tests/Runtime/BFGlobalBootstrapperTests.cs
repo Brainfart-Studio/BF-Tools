@@ -43,8 +43,23 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
             }
         }
 
+        private static void EnsureFolder(string path)
+        {
+            string[] parts = path.Split('/');
+            string current = parts[0];
+            for (int i = 1; i < parts.Length; i++)
+            {
+                string next = $"{current}/{parts[i]}";
+                if (!AssetDatabase.IsValidFolder(next))
+                    AssetDatabase.CreateFolder(current, parts[i]);
+                current = next;
+            }
+        }
+
         private static GameObject CreatePrefab(string name)
         {
+            EnsureFolder(Root);
+
             GameObject go = new GameObject(name);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(go, $"{Root}/{name}.prefab");
             Object.DestroyImmediate(go);
@@ -53,6 +68,8 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
 
         private static void CreateConfigAsset(params GameObject[] prefabs)
         {
+            EnsureFolder($"{Root}/Resources/{ConfigResourcePath.Substring(0, ConfigResourcePath.LastIndexOf('/'))}");
+
             BFGlobalBootstrapperConfig config = ScriptableObject.CreateInstance<BFGlobalBootstrapperConfig>();
             typeof(BFGlobalBootstrapperConfig)
                 .GetField("systemPrefabs", BindingFlags.NonPublic | BindingFlags.Instance)
