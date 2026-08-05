@@ -72,11 +72,18 @@ namespace BFTools.Feedback.ScreenShake
 
         private void OnScreenShakeEvent(BFScreenShakeEvent evt)
         {
-            if (target == null || lookup == null || !lookup.TryGetValue(evt.eventName, out BFScreenShakeEntry entry))
+            if (target == null)
+            {
+                BFLogger.Trace(LogTag, $"No camera to shake for eventName '{evt.eventName}'.", this);
+                return;
+            }
+
+            if (lookup == null || !lookup.TryGetValue(evt.eventName, out BFScreenShakeEntry entry))
             {
                 BFLogger.Trace(LogTag, $"No screen shake entry found for eventName '{evt.eventName}'.", this);
                 return;
             }
+
             Trigger(entry.amplitude, entry.duration);
         }
 
