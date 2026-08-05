@@ -105,12 +105,20 @@ namespace BFTools.Visuals.Background
             BFLogger.Info(LogTags, $"BFAuroraRibbonsLayer: cleaning up {ribbons.Count} ribbon(s).");
 
             if (root != null)
-                Object.Destroy(root.gameObject);
+                DestroyObject(root.gameObject);
             root = null;
 
             ribbons.Clear();
             ribbonRenderers.Clear();
             glowMaterial = null;
+        }
+
+        private static void DestroyObject(Object obj)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(obj);
+            else
+                Object.DestroyImmediate(obj);
         }
 
         // Grows/shrinks the ribbon list and its renderers to match Ribbon Count whenever it changes.
@@ -144,7 +152,7 @@ namespace BFTools.Visuals.Background
             {
                 for (int i = ribbons.Count - 1; i >= targetCount; i--)
                 {
-                    Object.Destroy(ribbonRenderers[i].gameObject);
+                    DestroyObject(ribbonRenderers[i].gameObject);
                     ribbonRenderers.RemoveAt(i);
                     ribbons.RemoveAt(i);
                 }
