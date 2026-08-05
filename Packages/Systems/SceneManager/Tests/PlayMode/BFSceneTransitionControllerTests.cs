@@ -14,6 +14,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
     public class BFSceneTransitionControllerTests
     {
         private GameObject go;
+        private BFSceneTransitionController controller;
         private List<Object> createdObjects;
 
         [SetUp]
@@ -25,6 +26,12 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         [TearDown]
         public void TearDown()
         {
+            // BeginTransition starts a real coroutine that eventually calls into BFSceneLoader with
+            // scene names that aren't in Build Settings. Stop it here so it never resumes past this
+            // test into a scene load that would throw or bleed into a later test.
+            if (controller != null)
+                controller.StopAllCoroutines();
+
             EventBus<BFSceneTransitionStartedEvent>.Clear();
             EventBus<BFSceneLoadedEvent>.Clear();
             EventBus<BFSceneTransitionCompleteEvent>.Clear();
@@ -45,7 +52,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             go = new GameObject("SceneTransitionController");
             go.SetActive(false);
 
-            BFSceneTransitionController controller = go.AddComponent<BFSceneTransitionController>();
+            controller = go.AddComponent<BFSceneTransitionController>();
 
             GameObject fadeGo = new GameObject("FadeTransition");
             fadeGo.transform.SetParent(go.transform);
@@ -92,7 +99,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         [Test]
         public void Awake_RegistersWithServiceLocator()
         {
-            BFSceneTransitionController controller = CreateController();
+            controller = CreateController();
 
             Assert.AreSame(controller, BFServiceLocator.Get<BFSceneTransitionController>());
         }
@@ -111,7 +118,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         [Test]
         public void BeginTransition_NotAlreadyTransitioning_FiresStartedEventSynchronouslyWithRequestData()
         {
-            BFSceneTransitionController controller = CreateController();
+            controller = CreateController();
             BFSceneLoadRequest request = CreateRequest("Level1", showLoadingScreen: true);
 
             BFSceneTransitionStartedEvent? received = null;
@@ -128,7 +135,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         public void BeginTransition_AlreadyTransitioning_LogsWarningAndIgnoresSecondRequest()
         {
             SpyLoggerSink spy = InitializeLogging();
-            BFSceneTransitionController controller = CreateController();
+            controller = CreateController();
             BFSceneLoadRequest requestA = CreateRequest("Level1");
             BFSceneLoadRequest requestB = CreateRequest("Level2");
 

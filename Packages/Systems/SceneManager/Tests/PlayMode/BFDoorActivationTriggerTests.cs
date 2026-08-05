@@ -14,6 +14,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
     public class BFDoorActivationTriggerTests
     {
         private List<Object> createdObjects;
+        private BFSceneTransitionController controller;
 
         [SetUp]
         public void SetUp()
@@ -24,6 +25,13 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         [TearDown]
         public void TearDown()
         {
+            // OnTriggerEnter2D can start BFSceneTransitionController's real transition coroutine, which
+            // eventually calls into BFSceneLoader with scene names that aren't in Build Settings. Stop it
+            // here so it never resumes past this test into a scene load that would throw or bleed into a
+            // later test.
+            if (controller != null)
+                controller.StopAllCoroutines();
+
             EventBus<BFSceneTransitionStartedEvent>.Clear();
             BFServiceLocator.Unregister<BFSceneTransitionController>();
 
@@ -48,7 +56,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         {
             GameObject go = new GameObject("SceneTransitionController");
             go.SetActive(false);
-            BFSceneTransitionController controller = go.AddComponent<BFSceneTransitionController>();
+            controller = go.AddComponent<BFSceneTransitionController>();
 
             GameObject fadeGo = new GameObject("FadeTransition");
             fadeGo.transform.SetParent(go.transform);
