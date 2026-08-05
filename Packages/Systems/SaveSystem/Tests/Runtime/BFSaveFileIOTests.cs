@@ -45,37 +45,37 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
-        public async Task WriteAsync_ReadAsync_RoundTripsSameBytes()
+        public void WriteAsync_ReadAsync_RoundTripsSameBytes()
         {
             string filePath = Path.Combine(scratchDir, "save.dat");
             byte[] data = { 1, 2, 3, 4, 5 };
 
-            await BFSaveFileIO.WriteAsync(filePath, data);
-            byte[] readBack = await BFSaveFileIO.ReadAsync(filePath);
+            BFSaveFileIO.WriteAsync(filePath, data).GetAwaiter().GetResult();
+            byte[] readBack = BFSaveFileIO.ReadAsync(filePath).GetAwaiter().GetResult();
 
             CollectionAssert.AreEqual(data, readBack);
         }
 
         [Test]
-        public async Task ReadAsync_MissingFile_ReturnsNullAndLogsTrace()
+        public void ReadAsync_MissingFile_ReturnsNullAndLogsTrace()
         {
             SpyLoggerSink spy = InitializeLogging();
             string filePath = Path.Combine(scratchDir, "missing.dat");
 
-            byte[] result = await BFSaveFileIO.ReadAsync(filePath);
+            byte[] result = BFSaveFileIO.ReadAsync(filePath).GetAwaiter().GetResult();
 
             Assert.IsNull(result);
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("No file found at")));
         }
 
         [Test]
-        public async Task WriteAsync_ExistingFile_OverwritesWithNewContent()
+        public void WriteAsync_ExistingFile_OverwritesWithNewContent()
         {
             string filePath = Path.Combine(scratchDir, "save.dat");
-            await BFSaveFileIO.WriteAsync(filePath, new byte[] { 1, 2, 3 });
+            BFSaveFileIO.WriteAsync(filePath, new byte[] { 1, 2, 3 }).GetAwaiter().GetResult();
 
-            await BFSaveFileIO.WriteAsync(filePath, new byte[] { 9, 8 });
-            byte[] readBack = await BFSaveFileIO.ReadAsync(filePath);
+            BFSaveFileIO.WriteAsync(filePath, new byte[] { 9, 8 }).GetAwaiter().GetResult();
+            byte[] readBack = BFSaveFileIO.ReadAsync(filePath).GetAwaiter().GetResult();
 
             CollectionAssert.AreEqual(new byte[] { 9, 8 }, readBack);
         }
