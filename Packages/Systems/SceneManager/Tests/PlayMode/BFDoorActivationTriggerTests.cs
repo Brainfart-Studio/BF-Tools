@@ -49,6 +49,19 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             GameObject go = new GameObject("SceneTransitionController");
             go.SetActive(false);
             BFSceneTransitionController controller = go.AddComponent<BFSceneTransitionController>();
+
+            GameObject fadeGo = new GameObject("FadeTransition");
+            fadeGo.transform.SetParent(go.transform);
+            CanvasGroup canvasGroup = fadeGo.AddComponent<CanvasGroup>();
+            BFFadeTransition fadeTransition = fadeGo.AddComponent<BFFadeTransition>();
+            typeof(BFFadeTransition)
+                .GetField("canvasGroup", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(fadeTransition, canvasGroup);
+
+            typeof(BFSceneTransitionController)
+                .GetField("fadeTransition", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(controller, fadeTransition);
+
             go.SetActive(true);
             createdObjects.Add(go);
             return controller;
