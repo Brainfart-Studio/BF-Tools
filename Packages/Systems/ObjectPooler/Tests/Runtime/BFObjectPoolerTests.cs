@@ -58,6 +58,11 @@ namespace BFTools.Systems.ObjectPooler.Tests
                 .SetValue(pooler, config);
 
             go.SetActive(true);
+
+            typeof(BFObjectPooler)
+                .GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(pooler, null);
+
             return pooler;
         }
 
