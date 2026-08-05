@@ -66,9 +66,16 @@ namespace BFTools.Visuals.Background.Tests
                 .Invoke(manager, null);
         }
 
+        private static void InvokeOnDisable(BFBackgroundStackManager manager)
+        {
+            typeof(BFBackgroundStackManager)
+                .GetMethod("OnDisable", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(manager, null);
+        }
+
         // BFBackgroundStackCamera (internal) creates a real background Camera GameObject on
-        // Init that Cleanup() only destroys via Object.Destroy, which no-ops in EditMode - so
-        // tests must reach it via reflection and destroy it directly, or it leaks into the scene.
+        // Init. Tests that never trigger OnDisable/Cleanup (most of them) need to reach it
+        // via reflection and destroy it directly, or it leaks into the scene.
         private static GameObject GetBackgroundCameraGameObject(BFBackgroundStackManager manager)
         {
             object stackCamera = typeof(BFBackgroundStackManager)
@@ -120,6 +127,10 @@ namespace BFTools.Visuals.Background.Tests
             SetField(manager, "targetCameraOverride", camera);
 
             managerGo.SetActive(true);
+
+            typeof(BFBackgroundStackManager)
+                .GetMethod("OnEnable", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(manager, null);
 
             GameObject leakedCamera = GetBackgroundCameraGameObject(manager);
             if (leakedCamera != null)
@@ -193,6 +204,7 @@ namespace BFTools.Visuals.Background.Tests
             BFBackgroundStackManager first = CreateManager(camera, stackConfigA);
 
             first.gameObject.SetActive(false);
+            InvokeOnDisable(first);
 
             Assert.AreEqual(1, layerConfigA.Layer.CleanupCount);
 

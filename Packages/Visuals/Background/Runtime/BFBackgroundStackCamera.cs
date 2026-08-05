@@ -61,8 +61,16 @@ namespace BFTools.Visuals.Background
             RestoreOutputCamera();
 
             if (backgroundCamera != null)
-                Object.Destroy(backgroundCamera.gameObject);
+                DestroyObject(backgroundCamera.gameObject);
             backgroundCamera = null;
+        }
+
+        private static void DestroyObject(Object obj)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(obj);
+            else
+                Object.DestroyImmediate(obj);
         }
 
         private Camera CreateBackgroundCamera()
