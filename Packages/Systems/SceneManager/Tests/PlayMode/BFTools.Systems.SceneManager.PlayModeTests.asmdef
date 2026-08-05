@@ -1,0 +1,25 @@
+{
+    "name": "BFTools.Systems.SceneManager.PlayModeTests",
+    "rootNamespace": "BFTools.Systems.SceneManager.PlayModeTests",
+    "references": [
+        "BFTools.Systems.SceneManager",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
+        "BFTools.Core.ServiceLocator",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
