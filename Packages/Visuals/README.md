@@ -3,7 +3,7 @@
 Visual systems for BFTools. Live-editable, config-driven color palettes, plus layered background and parallax scrolling systems.
 
 ## Version
-0.6.0
+0.6.1
 
 ## Contents
 
@@ -17,7 +17,7 @@ Layered background rendering. Composite gradient, aurora ribbon, and twinkling s
 Layered parallax scrolling. Move a stack of sprite layers at different rates relative to the camera, with per-layer looping and one-way movement lock. See [Documentation~/Parallax.md](Documentation~/Parallax.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.8.1
+- `com.bftools.core` @ 0.10.0
 
 ## Installation
 
@@ -47,7 +47,7 @@ Reference `com.bftools.visuals` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.visuals": "0.6.0"
+  "com.bftools.visuals": "0.6.1"
 }
 ```
 

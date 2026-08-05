@@ -1,0 +1,12 @@
+{
+    "name": "BFTools.Visuals.Background",
+    "rootNamespace": "BFTools.Visuals.Background",
+    "references": [
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

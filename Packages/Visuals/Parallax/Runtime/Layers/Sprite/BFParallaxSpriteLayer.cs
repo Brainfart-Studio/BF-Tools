@@ -91,7 +91,12 @@ namespace BFTools.Visuals.Parallax
         public void Cleanup()
         {
             if (root != null)
-                Object.Destroy(root.gameObject);
+            {
+                if (Application.isPlaying)
+                    Object.Destroy(root.gameObject);
+                else
+                    Object.DestroyImmediate(root.gameObject);
+            }
             root = null;
 
             tiles?.Clear();

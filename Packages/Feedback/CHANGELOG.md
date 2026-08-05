@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.1] - Test Coverage
+
+### Added
+- Test suites for Haptics (Component, Config), Hitstop (Component, Config), Screen Flash (Component, Config), and Screen Shake (Component, Config)
+- BFTools.Feedback.Haptics.Tests, .Hitstop.Tests, .Hitstop.PlayModeTests, .ScreenFlash.Tests, .ScreenFlash.PlayModeTests, .ScreenShake.Tests, and .ScreenShake.PlayModeTests asmdefs
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.10.0, required for the new `BFTools.Core.Logger.TestUtilities` assembly the test suites reference
+
 ## [0.6.0] - Screen Flash
 
 ### Added

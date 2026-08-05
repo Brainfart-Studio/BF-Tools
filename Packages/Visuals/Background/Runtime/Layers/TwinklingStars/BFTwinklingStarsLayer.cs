@@ -88,15 +88,15 @@ namespace BFTools.Visuals.Background
             BFLogger.Info(LogTags, $"BFTwinklingStarsLayer: cleaning up {stars.Count} star(s).");
 
             if (root != null)
-                Object.Destroy(root.gameObject);
+                DestroyObject(root.gameObject);
             root = null;
 
             if (mesh != null)
-                Object.Destroy(mesh);
+                DestroyObject(mesh);
             mesh = null;
 
             if (rampTexture != null)
-                Object.Destroy(rampTexture);
+                DestroyObject(rampTexture);
             rampTexture = null;
 
             meshRenderer = null;
@@ -105,6 +105,14 @@ namespace BFTools.Visuals.Background
             colors = null;
 
             stars.Clear();
+        }
+
+        private static void DestroyObject(Object obj)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(obj);
+            else
+                Object.DestroyImmediate(obj);
         }
 
         // Grows/shrinks the star list to match Star Count and rebuilds the mesh buffers whenever it changes.

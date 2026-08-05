@@ -101,19 +101,27 @@ namespace BFTools.Visuals.Background
         public void Cleanup()
         {
             if (root != null)
-                Object.Destroy(root.gameObject);
+                DestroyObject(root.gameObject);
             root = null;
 
             if (mesh != null)
-                Object.Destroy(mesh);
+                DestroyObject(mesh);
             mesh = null;
 
             if (rampTexture != null)
-                Object.Destroy(rampTexture);
+                DestroyObject(rampTexture);
             rampTexture = null;
 
             meshRenderer = null;
             material = null;
+        }
+
+        private static void DestroyObject(Object obj)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(obj);
+            else
+                Object.DestroyImmediate(obj);
         }
 
         private static Texture2D CreateRampTexture()

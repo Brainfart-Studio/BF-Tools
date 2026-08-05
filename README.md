@@ -6,7 +6,7 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.9.0)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.10.0)
 Foundational systems every other package builds on.
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
 - **Editor Asset Utility**: shared editor-only helpers (folder creation, config asset creation, prefab variant creation) used by this repo's `Assets/Create/BFTools/...` menu creators.
@@ -15,31 +15,31 @@ Foundational systems every other package builds on.
 
 No dependencies.
 
-### [Systems](Packages/Systems/README.md): `com.bftools.systems` (0.1.0)
+### [Systems](Packages/Systems/README.md): `com.bftools.systems` (0.2.0)
 Gameplay-facing systems built on Core.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Systems/Documentation~/Bootstrapper.md).
 - **Object Pooler**: config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [ObjectPooler.md](Packages/Systems/Documentation~/ObjectPooler.md).
 - **Save System**: ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [SaveSystem.md](Packages/Systems/Documentation~/SaveSystem.md).
 - **Scene Manager**: additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [SceneManager.md](Packages/Systems/Documentation~/SceneManager.md).
 
-Depends on `com.bftools.core` (0.9.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
+Depends on `com.bftools.core` (0.10.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.6.0)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.6.1)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
 - **Hitstop**: brief global time freeze triggered by named events. See [Hitstop.md](Packages/Feedback/Documentation~/Hitstop.md).
 - **Screen Flash**: full-screen color flash triggered by named events. See [ScreenFlash.md](Packages/Feedback/Documentation~/ScreenFlash.md).
 
-Depends on `com.bftools.core` (0.7.2) and `com.unity.inputsystem` (1.7.0).
+Depends on `com.bftools.core` (0.10.0) and `com.unity.inputsystem` (1.7.0).
 
-### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.6.0)
+### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.6.1)
 Live-editable, config-driven visual systems.
 - **Palette**: live-editable color palette for rapid prototyping, driven by named entries on a config asset. See [Palette.md](Packages/Visuals/Documentation~/Palette.md).
 - **Background**: layered background rendering, compositing gradient, aurora ribbon, and twinkling star layers behind the scene via a dedicated camera. See [Background.md](Packages/Visuals/Documentation~/Background.md).
 - **Parallax**: layered parallax scrolling, moving a stack of sprite layers at different rates relative to the camera, with per-layer looping and one-way movement lock. See [Parallax.md](Packages/Visuals/Documentation~/Parallax.md).
 
-Depends on `com.bftools.core` (0.8.1).
+Depends on `com.bftools.core` (0.10.0).
 
 ## Structure
 ```

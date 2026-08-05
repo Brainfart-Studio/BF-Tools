@@ -3,7 +3,7 @@
 Foundational systems for BFTools, covering logging, event communication, and shared editor tooling used by the rest of the library.
 
 ## Version
-0.9.0
+0.10.0
 
 ## Contents
 
@@ -46,7 +46,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Systems/package.json](../Systems/package.json) for an example).
 ```json
 "dependencies": {
-  "com.bftools.core": "0.9.0"
+  "com.bftools.core": "0.10.0"
 }
 ```
 

@@ -3,7 +3,7 @@
 Gameplay-facing systems for BFTools, built on Core's Logger, Event Bus, and Service Locator: bootstrapping, scene management, object pooling, and save/load.
 
 ## Version
-0.1.0
+0.2.0
 
 ## Contents
 
@@ -20,7 +20,7 @@ ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-bas
 Additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [Documentation~/SceneManager.md](Documentation~/SceneManager.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.9.0
+- `com.bftools.core` @ 0.10.0
 - `com.unity.nuget.newtonsoft-json` @ 3.2.1 (Save System)
 
 ## Installation
@@ -51,7 +51,7 @@ Reference `com.bftools.systems` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.systems": "0.1.0"
+  "com.bftools.systems": "0.2.0"
 }
 ```
 
