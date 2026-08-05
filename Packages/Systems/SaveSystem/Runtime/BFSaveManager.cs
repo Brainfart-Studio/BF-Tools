@@ -109,8 +109,8 @@ namespace BFTools.Systems.SaveSystem
             string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
             string checksumPath = filePath + ".chk";
 
-            await BFSaveFileIO.WriteAsync(filePath, encryptedBytes);
-            await BFSaveFileIO.WriteAsync(checksumPath, System.Text.Encoding.UTF8.GetBytes(checksum));
+            await BFSaveFileIO.WriteAsync(filePath, encryptedBytes).ConfigureAwait(false);
+            await BFSaveFileIO.WriteAsync(checksumPath, System.Text.Encoding.UTF8.GetBytes(checksum)).ConfigureAwait(false);
 
             RegisterSlot(new BFSaveSlot
             {
@@ -128,8 +128,8 @@ namespace BFTools.Systems.SaveSystem
             string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
             string checksumPath = filePath + ".chk";
 
-            byte[] encryptedBytes = await BFSaveFileIO.ReadAsync(filePath);
-            byte[] checksumBytes = await BFSaveFileIO.ReadAsync(checksumPath);
+            byte[] encryptedBytes = await BFSaveFileIO.ReadAsync(filePath).ConfigureAwait(false);
+            byte[] checksumBytes = await BFSaveFileIO.ReadAsync(checksumPath).ConfigureAwait(false);
 
             if (encryptedBytes == null && checksumBytes == null)
             {
