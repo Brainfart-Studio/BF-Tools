@@ -16,7 +16,7 @@ namespace BFTools.Systems.SaveSystem
 
             using (FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
             {
-                await fileStream.WriteAsync(data, 0, data.Length);
+                await fileStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
             }
 
             if (File.Exists(filePath))
@@ -38,7 +38,7 @@ namespace BFTools.Systems.SaveSystem
             using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
             {
                 byte[] buffer = new byte[fileStream.Length];
-                await fileStream.ReadAsync(buffer, 0, buffer.Length);
+                await fileStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
                 BFLogger.Trace(LogTag, $"Read {buffer.Length} byte(s) from '{filePath}'");
                 return buffer;
             }
