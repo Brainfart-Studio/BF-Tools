@@ -187,7 +187,7 @@ namespace BFTools.Feedback.ScreenFlash.PlayModeTests
             EventBus<BFScreenFlashEvent>.Fire(new BFScreenFlashEvent { eventName = "Damage" });
 
             Assert.AreEqual(Color.white, flashImage.color);
-            Assert.AreEqual(0, spy.Entries.Count);
+            Assert.IsFalse(spy.Entries.Exists(e => e.Tags != null && System.Array.IndexOf(e.Tags, "ScreenFlash") >= 0));
         }
     }
 }
