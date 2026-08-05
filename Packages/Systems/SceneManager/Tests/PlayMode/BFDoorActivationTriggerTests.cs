@@ -106,6 +106,13 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
                 .Invoke(trigger, new object[] { other });
         }
 
+        private static bool GetSuppressed(BFDoorActivationTrigger trigger)
+        {
+            return (bool)typeof(BFDoorActivationTrigger)
+                .GetField("suppressed", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(trigger);
+        }
+
         private static SpyLoggerSink InitializeLogging()
         {
             BFLoggerConfig config = ScriptableObject.CreateInstance<BFLoggerConfig>();
@@ -177,14 +184,11 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             BFDoorActivationTrigger trigger = CreateDoorTrigger(request);
             Collider2D player = CreateCollider("Player");
 
-            int startedCount = 0;
-            EventBus<BFSceneTransitionStartedEvent>.Subscribe(_ => startedCount++);
-
             InvokeOnTriggerEnter2D(trigger, player);
+            Assert.IsTrue(GetSuppressed(trigger));
+
             InvokeOnTriggerExit2D(trigger, player);
-            InvokeOnTriggerEnter2D(trigger, player);
-
-            Assert.AreEqual(2, startedCount);
+            Assert.IsFalse(GetSuppressed(trigger));
         }
     }
 }
