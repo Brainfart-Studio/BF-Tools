@@ -1,0 +1,27 @@
+{
+    "name": "BFTools.Systems.ObjectPooler.Tests",
+    "rootNamespace": "BFTools.Systems.ObjectPooler.Tests",
+    "references": [
+        "BFTools.Systems.ObjectPooler",
+        "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
+        "BFTools.Core.ServiceLocator",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
