@@ -66,6 +66,13 @@ namespace BFTools.Visuals.Parallax.Tests
                 .Invoke(manager, null);
         }
 
+        private static void InvokeOnDisable(BFParallaxStackManager manager)
+        {
+            typeof(BFParallaxStackManager)
+                .GetMethod("OnDisable", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(manager, null);
+        }
+
         private SpyParallaxLayerConfig CreateSpyLayerConfig()
         {
             SpyParallaxLayerConfig config = ScriptableObject.CreateInstance<SpyParallaxLayerConfig>();
@@ -103,6 +110,11 @@ namespace BFTools.Visuals.Parallax.Tests
             SetField(manager, "targetCameraOverride", camera);
 
             managerGo.SetActive(true);
+
+            typeof(BFParallaxStackManager)
+                .GetMethod("OnEnable", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(manager, null);
+
             return manager;
         }
 
@@ -173,6 +185,7 @@ namespace BFTools.Visuals.Parallax.Tests
             BFParallaxStackManager first = CreateManager(camera, stackConfigA);
 
             first.gameObject.SetActive(false);
+            InvokeOnDisable(first);
 
             Assert.AreEqual(1, layerConfigA.Layer.CleanupCount);
 
