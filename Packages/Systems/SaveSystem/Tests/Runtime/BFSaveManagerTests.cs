@@ -137,15 +137,15 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
-        public async Task SaveAsync_LoadAsync_RoundTrip_PersistsAndRestoresRegisteredSaveableState()
+        public void SaveAsync_LoadAsync_RoundTrip_PersistsAndRestoresRegisteredSaveableState()
         {
             FakeSaveable saveable = new FakeSaveable { State = new FakeState { value = 42 } };
             BFSaveManager.Register(saveable);
 
-            await BFSaveManager.SaveAsync("Slot1", scratchDir);
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
             saveable.State = new FakeState { value = 0 };
 
-            bool loaded = await BFSaveManager.LoadAsync("Slot1", scratchDir);
+            bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsTrue(loaded);
             Assert.AreEqual(42, saveable.State.value);
@@ -154,9 +154,9 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
-        public async Task LoadAsync_NoSaveFileExists_ReturnsFalse()
+        public void LoadAsync_NoSaveFileExists_ReturnsFalse()
         {
-            bool loaded = await BFSaveManager.LoadAsync("MissingSlot", scratchDir);
+            bool loaded = BFSaveManager.LoadAsync("MissingSlot", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(loaded);
         }
