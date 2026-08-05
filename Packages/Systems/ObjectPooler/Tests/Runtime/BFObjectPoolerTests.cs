@@ -160,8 +160,11 @@ namespace BFTools.Systems.ObjectPooler.Tests
             createdAssets.Add(bulletPrefab);
             BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 0));
             createdAssets.Add(config);
-            CreatePooler(config);
+            BFObjectPooler pooler = CreatePooler(config);
 
+            typeof(BFObjectPooler)
+                .GetMethod("OnDestroy", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(pooler, null);
             Object.DestroyImmediate(go);
             go = null;
 
