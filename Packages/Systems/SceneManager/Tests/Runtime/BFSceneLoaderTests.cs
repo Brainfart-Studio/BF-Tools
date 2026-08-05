@@ -46,13 +46,12 @@ namespace BFTools.Systems.SceneManager.Tests
         }
 
         [Test]
-        public async Task LoadAsync_SceneAlreadyTracked_LogsDebugAndReturnsCompletedTaskWithoutStartingNewLoad()
+        public void LoadAsync_SceneAlreadyTracked_LogsDebugAndReturnsCompletedTaskWithoutStartingNewLoad()
         {
             SpyLoggerSink spy = InitializeLogging();
             GetOperations()["Level1"] = null;
 
             Task task = BFSceneLoader.LoadAsync("Level1");
-            await task;
 
             Assert.IsTrue(task.IsCompleted);
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("already loading or loaded")));
@@ -71,35 +70,33 @@ namespace BFTools.Systems.SceneManager.Tests
         }
 
         [Test]
-        public async Task ActivateAsync_SceneNotPreloaded_LogsErrorAndReturnsCompletedTask()
+        public void ActivateAsync_SceneNotPreloaded_LogsErrorAndReturnsCompletedTask()
         {
             SpyLoggerSink spy = InitializeLogging();
 
             Task task = BFSceneLoader.ActivateAsync("Level1");
-            await task;
 
             Assert.IsTrue(task.IsCompleted);
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("not preloaded")));
         }
 
         [Test]
-        public async Task UnloadAsync_SceneNotLoaded_LogsDebugAndSkips()
+        public void UnloadAsync_SceneNotLoaded_LogsDebugAndSkips()
         {
             SpyLoggerSink spy = InitializeLogging();
 
             Task task = BFSceneLoader.UnloadAsync("NeverLoadedScene");
-            await task;
 
             Assert.IsTrue(task.IsCompleted);
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("is not loaded. Skipping unload")));
         }
 
         [Test]
-        public async Task UnloadAsync_RemovesTrackedSceneFromOperationsRegardlessOfLoadState()
+        public void UnloadAsync_RemovesTrackedSceneFromOperationsRegardlessOfLoadState()
         {
             GetOperations()["Level1"] = null;
 
-            await BFSceneLoader.UnloadAsync("Level1");
+            BFSceneLoader.UnloadAsync("Level1");
 
             Assert.IsFalse(BFSceneLoader.IsTracked("Level1"));
         }
