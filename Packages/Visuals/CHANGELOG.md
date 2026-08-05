@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.1] - Test Coverage
+
+### Added
+- Edit Mode test suites for Background (Aurora Ribbon, Aurora Ribbons Layer, Background Stack, Background Stack Manager, Gradient Layer, Twinkling Star, Twinkling Stars Layer), Palette (Component, Config), and Parallax (Sprite Layer, Stack, Stack Manager)
+- BFTools.Visuals.Background runtime and editor asmdefs, splitting Background out of the default assembly so it can be referenced by its own test assembly
+- BFTools.Visuals.Background.Tests, BFTools.Visuals.Palette.Tests, and BFTools.Visuals.Parallax.Tests asmdefs
+
+### Fixed
+- BFBackgroundStackCamera, BFAuroraRibbonsLayer, BFGradientLayer, BFTwinklingStarsLayer, and BFParallaxSpriteLayer now call DestroyImmediate instead of Destroy when not in Play mode, preventing leaked GameObjects and assets when Cleanup runs in Edit mode
+
 ## [0.6.0] - Parallax
 
 ### Added

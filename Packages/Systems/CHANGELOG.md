@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0] - Test Coverage
+
+### Added
+- Test suites for Global Bootstrapper (Runtime, PlayMode), Level Bootstrapper, Object Pooler, Save System (Checksum, Encryptor, File IO, Key Provider, Manager, Serializer, Type Allowlist Binder, Version Migrator), and Scene Manager (Door Activation Trigger, Fade Transition, Preload Zone Trigger, Scene Loader, Scene Transition Controller)
+- Corresponding Test/PlayMode asmdefs for all five systems
+- BFSaveKeyProvider.FillRandomBytes, generating key and IV bytes from a single shared RandomNumberGenerator instance with a timeout fallback
+
+### Fixed
+- BFSaveKeyProvider and BFSaveEncryptor no longer risk hanging indefinitely on machines with low system entropy; key and IV generation now time out after 2 seconds and fall back to a non-blocking pseudo-random seed instead of blocking on RandomNumberGenerator.Create()/GenerateIV() per call
+- BFSaveFileIO and BFSaveManager's async file writes/reads no longer deadlock when awaited synchronously (e.g. via GetAwaiter().GetResult() in tests); internal awaits now use ConfigureAwait(false)
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.10.0, required for the new `BFTools.Core.Logger.TestUtilities` assembly the test suites reference
+
+## [0.1.0] - Systems Package Migration
+
 ## [0.1.0] - Systems Package Migration
 
 ### Added

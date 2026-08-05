@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0] - Test Coverage
+
+### Added
+- BFTools.Core.Logger.TestUtilities assembly, with SpyLoggerSink (an IBFLoggerSink capturing log entries for assertions) and BFLoggerTestUtility (resets BFLogger's static state between tests)
+- Test suites for Editor Asset Utility, Event Bus, Logger (including FileSink and UnityConsoleSink), and Service Locator
+- Corresponding Test asmdefs for all four systems
+
 ## [0.9.0] - Systems Package Split
 
 ### Removed
