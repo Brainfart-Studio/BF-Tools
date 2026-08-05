@@ -59,6 +59,11 @@ namespace BFTools.Feedback.Haptics.Tests
                 .SetValue(haptics, new List<BFHapticsConfig>(configs));
 
             go.SetActive(true);
+
+            typeof(BFHaptics)
+                .GetMethod("OnEnable", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(haptics, null);
+
             return haptics;
         }
 
@@ -133,9 +138,14 @@ namespace BFTools.Feedback.Haptics.Tests
             SpyLoggerSink spy = InitializeLogging();
             BFHapticsConfig config = CreateConfig(("Hit", 0.5f, 0.2f));
             createdAssets.Add(config);
-            CreateHaptics(config);
+            BFHaptics haptics = CreateHaptics(config);
 
             go.SetActive(false);
+
+            typeof(BFHaptics)
+                .GetMethod("OnDisable", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(haptics, null);
+
             spy.Entries.Clear();
 
             EventBus<BFHapticsEvent>.Fire(new BFHapticsEvent { eventName = "Hit" });
