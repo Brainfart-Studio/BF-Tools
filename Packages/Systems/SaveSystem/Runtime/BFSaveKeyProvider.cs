@@ -10,6 +10,8 @@ namespace BFTools.Systems.SaveSystem
         private const string LogTag = "Save";
         private const int KeySizeInBytes = 32;
 
+        private static readonly RandomNumberGenerator rng = RandomNumberGenerator.Create();
+
         private static byte[] cachedKey;
         private static byte[] cachedMacKey;
 
@@ -47,14 +49,15 @@ namespace BFTools.Systems.SaveSystem
             return cachedMacKey;
         }
 
+        public static void FillRandomBytes(byte[] buffer)
+        {
+            rng.GetBytes(buffer);
+        }
+
         private static byte[] GenerateAndPersistKey(string keyPath)
         {
             byte[] key = new byte[KeySizeInBytes];
-
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(key);
-            }
+            rng.GetBytes(key);
 
             string tempPath = keyPath + ".tmp";
             File.WriteAllBytes(tempPath, key);

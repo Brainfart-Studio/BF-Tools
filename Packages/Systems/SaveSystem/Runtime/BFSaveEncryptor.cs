@@ -11,9 +11,10 @@ namespace BFTools.Systems.SaveSystem
             using (Aes aes = Aes.Create())
             {
                 aes.Key = BFSaveKeyProvider.GetKey();
-                aes.GenerateIV();
 
-                byte[] iv = aes.IV;
+                byte[] iv = new byte[aes.BlockSize / 8];
+                BFSaveKeyProvider.FillRandomBytes(iv);
+                aes.IV = iv;
 
                 using (ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
                 using (MemoryStream memoryStream = new MemoryStream())
