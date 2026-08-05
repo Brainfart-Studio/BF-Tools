@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.visuals",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "displayName": "BFTools Visuals",
     "description": "Visuals systems for BFTools: Palette, Background, Parallax.",
     "unity": "2022.3",
@@ -8,6 +8,6 @@
         "name": "Brainfart Studio"
     },
     "dependencies": {
-        "com.bftools.core": "0.8.1"
+        "com.bftools.core": "0.10.0"
     }
 }
