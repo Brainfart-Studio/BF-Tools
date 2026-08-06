@@ -67,7 +67,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
                 .SetValue(fadeTransition, canvasGroup);
 
             typeof(BFSceneTransitionController)
-                .GetField("fadeTransition", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetField("transition", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(controller, fadeTransition);
 
             go.SetActive(true);

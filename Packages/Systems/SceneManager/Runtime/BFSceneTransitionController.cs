@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
@@ -27,12 +28,12 @@ namespace BFTools.Systems.SceneManager
     {
         private const string LogTag = "SceneManager";
 
-        [SerializeField] private BFFadeTransition fadeTransition;
+        [SerializeField, FormerlySerializedAs("fadeTransition")] private BFTransitionBehaviour transition;
 
         private string currentSceneName;
         private bool isTransitioning;
 
-        private ITransition Transition => fadeTransition;
+        private ITransition Transition => transition;
 
         private void Awake()
         {

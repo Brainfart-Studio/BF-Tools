@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0] - Scene Transitions
+
+### Added
+- `BFWipeTransition`: directional colored wipe with configurable angle, duration, and a separate edge/border color and thickness, plus an optional leading/trailing edge sprite that tracks the wipe's moving edge
+- `BFRadialWipeTransition`: radial wipe from 12 o'clock using `Image.fillMethod = Radial360`, with configurable color, direction, and duration
+- `BFIrisWipeTransition`: iris/point wipe built on `SpriteMask` and `SpriteRenderer.maskInteraction`, with a swappable mask sprite (circle by default, any custom shape) and optional rotation while scaling
+- Test suites for all three new transitions, following the existing `BFFadeTransitionTests` reflection-based field injection and end-state assertion pattern
+- `UnityEngine.UI` reference added to `BFTools.Systems.SceneManager.PlayModeTests.asmdef` for the new `Image`-based transition tests
+
+### Changed
+- `BFSceneTransitionController` now holds a `BFTransitionBehaviour` reference instead of a hardcoded `BFFadeTransition`, so any transition component can be assigned to its `Transition` field; `BFFadeTransition` now derives from the new `BFTransitionBehaviour` abstract base instead of implementing `ITransition` directly
+- The controller's serialized field was renamed from `fadeTransition` to `transition`, with `FormerlySerializedAs` preserving existing prefab references
+
 ## [0.3.0] - Settings Manager
 
 ### Added

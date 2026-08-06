@@ -3,19 +3,19 @@ using UnityEngine;
 
 namespace BFTools.Systems.SceneManager
 {
-    public class BFFadeTransition : MonoBehaviour, ITransition
+    public class BFFadeTransition : BFTransitionBehaviour
     {
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private float fadeOutDuration = 0.5f;
         [SerializeField] private float fadeInDuration = 0.5f;
 
-        public IEnumerator PlayOut()
+        public override IEnumerator PlayOut()
         {
             canvasGroup.blocksRaycasts = true;
             yield return Fade(0f, 1f, fadeOutDuration);
         }
 
-        public IEnumerator PlayIn()
+        public override IEnumerator PlayIn()
         {
             yield return Fade(1f, 0f, fadeInDuration);
             canvasGroup.blocksRaycasts = false;

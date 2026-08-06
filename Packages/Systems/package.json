@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.systems",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "displayName": "BFTools Systems",
     "description": "Systems for BFTools: Global Bootstrapper, Level Bootstrapper, Scene Manager, Object Pooler, Save System, Settings Manager.",
     "unity": "2022.3",
