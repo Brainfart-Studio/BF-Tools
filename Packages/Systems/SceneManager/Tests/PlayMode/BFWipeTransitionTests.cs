@@ -17,10 +17,12 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
 
         private static readonly Color WipeColor = Color.blue;
         private static readonly Color EdgeColor = Color.yellow;
+        private static readonly Vector2 EdgeSpriteSize = new Vector2(40f, 30f);
 
         private GameObject go;
         private Image mainImage;
         private Image edgeImage;
+        private Image edgeSpriteImage;
 
         [TearDown]
         public void TearDown()
@@ -29,7 +31,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
                 Object.Destroy(go);
         }
 
-        private BFWipeTransition CreateTransition(float angle, float edgeThickness, float wipeOutDuration, float wipeInDuration)
+        private BFWipeTransition CreateTransition(float angle, float edgeThickness, float wipeOutDuration, float wipeInDuration, bool withEdgeSprite = false)
         {
             go = new GameObject("WipeTransition");
             RectTransform screenRect = go.AddComponent<RectTransform>();
@@ -49,6 +51,13 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             SetField(transition, "angle", angle);
             SetField(transition, "wipeOutDuration", wipeOutDuration);
             SetField(transition, "wipeInDuration", wipeInDuration);
+
+            if (withEdgeSprite)
+            {
+                edgeSpriteImage = CreateChildImage("EdgeSpriteImage", screenRect);
+                SetField(transition, "edgeSpriteImage", edgeSpriteImage);
+                SetField(transition, "edgeSpriteSize", EdgeSpriteSize);
+            }
 
             return transition;
         }
@@ -125,6 +134,38 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             yield return transition.PlayOut();
 
             Assert.Greater(mainImage.rectTransform.GetSiblingIndex(), edgeImage.rectTransform.GetSiblingIndex());
+        }
+
+        [UnityTest]
+        public IEnumerator PlayOut_WithEdgeSpriteAssigned_PositionsSpriteAtOuterEdgeAboveMainImage()
+        {
+            BFWipeTransition transition = CreateTransition(angle: 0f, edgeThickness: 10f, wipeOutDuration: 0.05f, wipeInDuration: 0.05f, withEdgeSprite: true);
+
+            yield return transition.PlayOut();
+
+            AssertVector2Approximately(new Vector2(0f, 60f), edgeSpriteImage.rectTransform.anchoredPosition);
+            AssertVector2Approximately(EdgeSpriteSize, edgeSpriteImage.rectTransform.sizeDelta);
+            Assert.Greater(edgeSpriteImage.rectTransform.GetSiblingIndex(), mainImage.rectTransform.GetSiblingIndex());
+        }
+
+        [UnityTest]
+        public IEnumerator PlayIn_WithEdgeSpriteAssigned_PositionsSpriteAtOuterEdge()
+        {
+            BFWipeTransition transition = CreateTransition(angle: 0f, edgeThickness: 10f, wipeOutDuration: 0.05f, wipeInDuration: 0.05f, withEdgeSprite: true);
+
+            yield return transition.PlayIn();
+
+            AssertVector2Approximately(new Vector2(0f, 160f), edgeSpriteImage.rectTransform.anchoredPosition);
+        }
+
+        [UnityTest]
+        public IEnumerator PlayOut_WithoutEdgeSpriteAssigned_DoesNotThrow()
+        {
+            BFWipeTransition transition = CreateTransition(angle: 0f, edgeThickness: 10f, wipeOutDuration: 0.05f, wipeInDuration: 0.05f);
+
+            yield return transition.PlayOut();
+
+            Assert.IsNull(edgeSpriteImage);
         }
     }
 }

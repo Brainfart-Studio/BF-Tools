@@ -9,6 +9,8 @@ namespace BFTools.Systems.SceneManager
         [SerializeField] private RectTransform screenRect;
         [SerializeField] private Image mainImage;
         [SerializeField] private Image edgeImage;
+        [SerializeField] private Image edgeSpriteImage;
+        [SerializeField] private Vector2 edgeSpriteSize = new Vector2(64f, 64f);
         [SerializeField] private Color wipeColor = Color.black;
         [SerializeField] private Color edgeColor = Color.white;
         [SerializeField] private float edgeThickness = 20f;
@@ -65,6 +67,17 @@ namespace BFTools.Systems.SceneManager
             ConfigureBand(edgeImage, edgeColor, axisRange + edgeThickness * 2f, perpendicularSize);
 
             mainImage.rectTransform.SetAsLastSibling();
+
+            if (edgeSpriteImage != null)
+            {
+                RectTransform sprite = edgeSpriteImage.rectTransform;
+                sprite.anchorMin = new Vector2(0.5f, 0.5f);
+                sprite.anchorMax = new Vector2(0.5f, 0.5f);
+                sprite.pivot = new Vector2(0.5f, 0f);
+                sprite.sizeDelta = edgeSpriteSize;
+                sprite.up = new Vector3(direction.x, direction.y, 0f);
+                sprite.SetAsLastSibling();
+            }
         }
 
         private void ConfigureBand(Image image, Color color, float bandWidth, float perpendicularSize)
@@ -103,7 +116,12 @@ namespace BFTools.Systems.SceneManager
         private void SetLeadingEdge(float position)
         {
             mainImage.rectTransform.anchoredPosition = direction * position;
-            edgeImage.rectTransform.anchoredPosition = direction * (position + edgeThickness);
+
+            float edgeOuterPosition = position + edgeThickness;
+            edgeImage.rectTransform.anchoredPosition = direction * edgeOuterPosition;
+
+            if (edgeSpriteImage != null)
+                edgeSpriteImage.rectTransform.anchoredPosition = direction * edgeOuterPosition;
         }
     }
 }
