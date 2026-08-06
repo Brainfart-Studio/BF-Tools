@@ -67,7 +67,7 @@ namespace BFTools.Systems.SettingsManager
             byte[] bytes = Encoding.UTF8.GetBytes(json);
 
             string filePath = Path.Combine(directoryPath, FileName);
-            await BFSaveFileIO.WriteAsync(filePath, bytes);
+            await BFSaveFileIO.WriteAsync(filePath, bytes).ConfigureAwait(false);
 
             BFLogger.Trace(LogTag, $"SaveAsync completed ({bytes.Length} byte(s) written to '{filePath}')");
         }
@@ -77,7 +77,7 @@ namespace BFTools.Systems.SettingsManager
             BFLogger.Trace(LogTag, "LoadAsync started");
 
             string filePath = Path.Combine(directoryPath, FileName);
-            byte[] bytes = await BFSaveFileIO.ReadAsync(filePath);
+            byte[] bytes = await BFSaveFileIO.ReadAsync(filePath).ConfigureAwait(false);
 
             if (bytes == null)
             {
