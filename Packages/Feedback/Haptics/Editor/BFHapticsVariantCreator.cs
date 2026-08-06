@@ -1,5 +1,6 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
+using BFTools.Feedback.EditorAssetUtility.Editor;
 
 namespace BFTools.Feedback.Haptics.Editor
 {
@@ -9,7 +10,7 @@ namespace BFTools.Feedback.Haptics.Editor
         private const string TargetPath = "Assets/Prefabs/Feedback";
         private const string AssetName = "Haptics.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Feedback/Prefabs/Haptics", priority = BFMenuPriority.Group.Feedback + BFMenuPriority.Module.Haptics)]
+        [MenuItem("Assets/Create/BFTools/Feedback/Prefabs/Haptics", priority = BFFeedbackMenuPriority.Haptics)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);

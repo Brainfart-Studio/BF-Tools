@@ -1,5 +1,6 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
+using BFTools.Feedback.EditorAssetUtility.Editor;
 
 namespace BFTools.Feedback.ScreenFlash.Editor
 {
@@ -9,7 +10,7 @@ namespace BFTools.Feedback.ScreenFlash.Editor
         private const string TargetPath = "Assets/Prefabs/Feedback";
         private const string AssetName = "ScreenFlash.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Feedback/Prefabs/Screen Flash", priority = BFMenuPriority.Group.Feedback + BFMenuPriority.Module.ScreenFlash)]
+        [MenuItem("Assets/Create/BFTools/Feedback/Prefabs/Screen Flash", priority = BFFeedbackMenuPriority.ScreenFlash)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);
