@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using BFTools.Core.Logger;
@@ -120,43 +119,43 @@ namespace BFTools.Systems.SettingsManager.Tests
         }
 
         [Test]
-        public async Task SaveAsync_LoadAsync_RoundTrip_PersistsAndRestoresRegisteredProviderState()
+        public void SaveAsync_LoadAsync_RoundTrip_PersistsAndRestoresRegisteredProviderState()
         {
             FakeSettingsProvider provider = new FakeSettingsProvider { State = new FakeState { value = 42 } };
             BFSettingsManager.Register(provider);
 
-            await BFSettingsManager.SaveAsync(scratchDir);
+            BFSettingsManager.SaveAsync(scratchDir).GetAwaiter().GetResult();
             provider.State = new FakeState { value = 0 };
 
-            bool loaded = await BFSettingsManager.LoadAsync(scratchDir);
+            bool loaded = BFSettingsManager.LoadAsync(scratchDir).GetAwaiter().GetResult();
 
             Assert.IsTrue(loaded);
             Assert.AreEqual(42, provider.State.value);
         }
 
         [Test]
-        public async Task LoadAsync_NoSettingsFileExists_ReturnsFalseAndLogsTrace()
+        public void LoadAsync_NoSettingsFileExists_ReturnsFalseAndLogsTrace()
         {
             SpyLoggerSink spy = InitializeLogging();
 
-            bool loaded = await BFSettingsManager.LoadAsync(scratchDir);
+            bool loaded = BFSettingsManager.LoadAsync(scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(loaded);
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("No settings file found")));
         }
 
         [Test]
-        public async Task LoadAsync_ProviderNotPresentInSavedFile_LeavesStateAsIsAndReturnsTrue()
+        public void LoadAsync_ProviderNotPresentInSavedFile_LeavesStateAsIsAndReturnsTrue()
         {
             FakeSettingsProvider savedProvider = new FakeSettingsProvider { State = new FakeState { value = 5 } };
             BFSettingsManager.Register(savedProvider);
-            await BFSettingsManager.SaveAsync(scratchDir);
+            BFSettingsManager.SaveAsync(scratchDir).GetAwaiter().GetResult();
             BFSettingsManager.Unregister(savedProvider);
 
             OtherFakeSettingsProvider otherProvider = new OtherFakeSettingsProvider { State = new FakeState { value = 99 } };
             BFSettingsManager.Register(otherProvider);
 
-            bool loaded = await BFSettingsManager.LoadAsync(scratchDir);
+            bool loaded = BFSettingsManager.LoadAsync(scratchDir).GetAwaiter().GetResult();
 
             Assert.IsTrue(loaded);
             Assert.AreEqual(99, otherProvider.State.value);
