@@ -15,12 +15,13 @@ Foundational systems every other package builds on.
 
 No dependencies.
 
-### [Systems](Packages/Systems/README.md): `com.bftools.systems` (0.2.0)
+### [Systems](Packages/Systems/README.md): `com.bftools.systems` (0.3.0)
 Gameplay-facing systems built on Core.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Systems/Documentation~/Bootstrapper.md).
 - **Object Pooler**: config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [ObjectPooler.md](Packages/Systems/Documentation~/ObjectPooler.md).
 - **Save System**: ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [SaveSystem.md](Packages/Systems/Documentation~/SaveSystem.md).
 - **Scene Manager**: additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [SceneManager.md](Packages/Systems/Documentation~/SceneManager.md).
+- **Settings Manager**: ISettingsProvider-based state capture/restore, saved as plain JSON to a single shared settings file. See [SettingsManager.md](Packages/Systems/Documentation~/SettingsManager.md).
 
 Depends on `com.bftools.core` (0.10.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
 
@@ -56,6 +57,7 @@ Packages/
     ObjectPooler/            Editor/, Runtime/, Prefabs/
     SaveSystem/              Runtime/
     SceneManager/            Editor/, Runtime/, Prefabs/
+    SettingsManager/         Runtime/
     Documentation~/
   Feedback/                com.bftools.feedback
     Haptics/                 Editor/, Runtime/, Prefabs/

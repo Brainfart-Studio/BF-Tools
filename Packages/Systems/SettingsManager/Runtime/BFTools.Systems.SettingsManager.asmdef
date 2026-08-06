@@ -1,0 +1,17 @@
+{
+    "name": "BFTools.Systems.SettingsManager",
+    "rootNamespace": "BFTools.Systems.SettingsManager",
+    "references": [
+        "BFTools.Core.Logger",
+        "BFTools.Systems.SaveSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

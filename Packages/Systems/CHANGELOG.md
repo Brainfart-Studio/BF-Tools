@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0] - Settings Manager
+
+### Added
+- Settings Manager system: `BFSettingsManager`, `ISettingsProvider`, and asmdefs (Runtime, Tests)
+- `BFSettingsManager.Register`/`Unregister` for provider registration, and `SaveAsync`/`LoadAsync` for persisting all registered providers' state to a single `settings.json`, reusing Save System's `BFSaveFileIO` and `BFSaveSerializer`
+- Test suite covering provider registration, save/load round-trips, missing-file handling, and providers absent from a saved file
+
+### Fixed
+- `BFSettingsManager.SaveAsync`/`LoadAsync` no longer deadlock when awaited synchronously (e.g. via `GetAwaiter().GetResult()` in tests); internal awaits now use `ConfigureAwait(false)`, matching Save System's `BFSaveFileIO`/`BFSaveManager`
+
 ## [0.2.0] - Test Coverage
 
 ### Added
