@@ -13,6 +13,11 @@ namespace BFTools.Systems.SettingsManager
         private const string LogTag = "Settings";
         private const string FileName = "settings.json";
 
+        private class BFSettingsData
+        {
+            public Dictionary<string, object> providerStates = new Dictionary<string, object>();
+        }
+
         private static readonly List<ISettingsProvider> providers = new List<ISettingsProvider>();
         private static readonly HashSet<Type> registeredStateTypes = new HashSet<Type>();
 
@@ -49,16 +54,16 @@ namespace BFTools.Systems.SettingsManager
         {
             BFLogger.Trace(LogTag, "SaveAsync started");
 
-            Dictionary<string, object> providerStates = new Dictionary<string, object>();
+            BFSettingsData settingsData = new BFSettingsData();
             for (int i = 0; i < providers.Count; i++)
             {
                 ISettingsProvider provider = providers[i];
-                providerStates[provider.GetType().Name] = provider.CaptureState();
+                settingsData.providerStates[provider.GetType().Name] = provider.CaptureState();
             }
 
             BFLogger.Debug(LogTag, $"Captured state from {providers.Count} provider(s)");
 
-            string json = BFSaveSerializer.Serialize(providerStates);
+            string json = BFSaveSerializer.Serialize(settingsData);
             byte[] bytes = Encoding.UTF8.GetBytes(json);
 
             string filePath = Path.Combine(directoryPath, FileName);
@@ -81,11 +86,11 @@ namespace BFTools.Systems.SettingsManager
             }
 
             string json = Encoding.UTF8.GetString(bytes);
-            Dictionary<string, object> providerStates;
+            BFSettingsData settingsData;
 
             try
             {
-                providerStates = BFSaveSerializer.Deserialize<Dictionary<string, object>>(json);
+                settingsData = BFSaveSerializer.Deserialize<BFSettingsData>(json);
             }
             catch (Exception exception)
             {
@@ -93,7 +98,7 @@ namespace BFTools.Systems.SettingsManager
                 return false;
             }
 
-            if (providerStates == null)
+            if (settingsData == null)
             {
                 BFLogger.Warning(LogTag, "Settings file was empty or invalid. Using defaults.");
                 return false;
@@ -105,7 +110,7 @@ namespace BFTools.Systems.SettingsManager
                 ISettingsProvider provider = providers[i];
                 string key = provider.GetType().Name;
 
-                if (providerStates.TryGetValue(key, out object state))
+                if (settingsData.providerStates.TryGetValue(key, out object state))
                 {
                     provider.RestoreState(state);
                     restoredCount++;
