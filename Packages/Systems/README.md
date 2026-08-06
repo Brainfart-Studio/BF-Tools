@@ -3,7 +3,7 @@
 Gameplay-facing systems for BFTools, built on Core's Logger, Event Bus, and Service Locator: bootstrapping, scene management, object pooling, and save/load.
 
 ## Version
-0.3.0
+0.4.0
 
 ## Contents
 
@@ -17,7 +17,7 @@ Config-driven object pooling with prewarming and Get/Release, registered with th
 ISaveable-based state capture/restore, saved to encrypted, checksummed, slot-based files with a per-install key and a version migration scaffold. See [Documentation~/SaveSystem.md](Documentation~/SaveSystem.md).
 
 ### Scene Manager
-Additive scene loading and transitions, orchestrated through a config asset, a static loader, a fade, and door/preload trigger components. See [Documentation~/SceneManager.md](Documentation~/SceneManager.md).
+Additive scene loading and transitions, orchestrated through a config asset, a static loader, a set of swappable transitions (fade, wipe, radial wipe, iris), and door/preload trigger components. See [Documentation~/SceneManager.md](Documentation~/SceneManager.md).
 
 ### Settings Manager
 ISettingsProvider-based state capture/restore, saved as plain JSON to a single shared settings file. See [Documentation~/SettingsManager.md](Documentation~/SettingsManager.md).
@@ -54,7 +54,7 @@ Reference `com.bftools.systems` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.systems": "0.3.0"
+  "com.bftools.systems": "0.4.0"
 }
 ```
 
