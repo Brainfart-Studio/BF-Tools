@@ -4,7 +4,8 @@
     "references": [
         "BFTools.Systems.SceneManager",
         "BFTools.Core.EditorAssetUtility.Editor",
-        "BFTools.Core.Logger"
+        "BFTools.Core.Logger",
+        "BFTools.Systems.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"

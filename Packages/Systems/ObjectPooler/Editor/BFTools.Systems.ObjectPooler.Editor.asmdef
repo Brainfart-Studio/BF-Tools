@@ -3,7 +3,8 @@
     "rootNamespace": "BFTools.Systems.ObjectPooler.Editor",
     "references": [
         "BFTools.Systems.ObjectPooler",
-        "BFTools.Core.EditorAssetUtility.Editor"
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Systems.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"

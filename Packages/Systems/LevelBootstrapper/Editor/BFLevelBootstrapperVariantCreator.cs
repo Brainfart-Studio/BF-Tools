@@ -1,5 +1,6 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
+using BFTools.Systems.EditorAssetUtility.Editor;
 
 namespace BFTools.Systems.LevelBootstrapper.Editor
 {
@@ -9,7 +10,7 @@ namespace BFTools.Systems.LevelBootstrapper.Editor
         private const string TargetPath = "Assets/Prefabs/Systems";
         private const string AssetName = "LevelBootstrapper.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Systems/Prefabs/Level Bootstrapper", priority = BFMenuPriority.Group.Systems + BFMenuPriority.Module.LevelBootstrapper)]
+        [MenuItem("Assets/Create/BFTools/Systems/Prefabs/Level Bootstrapper", priority = BFSystemsMenuPriority.LevelBootstrapper)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);
