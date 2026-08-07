@@ -38,6 +38,7 @@ namespace BFTools.EditorTools.ProjectVerification.Editor
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             BuildCamera();
+            BuildBouncers();
             BuildEventSystem();
             Canvas canvas = BuildCanvas();
             BFProjectVerificationTrigger trigger = BuildTrigger();
@@ -54,7 +55,8 @@ namespace BFTools.EditorTools.ProjectVerification.Editor
             EditorUtility.DisplayDialog("BF Tools",
                 $"Verification scene created at {ScenePath}.\n\n" +
                 $"Each button fires its feedback event with eventName \"{BFProjectVerificationTrigger.EventName}\" " +
-                "- add a matching entry to each feedback config to see it trigger. Enter Play Mode with this scene open to test.",
+                "- add a matching entry to each feedback config to see it trigger. 3 bouncing balls are included so Hitstop and Screen Shake are visible. " +
+                "Enter Play Mode with this scene open to test.",
                 "OK");
         }
 
@@ -66,6 +68,12 @@ namespace BFTools.EditorTools.ProjectVerification.Editor
             GameObject go = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
             go.tag = "MainCamera";
             Undo.RegisterCreatedObjectUndo(go, "Create Main Camera");
+        }
+
+        private static void BuildBouncers()
+        {
+            GameObject go = new GameObject("BFProjectVerificationBouncer", typeof(BFProjectVerificationBouncer));
+            Undo.RegisterCreatedObjectUndo(go, "Create Verification Bouncers");
         }
 
         private static void BuildEventSystem()
