@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1] - Menu Priority Ownership
+
+### Changed
+- GlobalBootstrapper, LevelBootstrapper, ObjectPooler, and SceneManager Editor menu creators now reference a new `BFSystemsMenuPriority` class instead of Core's `BFMenuPriority.Module` constants, so new Systems Create menu entries no longer require a Core version bump
+- Added the `BFTools.Systems.EditorAssetUtility.Editor` asmdef, housing `BFSystemsMenuPriority`
+
 ## [0.4.0] - Scene Transitions
 
 ### Added

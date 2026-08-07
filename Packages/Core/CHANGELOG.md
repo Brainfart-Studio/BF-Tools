@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.10.1] - Menu Priority Ownership
+
+### Removed
+- `Module.GlobalBootstrapper`, `Module.LevelBootstrapper`, `Module.ObjectPooler`, `Module.SceneManager`, `Module.Haptics`, `Module.ScreenShake`, `Module.Hitstop`, `Module.ScreenFlash`, `Module.Palette`, `Module.Background`, and `Module.Parallax` from `BFMenuPriority`, now owned by each consuming package's own `*MenuPriority` class; `Group` and `Module.Logger` are unchanged
+
 ## [0.10.0] - Test Coverage
 
 ### Added
