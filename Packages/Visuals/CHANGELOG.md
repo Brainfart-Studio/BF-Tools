@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.2] - Menu Priority Ownership
+
+### Changed
+- Palette, Background, and Parallax Editor menu creators now reference a new `BFVisualsMenuPriority` class instead of Core's `BFMenuPriority.Module` constants, so new Visuals Create menu entries no longer require a Core version bump
+- Added the `BFTools.Visuals.EditorAssetUtility.Editor` asmdef, housing `BFVisualsMenuPriority`
+
 ## [0.6.1] - Test Coverage
 
 ### Added

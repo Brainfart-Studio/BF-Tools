@@ -6,7 +6,7 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (0.10.0)
+### [Core](Packages/Core/README.md): `com.bftools.core` (0.10.1)
 Foundational systems every other package builds on.
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
 - **Editor Asset Utility**: shared editor-only helpers (folder creation, config asset creation, prefab variant creation) used by this repo's `Assets/Create/BFTools/...` menu creators.
@@ -15,7 +15,7 @@ Foundational systems every other package builds on.
 
 No dependencies.
 
-### [Systems](Packages/Systems/README.md): `com.bftools.systems` (0.4.0)
+### [Systems](Packages/Systems/README.md): `com.bftools.systems` (0.4.1)
 Gameplay-facing systems built on Core.
 - **Bootstrapper**: Global (app-lifetime) and Level (per-scene) system initialization. See [Bootstrapper.md](Packages/Systems/Documentation~/Bootstrapper.md).
 - **Object Pooler**: config-driven object pooling with prewarming and Get/Release, registered with the Service Locator. See [ObjectPooler.md](Packages/Systems/Documentation~/ObjectPooler.md).
@@ -25,7 +25,7 @@ Gameplay-facing systems built on Core.
 
 Depends on `com.bftools.core` (0.10.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.6.1)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (0.6.2)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
@@ -34,7 +34,7 @@ Event-driven player feedback.
 
 Depends on `com.bftools.core` (0.10.0) and `com.unity.inputsystem` (1.7.0).
 
-### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.6.1)
+### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (0.6.2)
 Live-editable, config-driven visual systems.
 - **Palette**: live-editable color palette for rapid prototyping, driven by named entries on a config asset. See [Palette.md](Packages/Visuals/Documentation~/Palette.md).
 - **Background**: layered background rendering, compositing gradient, aurora ribbon, and twinkling star layers behind the scene via a dedicated camera. See [Background.md](Packages/Visuals/Documentation~/Background.md).
@@ -52,6 +52,7 @@ Packages/
     ServiceLocator/          Runtime/
     Documentation~/
   Systems/                 com.bftools.systems
+    EditorAssetUtility/      Editor/
     GlobalBootstrapper/      Editor/, Runtime/
     LevelBootstrapper/       Editor/, Runtime/, Prefabs/
     ObjectPooler/            Editor/, Runtime/, Prefabs/
@@ -60,12 +61,14 @@ Packages/
     SettingsManager/         Runtime/
     Documentation~/
   Feedback/                com.bftools.feedback
+    EditorAssetUtility/      Editor/
     Haptics/                 Editor/, Runtime/, Prefabs/
     ScreenShake/              Editor/, Runtime/, Prefabs/
     Hitstop/                 Editor/, Runtime/, Prefabs/
     ScreenFlash/             Editor/, Runtime/, Prefabs/
     Documentation~/
   Visuals/                 com.bftools.visuals
+    EditorAssetUtility/      Editor/
     Palette/                 Editor/, Runtime/
     Background/              Editor/, Runtime/, Prefabs/
     Parallax/                Editor/, Runtime/, Prefabs/

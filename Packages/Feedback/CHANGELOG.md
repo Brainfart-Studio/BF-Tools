@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.2] - Menu Priority Ownership
+
+### Changed
+- Haptics, Hitstop, Screen Flash, and Screen Shake Editor menu creators now reference a new `BFFeedbackMenuPriority` class instead of Core's `BFMenuPriority.Module` constants, so new Feedback Create menu entries no longer require a Core version bump
+- Added the `BFTools.Feedback.EditorAssetUtility.Editor` asmdef, housing `BFFeedbackMenuPriority`
+
 ## [0.6.1] - Test Coverage
 
 ### Added

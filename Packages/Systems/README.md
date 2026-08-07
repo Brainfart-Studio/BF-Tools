@@ -3,7 +3,7 @@
 Gameplay-facing systems for BFTools, built on Core's Logger, Event Bus, and Service Locator: bootstrapping, scene management, object pooling, and save/load.
 
 ## Version
-0.4.0
+0.4.1
 
 ## Contents
 
@@ -54,7 +54,7 @@ Reference `com.bftools.systems` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.systems": "0.4.0"
+  "com.bftools.systems": "0.4.1"
 }
 ```
 

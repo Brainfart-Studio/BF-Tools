@@ -3,7 +3,8 @@
     "rootNamespace": "BFTools.Feedback.Hitstop.Editor",
     "references": [
         "BFTools.Feedback.Hitstop",
-        "BFTools.Core.EditorAssetUtility.Editor"
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Feedback.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"

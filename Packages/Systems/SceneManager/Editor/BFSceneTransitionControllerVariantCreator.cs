@@ -1,5 +1,6 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
+using BFTools.Systems.EditorAssetUtility.Editor;
 
 namespace BFTools.Systems.SceneManager.Editor
 {
@@ -9,7 +10,7 @@ namespace BFTools.Systems.SceneManager.Editor
         private const string TargetPath = "Assets/Prefabs/Systems";
         private const string AssetName = "SceneTransitionController.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Systems/Prefabs/Scene Transition Controller", priority = BFMenuPriority.Group.Systems + BFMenuPriority.Module.SceneManager)]
+        [MenuItem("Assets/Create/BFTools/Systems/Prefabs/Scene Transition Controller", priority = BFSystemsMenuPriority.SceneManager)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);

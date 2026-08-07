@@ -3,7 +3,8 @@
     "rootNamespace": "BFTools.Feedback.ScreenShake.Editor",
     "references": [
         "BFTools.Feedback.ScreenShake",
-        "BFTools.Core.EditorAssetUtility.Editor"
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Feedback.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"
