@@ -67,6 +67,7 @@ namespace BFTools.EditorTools.ProjectVerification.Editor
 
             GameObject go = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
             go.tag = "MainCamera";
+            go.transform.position = new Vector3(0f, 0f, -10f);
             Undo.RegisterCreatedObjectUndo(go, "Create Main Camera");
         }
 
