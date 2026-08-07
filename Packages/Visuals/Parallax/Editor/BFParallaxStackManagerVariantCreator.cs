@@ -1,5 +1,6 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
+using BFTools.Visuals.EditorAssetUtility.Editor;
 
 namespace BFTools.Visuals.Parallax.Editor
 {
@@ -9,7 +10,7 @@ namespace BFTools.Visuals.Parallax.Editor
         private const string TargetPath = "Assets/Prefabs/Visuals/Parallax";
         private const string AssetName = "ParallaxStackManager.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Visuals/Parallax/Prefabs/Parallax Stack Manager", priority = BFMenuPriority.Group.Visuals + BFMenuPriority.Module.Parallax)]
+        [MenuItem("Assets/Create/BFTools/Visuals/Parallax/Prefabs/Parallax Stack Manager", priority = BFVisualsMenuPriority.Parallax)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);

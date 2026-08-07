@@ -1,5 +1,6 @@
 using UnityEditor;
 using BFTools.Core.EditorAssetUtility.Editor;
+using BFTools.Visuals.EditorAssetUtility.Editor;
 
 namespace BFTools.Visuals.Background.Editor
 {
@@ -9,7 +10,7 @@ namespace BFTools.Visuals.Background.Editor
         private const string TargetPath = "Assets/Prefabs/Visuals/Background";
         private const string AssetName = "BackgroundStackManager.prefab";
 
-        [MenuItem("Assets/Create/BFTools/Visuals/Background/Prefabs/Background Stack Manager", priority = BFMenuPriority.Group.Visuals + BFMenuPriority.Module.Background)]
+        [MenuItem("Assets/Create/BFTools/Visuals/Background/Prefabs/Background Stack Manager", priority = BFVisualsMenuPriority.Background)]
         private static void Create()
         {
             BFEditorAssetUtility.CreatePrefabVariant(BasePrefabPath, TargetPath, AssetName);

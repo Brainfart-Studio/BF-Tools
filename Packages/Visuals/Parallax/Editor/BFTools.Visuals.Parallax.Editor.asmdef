@@ -3,7 +3,8 @@
     "rootNamespace": "BFTools.Visuals.Parallax.Editor",
     "references": [
         "BFTools.Visuals.Parallax",
-        "BFTools.Core.EditorAssetUtility.Editor"
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Visuals.EditorAssetUtility.Editor"
     ],
     "includePlatforms": [
         "Editor"
