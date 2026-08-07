@@ -37,6 +37,7 @@ namespace BFTools.EditorTools.ProjectVerification.Editor
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
+            BuildCamera();
             BuildEventSystem();
             Canvas canvas = BuildCanvas();
             BFProjectVerificationTrigger trigger = BuildTrigger();
@@ -55,6 +56,16 @@ namespace BFTools.EditorTools.ProjectVerification.Editor
                 $"Each button fires its feedback event with eventName \"{BFProjectVerificationTrigger.EventName}\" " +
                 "- add a matching entry to each feedback config to see it trigger. Enter Play Mode with this scene open to test.",
                 "OK");
+        }
+
+        private static void BuildCamera()
+        {
+            if (Camera.main != null)
+                return;
+
+            GameObject go = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
+            go.tag = "MainCamera";
+            Undo.RegisterCreatedObjectUndo(go, "Create Main Camera");
         }
 
         private static void BuildEventSystem()
