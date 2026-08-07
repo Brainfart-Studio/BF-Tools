@@ -5,7 +5,7 @@ using BFTools.Feedback.ScreenShake;
 using BFTools.Feedback.ScreenFlash;
 using BFTools.Feedback.Haptics;
 
-namespace BFTools.EditorTools.ProjectVerification.Editor
+namespace BFTools.EditorTools.ProjectVerification
 {
     public class BFProjectVerificationTrigger : MonoBehaviour
     {

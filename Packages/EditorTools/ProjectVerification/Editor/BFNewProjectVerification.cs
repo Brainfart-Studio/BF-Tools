@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using BFTools.Core.EditorAssetUtility.Editor;
 using BFTools.Core.Logger;
+using BFTools.EditorTools.ProjectVerification;
 
 namespace BFTools.EditorTools.ProjectVerification.Editor
 {

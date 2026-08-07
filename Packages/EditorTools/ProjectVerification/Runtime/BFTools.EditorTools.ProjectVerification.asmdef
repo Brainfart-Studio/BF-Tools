@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.EditorTools.ProjectVerification",
+    "rootNamespace": "BFTools.EditorTools.ProjectVerification",
+    "references": [
+        "BFTools.Core.EventBus",
+        "BFTools.Feedback.Hitstop",
+        "BFTools.Feedback.ScreenShake",
+        "BFTools.Feedback.ScreenFlash",
+        "BFTools.Feedback.Haptics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

@@ -3,12 +3,8 @@
     "rootNamespace": "BFTools.EditorTools.ProjectVerification.Editor",
     "references": [
         "BFTools.Core.EditorAssetUtility.Editor",
-        "BFTools.Core.EventBus",
         "BFTools.Core.Logger",
-        "BFTools.Feedback.Hitstop",
-        "BFTools.Feedback.ScreenShake",
-        "BFTools.Feedback.ScreenFlash",
-        "BFTools.Feedback.Haptics",
+        "BFTools.EditorTools.ProjectVerification",
         "Unity.TextMeshPro",
         "Unity.InputSystem"
     ],
