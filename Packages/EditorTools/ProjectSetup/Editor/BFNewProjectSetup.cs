@@ -136,7 +136,7 @@ namespace BFTools.EditorTools.ProjectSetup.Editor
             EditorUtility.SetDirty(bootstrapConfig);
         }
 
-        private static void AssignToObjectArray(SerializedObject serializedObject, string propertyName, Object value, bool applyImmediately = true)
+        private static void AssignToObjectArray(SerializedObject serializedObject, string propertyName, UnityEngine.Object value, bool applyImmediately = true)
         {
             if (value == null)
                 return;
