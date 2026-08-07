@@ -1,0 +1,20 @@
+{
+    "name": "BFTools.EditorTools.ProjectSetup.Editor",
+    "rootNamespace": "BFTools.EditorTools.ProjectSetup.Editor",
+    "references": [
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger",
+        "BFTools.Systems.GlobalBootstrapper",
+        "BFTools.Feedback.Hitstop",
+        "BFTools.Feedback.ScreenShake",
+        "BFTools.Feedback.ScreenFlash",
+        "BFTools.Feedback.Haptics"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

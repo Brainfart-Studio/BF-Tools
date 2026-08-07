@@ -1,0 +1,15 @@
+{
+    "name": "com.bftools.editortools",
+    "version": "0.1.0",
+    "displayName": "BFTools Editor Tools",
+    "description": "Editor-only tooling for BFTools, including one-click project setup.",
+    "unity": "2022.3",
+    "author": {
+        "name": "Brainfart Studio"
+    },
+    "dependencies": {
+        "com.bftools.core": "0.10.1",
+        "com.bftools.systems": "0.4.1",
+        "com.bftools.feedback": "0.6.2"
+    }
+}
