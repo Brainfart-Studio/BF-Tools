@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.feedback",
-    "version": "0.6.2",
+    "version": "0.7.0",
     "displayName": "BFTools Feedback",
     "description": "Feedback systems for BFTools: Haptics, Screen Shake, Screen Flash, Time Stop.",
     "unity": "2022.3",
@@ -8,6 +8,6 @@
         "name": "Brainfart Studio"
     },
     "dependencies": {
-        "com.bftools.core": "0.10.0"
+        "com.bftools.core": "0.11.0"
     }
 }

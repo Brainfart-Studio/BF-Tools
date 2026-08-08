@@ -1,6 +1,6 @@
 {
     "name": "com.bftools.systems",
-    "version": "0.4.1",
+    "version": "0.5.0",
     "displayName": "BFTools Systems",
     "description": "Systems for BFTools: Global Bootstrapper, Level Bootstrapper, Scene Manager, Object Pooler, Save System, Settings Manager.",
     "unity": "2022.3",
@@ -8,7 +8,7 @@
         "name": "Brainfart Studio"
     },
     "dependencies": {
-        "com.bftools.core": "0.10.0",
+        "com.bftools.core": "0.11.0",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
     }
 }
