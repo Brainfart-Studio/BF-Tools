@@ -9,6 +9,8 @@ Brief global time freeze triggered by named events, driven by config-defined tim
 4. Assign one or more `HitstopConfig` assets to the variant's `BFHitstop` component (`configs` list) — e.g. split by category (`UI_Hitstop`, `Combat_Hitstop`, `Environment_Hitstop`) instead of cramming everything into one asset.
 5. Place the prefab instance in the scene (or wire it into a Bootstrapper).
 
+Or run `BF Tools/New Project Setup` (in `com.bftools.editortools`): it creates the config and prefab, seeds the config with a single `"Default"` entry (`timescale` 0.05, `duration` 0.15), and assigns the config to the prefab's `BFHitstop` component. It skips step 5 — instead it contributes the prefab to the Global Bootstrap Config's `System Prefabs` array, so Global Bootstrapper instantiates it automatically if that's set up too. Adjust or add to the seeded entry before relying on it for real events.
+
 ## Usage
 Fire a hitstop event from anywhere:
 ```csharp

@@ -9,6 +9,8 @@ Controller rumble/vibration triggered by named events, driven by config-defined 
 4. Assign one or more `HapticsConfig` assets to the variant's `BFHaptics` component (`configs` list) — e.g. split by category (`UI_Haptics`, `Combat_Haptics`, `Environment_Haptics`) instead of cramming everything into one asset.
 5. Place the prefab instance in the scene (or wire it into a Bootstrapper).
 
+Or run `BF Tools/New Project Setup` (in `com.bftools.editortools`): it creates the config and prefab, seeds the config with a single `"Default"` entry (`intensity` 0.5, `duration` 0.2), and assigns the config to the prefab's `BFHaptics` component. It skips step 5 — instead it contributes the prefab to the Global Bootstrap Config's `System Prefabs` array, so Global Bootstrapper instantiates it automatically if that's set up too. Adjust or add to the seeded entry before relying on it for real events.
+
 ## Usage
 Fire a haptics event from anywhere:
 ```csharp

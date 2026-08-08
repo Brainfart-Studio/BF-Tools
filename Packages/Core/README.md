@@ -3,7 +3,7 @@
 Foundational systems for BFTools, covering logging, event communication, and shared editor tooling used by the rest of the library.
 
 ## Version
-0.10.1
+0.11.0
 
 ## Contents
 
@@ -15,6 +15,9 @@ Shared editor-only helpers (folder creation, config asset creation, prefab varia
 
 ### Logger
 Tag-based logging with per-tag level overrides and pluggable sinks. See [Documentation~/Logger.md](Documentation~/Logger.md).
+
+### Project Setup
+`IBFProjectSetupStep`, `IBFSystemPrefabContributor`, and `IBFSystemPrefabConsumer` interfaces for building self-contained, auto-discovered setup tooling. Any class implementing `IBFProjectSetupStep` is picked up automatically by `com.bftools.editortools`'s `BF Tools/New Project Setup` via `TypeCache`, no reference back to the calling package required.
 
 ### Service Locator
 Static registry for locating shared services by type at runtime. See [Documentation~/ServiceLocator.md](Documentation~/ServiceLocator.md).
@@ -46,7 +49,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Systems/package.json](../Systems/package.json) for an example).
 ```json
 "dependencies": {
-  "com.bftools.core": "0.10.1"
+  "com.bftools.core": "0.11.0"
 }
 ```
 

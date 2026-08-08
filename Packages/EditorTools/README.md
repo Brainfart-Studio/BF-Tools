@@ -8,15 +8,15 @@ Editor-only tooling for BFTools: one-click project bootstrap and feedback-system
 ## Contents
 
 ### Project Setup
-`BF Tools > New Project Setup` creates the Logger and Global Bootstrapper configs, creates a prefab variant + config for each Feedback module (Hitstop, Screen Shake, Screen Flash, Haptics), seeds each config with a `"Default"` entry, assigns each config to its prefab, and wires all four prefabs into the Global Bootstrapper config. Idempotent — re-running it will not duplicate or overwrite assets that already exist.
+`BF Tools > New Project Setup` discovers every `IBFProjectSetupStep` (from `com.bftools.core`'s `BFTools.Core.ProjectSetup.Editor` assembly) present anywhere in the project via `TypeCache`, runs each one, and wires any `IBFSystemPrefabContributor` results to any `IBFSystemPrefabConsumer` steps. EditorTools itself holds no hardcoded knowledge of what gets created or where — currently, with Core, Systems, and Feedback installed, this creates the Logger and Global Bootstrapper configs, creates a prefab variant + config for each Feedback module (Hitstop, Screen Shake, Screen Flash, Haptics), seeds each config with a `"Default"` entry, assigns each config to its prefab, and wires all four prefabs into the Global Bootstrapper config. Idempotent — re-running it will not duplicate or overwrite assets that already exist. Any package can add its own setup step and it'll be picked up the same way, with no changes needed here.
 
 ### Project Verification
 `BF Tools > New Project Verification` creates (or opens, if it already exists) a `BFToolsTest` scene containing a camera, 3 randomly colored/sized bouncing balls, and 4 UI buttons (Hitstop, Screen Shake, Screen Flash, Haptics) wired to fire each feedback event with `eventName = "Default"`. Enter Play Mode with this scene open to visually confirm all four Feedback systems are working end-to-end.
 
 ## Dependencies
-- `com.bftools.core` @ 0.10.1
-- `com.bftools.systems` @ 0.4.1
-- `com.bftools.feedback` @ 0.6.2
+- `com.bftools.core` @ 0.11.0
+- `com.bftools.systems` @ 0.5.0
+- `com.bftools.feedback` @ 0.7.0
 - `com.unity.textmeshpro` @ 3.0.6
 - `com.unity.inputsystem` @ 1.7.0
 
@@ -53,4 +53,4 @@ Reference `com.bftools.editortools` from a dependent package's `package.json`:
 ```
 
 ### Note on embedding
-Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.editortools`), which is what the Project Setup tool's hardcoded prefab paths (e.g. `Packages/com.bftools.feedback/Hitstop/Prefabs/Hitstop.prefab`) expect. A directly embedded folder is mounted by its on-disk name (`EditorTools`) instead, which will break those paths.
+Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory, same as any other BFTools package. EditorTools itself has no hardcoded asset paths of its own, but the setup steps it discovers and runs (e.g. Feedback's Hitstop setup step, which expects its base prefab at `Packages/com.bftools.feedback/Hitstop/Prefabs/Hitstop.prefab`) do — so a directly embedded Feedback (or Core, or Systems) folder mounted under its on-disk name instead of its package name will break those steps when `BF Tools > New Project Setup` runs.

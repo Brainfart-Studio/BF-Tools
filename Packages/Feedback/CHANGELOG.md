@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.0] - Project Setup Steps
+
+### Added
+- `BFHitstopSetupStep`, `BFScreenShakeSetupStep`, `BFScreenFlashSetupStep`, and `BFHapticsSetupStep`, each implementing `IBFProjectSetupStep` and `IBFSystemPrefabContributor` (from `com.bftools.core`'s new `BFTools.Core.ProjectSetup.Editor` assembly), so `BF Tools/New Project Setup` (in `com.bftools.editortools`) creates and wires each module's prefab + config automatically, without EditorTools needing a hardcoded reference to Feedback
+- Each setup step seeds its config with a single `"Default"` entry using the same values `New Project Setup` previously hardcoded (Hitstop: `timescale` 0.05, `duration` 0.15; Screen Shake: `amplitude` 0.3, `duration` 0.2; Screen Flash: `flashColor` white, `duration` 0.15, `flashCount` 1; Haptics: `intensity` 0.5, `duration` 0.2), assigns the config to the prefab's component, and reports the prefab so it can be added to the Global Bootstrap Config's `System Prefabs` array
+- The existing standalone Config/Prefab `[MenuItem]` creators for all four modules are unchanged and still work independently
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.11.0, required for the new `IBFProjectSetupStep` and `IBFSystemPrefabContributor` interfaces
+
 ## [0.6.2] - Menu Priority Ownership
 
 ### Changed

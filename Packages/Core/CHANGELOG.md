@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.0] - Project Setup Steps
+
+### Added
+- `BFTools.Core.ProjectSetup.Editor` assembly, with three new interfaces for building auto-discovered, self-contained project setup tooling: `IBFProjectSetupStep` (`Order`, `DisplayName`, `Run()`), `IBFSystemPrefabContributor` (`GameObject SystemPrefab`), and `IBFSystemPrefabConsumer` (`AssignSystemPrefabs(GameObject[])`)
+- `BFLoggerConfigCreator` now also implements `IBFProjectSetupStep`, so it participates in `BF Tools/New Project Setup` (in `com.bftools.editortools`) in addition to its existing `Assets/Create/BFTools/Core/Config/Logger Config` menu item
+
 ## [0.10.1] - Menu Priority Ownership
 
 ### Removed

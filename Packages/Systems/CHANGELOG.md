@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.0] - Project Setup Step
+
+### Added
+- `BFGlobalBootstrapConfigCreator` now implements `IBFProjectSetupStep` and `IBFSystemPrefabConsumer` (from `com.bftools.core`'s new `BFTools.Core.ProjectSetup.Editor` assembly), so `BF Tools/New Project Setup` (in `com.bftools.editortools`) creates and wires the Global Bootstrap Config automatically, without EditorTools needing a hardcoded reference to Systems
+- The Global Bootstrap Config setup step collects every `IBFSystemPrefabContributor` the setup orchestrator finds and assigns their prefabs to `System Prefabs`, replacing the wiring code that previously lived in EditorTools
+
+### Changed
+- Bumped `com.bftools.core` dependency to 0.11.0, required for the new `IBFProjectSetupStep`, `IBFSystemPrefabContributor`, and `IBFSystemPrefabConsumer` interfaces
+
 ## [0.4.1] - Menu Priority Ownership
 
 ### Changed
