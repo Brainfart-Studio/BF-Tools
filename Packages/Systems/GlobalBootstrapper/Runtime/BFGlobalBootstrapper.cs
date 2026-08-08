@@ -7,6 +7,8 @@ namespace BFTools.Systems.GlobalBootstrapper
     {
         private const string LogTag = "GlobalBootstrapper";
 
+        private static System.Func<GameObject, GameObject> instantiateFunc = prefab => Object.Instantiate(prefab);
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
@@ -38,7 +40,7 @@ namespace BFTools.Systems.GlobalBootstrapper
 
                 try
                 {
-                    GameObject instance = Object.Instantiate(prefab);
+                    GameObject instance = instantiateFunc(prefab);
                     instance.transform.SetParent(null); // ensure root-level, required for DontDestroyOnLoad
                     Object.DontDestroyOnLoad(instance);
                     spawned++;
