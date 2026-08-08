@@ -81,5 +81,41 @@ namespace BFTools.Core.ServiceLocator.Tests
             Assert.AreSame(a, BFServiceLocator.Get<FakeServiceA>());
             Assert.AreSame(b, BFServiceLocator.Get<FakeServiceB>());
         }
+
+        [Test]
+        public void IsRegistered_ReflectsRegistrationState()
+        {
+            Assert.IsFalse(BFServiceLocator.IsRegistered<FakeServiceA>());
+
+            BFServiceLocator.Register(new FakeServiceA());
+            Assert.IsTrue(BFServiceLocator.IsRegistered<FakeServiceA>());
+
+            BFServiceLocator.Unregister<FakeServiceA>();
+            Assert.IsFalse(BFServiceLocator.IsRegistered<FakeServiceA>());
+        }
+
+        [Test]
+        public void TryGet_Registered_ReturnsTrueAndInstance()
+        {
+            FakeServiceA service = new FakeServiceA { Value = 3 };
+            BFServiceLocator.Register(service);
+
+            bool found = BFServiceLocator.TryGet(out FakeServiceA resolved);
+
+            Assert.IsTrue(found);
+            Assert.AreSame(service, resolved);
+        }
+
+        [Test]
+        public void TryGet_Unregistered_ReturnsFalseAndDoesNotThrow()
+        {
+            bool found = true;
+            FakeServiceA resolved = null;
+
+            Assert.DoesNotThrow(() => found = BFServiceLocator.TryGet(out resolved));
+
+            Assert.IsFalse(found);
+            Assert.IsNull(resolved);
+        }
     }
 }

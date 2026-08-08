@@ -34,5 +34,23 @@ namespace BFTools.Core.ServiceLocator
             services.Remove(typeof(T));
             BFLogger.Trace(LogTag, $"Unregistered {typeof(T).Name}");
         }
+
+        public static bool IsRegistered<T>()
+        {
+            return services.ContainsKey(typeof(T));
+        }
+
+        public static bool TryGet<T>(out T service)
+        {
+            if (services.TryGetValue(typeof(T), out object stored))
+            {
+                service = (T)stored;
+                return true;
+            }
+
+            BFLogger.Trace(LogTag, $"TryGet {typeof(T).Name} found no registration");
+            service = default;
+            return false;
+        }
     }
 }
