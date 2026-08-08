@@ -10,6 +10,8 @@ Instantiates persistent system prefabs once, before the first scene loads. Prefa
 1. `Assets/Create/BFTools/Systems/Config/Global Bootstrap Config` creates config at `Assets/Resources/BFTools/GlobalBootstrapConfig.asset`.
 2. Assign system prefabs to the config's `System Prefabs` array.
 
+Or run `BF Tools/New Project Setup` (in `com.bftools.editortools`): it creates the config and fills `System Prefabs` with whatever prefabs the other installed BFTools modules created during the same run.
+
 ### How it works
 - `BFGlobalBootstrapper.Initialize()` runs via `[RuntimeInitializeOnLoadMethod(BeforeSceneLoad)]`.
 - Loads `BFGlobalBootstrapperConfig` from `Resources/BFTools/GlobalBootstrapConfig`.

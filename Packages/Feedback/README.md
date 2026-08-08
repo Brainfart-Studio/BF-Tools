@@ -3,7 +3,7 @@
 Event-driven feedback systems: controller haptics, camera screen shake, hitstop, and screen flash.
 
 ## Version
-0.6.2
+0.7.0
 
 ## Contents
 
@@ -20,7 +20,7 @@ Brief global time freeze triggered by named events. See [Documentation~/Hitstop.
 Full-screen color flash triggered by named events. See [Documentation~/ScreenFlash.md](Documentation~/ScreenFlash.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.10.0
+- `com.bftools.core` @ 0.11.0
 - `com.unity.inputsystem` @ 1.7.0
 
 ## Installation
@@ -51,7 +51,7 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "0.6.2"
+  "com.bftools.feedback": "0.7.0"
 }
 ```
 

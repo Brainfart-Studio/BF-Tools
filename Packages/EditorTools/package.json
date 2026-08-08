@@ -1,0 +1,17 @@
+{
+    "name": "com.bftools.editortools",
+    "version": "0.1.0",
+    "displayName": "BFTools Editor Tools",
+    "description": "Editor-only tooling for BFTools, including one-click project setup and feedback-system verification.",
+    "unity": "2022.3",
+    "author": {
+        "name": "Brainfart Studio"
+    },
+    "dependencies": {
+        "com.bftools.core": "0.11.0",
+        "com.bftools.systems": "0.5.0",
+        "com.bftools.feedback": "0.7.0",
+        "com.unity.textmeshpro": "3.0.6",
+        "com.unity.inputsystem": "1.7.0"
+    }
+}

@@ -4,7 +4,9 @@
     "references": [
         "BFTools.Feedback.ScreenFlash",
         "BFTools.Core.EditorAssetUtility.Editor",
-        "BFTools.Feedback.EditorAssetUtility.Editor"
+        "BFTools.Feedback.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger",
+        "BFTools.Core.ProjectSetup.Editor"
     ],
     "includePlatforms": [
         "Editor"
