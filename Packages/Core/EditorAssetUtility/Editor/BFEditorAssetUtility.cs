@@ -63,19 +63,11 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             string fullPath = $"{folderPath}/{assetName}";
             BFLogger.Trace(LogTag, $"Checking for existing {typeof(T).Name} at '{fullPath}'.");
             T existing = AssetDatabase.LoadAssetAtPath<T>(fullPath);
-            if (existing != null)
-            {
-                BFLogger.Warning(LogTag, $"{typeof(T).Name} already exists at {fullPath}");
-                Selection.activeObject = existing;
-                EditorGUIUtility.PingObject(existing);
+            if (TryHandleExisting(existing, fullPath, typeof(T).Name))
                 return existing;
-            }
 
-            if (!AssetDatabase.IsValidFolder(folderPath))
-            {
-                BFLogger.Error(LogTag, $"cannot create '{assetName}', folder '{folderPath}' does not exist.");
+            if (!RequireValidFolder(folderPath, assetName))
                 return null;
-            }
 
             T asset = ScriptableObject.CreateInstance<T>();
             AssetDatabase.CreateAsset(asset, fullPath);
@@ -84,8 +76,7 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
             BFLogger.Info(LogTag, $"Created {typeof(T).Name} at {fullPath}");
 
-            Selection.activeObject = asset;
-            EditorGUIUtility.PingObject(asset);
+            SelectAndPing(asset);
             return asset;
         }
 
@@ -104,19 +95,11 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             string fullPath = $"{folderPath}/{assetName}";
             BFLogger.Trace(LogTag, $"Checking for existing prefab variant at '{fullPath}'.");
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(fullPath);
-            if (existing != null)
-            {
-                BFLogger.Warning(LogTag, $"Prefab variant already exists at {fullPath}");
-                Selection.activeObject = existing;
-                EditorGUIUtility.PingObject(existing);
+            if (TryHandleExisting(existing, fullPath, "Prefab variant"))
                 return existing;
-            }
 
-            if (!AssetDatabase.IsValidFolder(folderPath))
-            {
-                BFLogger.Error(LogTag, $"cannot create '{assetName}', folder '{folderPath}' does not exist.");
+            if (!RequireValidFolder(folderPath, assetName))
                 return null;
-            }
 
             GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(basePrefab);
             GameObject variant = PrefabUtility.SaveAsPrefabAsset(instance, fullPath);
@@ -124,9 +107,33 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
             BFLogger.Info(LogTag, $"Created prefab variant at {fullPath}");
 
-            Selection.activeObject = variant;
-            EditorGUIUtility.PingObject(variant);
+            SelectAndPing(variant);
             return variant;
+        }
+
+        private static bool TryHandleExisting(Object existing, string fullPath, string label)
+        {
+            if (existing == null)
+                return false;
+
+            BFLogger.Warning(LogTag, $"{label} already exists at {fullPath}");
+            SelectAndPing(existing);
+            return true;
+        }
+
+        private static bool RequireValidFolder(string folderPath, string assetName)
+        {
+            if (AssetDatabase.IsValidFolder(folderPath))
+                return true;
+
+            BFLogger.Error(LogTag, $"cannot create '{assetName}', folder '{folderPath}' does not exist.");
+            return false;
+        }
+
+        private static void SelectAndPing(Object asset)
+        {
+            Selection.activeObject = asset;
+            EditorGUIUtility.PingObject(asset);
         }
     }
 }
