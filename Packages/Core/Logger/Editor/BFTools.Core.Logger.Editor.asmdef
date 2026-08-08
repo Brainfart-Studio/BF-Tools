@@ -3,7 +3,8 @@
     "rootNamespace": "BFTools.Core.Logger.Editor",
     "references": [
         "BFTools.Core.Logger",
-        "BFTools.Core.EditorAssetUtility.Editor"
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Core.ProjectSetup.Editor"
     ],
     "includePlatforms": [
         "Editor"
