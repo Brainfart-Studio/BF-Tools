@@ -1,7 +1,9 @@
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using BFTools.Core.Logger;
 
 namespace BFTools.Core.Logger.Tests
@@ -10,13 +12,14 @@ namespace BFTools.Core.Logger.Tests
     {
         private const long MaxFileSizeBytes = 1 * 1024 * 1024;
 
+        private string logDirectory;
         private string logFilePath;
         private string previousLogFilePath;
 
         [SetUp]
         public void SetUp()
         {
-            string logDirectory = Path.Combine(Application.persistentDataPath, "Logs");
+            logDirectory = Path.Combine(Application.persistentDataPath, "Logs");
             logFilePath = Path.Combine(logDirectory, "bftools.log");
             previousLogFilePath = Path.Combine(logDirectory, "bftools.log.bak");
             DeleteLogFiles();
@@ -30,8 +33,11 @@ namespace BFTools.Core.Logger.Tests
 
         private void DeleteLogFiles()
         {
-            if (File.Exists(logFilePath))
+            if (Directory.Exists(logFilePath))
+                Directory.Delete(logFilePath, true);
+            else if (File.Exists(logFilePath))
                 File.Delete(logFilePath);
+
             if (File.Exists(previousLogFilePath))
                 File.Delete(previousLogFilePath);
         }
@@ -150,6 +156,42 @@ namespace BFTools.Core.Logger.Tests
             builder.Append(marker).Append(System.Environment.NewLine);
             builder.Append('a', (int)minimumSizeBytes);
             File.WriteAllText(path, builder.ToString(), Encoding.UTF8);
+        }
+
+        [Test]
+        public void Constructor_LogDirectoryBlockedByFile_DoesNotThrowAndDisablesFileLogging()
+        {
+            if (Directory.Exists(logDirectory))
+                Directory.Delete(logDirectory, true);
+            File.WriteAllText(logDirectory, "blocking file");
+
+            try
+            {
+                LogAssert.Expect(LogType.Warning, new Regex("Failed to create log directory"));
+
+                FileSink sink = null;
+                Assert.DoesNotThrow(() => sink = new FileSink());
+                Assert.DoesNotThrow(() => sink.Write(LogLevel.Warning, new[] { "Tag" }, "message", null, false));
+
+                Assert.IsFalse(File.Exists(logFilePath));
+            }
+            finally
+            {
+                File.Delete(logDirectory);
+                Directory.CreateDirectory(logDirectory);
+            }
+        }
+
+        [Test]
+        public void Write_LogFilePathBlockedByDirectory_DoesNotThrowAndDisablesFurtherWrites()
+        {
+            FileSink sink = new FileSink();
+            Directory.CreateDirectory(logFilePath);
+
+            LogAssert.Expect(LogType.Warning, new Regex("Failed to write to log file"));
+            Assert.DoesNotThrow(() => sink.Write(LogLevel.Warning, new[] { "Tag" }, "first", null, false));
+
+            Assert.DoesNotThrow(() => sink.Write(LogLevel.Warning, new[] { "Tag" }, "second", null, false));
         }
     }
 }
