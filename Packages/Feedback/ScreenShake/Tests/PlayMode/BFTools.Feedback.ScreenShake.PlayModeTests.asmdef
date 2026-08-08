@@ -1,24 +1,14 @@
 {
-    "name": "BFTools.Feedback.ScreenShake.PlayModeTests",
-    "rootNamespace": "BFTools.Feedback.ScreenShake.PlayModeTests",
+    "name": "BFTools.Feedback.ScreenShake",
+    "rootNamespace": "BFTools.Feedback.ScreenShake",
     "references": [
-        "BFTools.Feedback.ScreenShake",
+        "BFTools.Core.ConfigLookup",
         "BFTools.Core.EventBus",
-        "BFTools.Core.Logger",
-        "BFTools.Core.Logger.TestUtilities",
-        "UnityEngine.TestRunner"
+        "BFTools.Core.Logger"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [
-        "nunit.framework.dll"
-    ],
-    "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
-    "versionDefines": [],
-    "noEngineReferences": false
+    "autoReferenced": true,
+    "defineConstraints": []
 }

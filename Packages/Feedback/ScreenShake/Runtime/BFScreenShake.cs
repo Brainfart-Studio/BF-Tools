@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using BFTools.Core.ConfigLookup;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 
@@ -64,24 +65,18 @@ namespace BFTools.Feedback.ScreenShake
 
         private void BuildLookup()
         {
-            lookup = new Dictionary<string, BFScreenShakeEntry>();
+            lookup = BFConfigLookupBuilder.Merge(MergedEntries(), entry => entry.eventName, LogTag, name, "eventName", this);
+        }
+
+        private IEnumerable<BFScreenShakeEntry> MergedEntries()
+        {
             foreach (var cfg in configs)
             {
                 if (cfg == null)
                     continue;
                 foreach (var entry in cfg.Entries)
-                {
-                    if (lookup.ContainsKey(entry.eventName))
-                    {
-                        BFLogger.Warning(LogTag,
-                            $"Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
-                            this);
-                    }
-                    lookup[entry.eventName] = entry;
-                }
+                    yield return entry;
             }
-
-            BFLogger.Debug(LogTag, $"Built lookup with {lookup.Count} entrie(s) on '{name}'.", this);
         }
 
         private void OnScreenShakeEvent(BFScreenShakeEvent evt)
