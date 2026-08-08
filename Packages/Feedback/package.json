@@ -8,6 +8,7 @@
         "name": "Brainfart Studio"
     },
     "dependencies": {
-        "com.bftools.core": "0.11.0"
+        "com.bftools.core": "0.11.0",
+        "com.unity.inputsystem": "1.7.0"
     }
 }

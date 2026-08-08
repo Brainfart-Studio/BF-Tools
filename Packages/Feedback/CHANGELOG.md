@@ -10,6 +10,9 @@
 ### Changed
 - Bumped `com.bftools.core` dependency to 0.11.0, required for the new `IBFProjectSetupStep` and `IBFSystemPrefabContributor` interfaces
 
+### Fixed
+- Declared `com.unity.inputsystem` (1.7.0) as a `package.json` dependency — `BFHaptics` has referenced `Unity.InputSystem` in its asmdef since Haptics was scaffolded, but the dependency was never declared, so installing `com.bftools.feedback` standalone without Input System already present would fail to compile
+
 ## [0.6.2] - Menu Priority Ownership
 
 ### Changed

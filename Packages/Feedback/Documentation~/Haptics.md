@@ -30,4 +30,4 @@ EventBus<BFHapticsEvent>.Fire(new BFHapticsEvent { eventName = "Hit" });
 - Requires `Gamepad.current`. No fallback for keyboard/mouse-only input or multiple simultaneous gamepads.
 - Dual-motor (independent low/high frequency) support is deferred. Currently both motors always match.
 - The merged lookup is built once in `OnEnable`. Changing `configs` at runtime (e.g. via script) while the component is already enabled won't take effect until it's re-enabled.
-- Depends on `com.bftools.core` (EventBus) and `unity.inputsystem`.
+- Depends on `com.bftools.core` (EventBus) and `com.unity.inputsystem`.
