@@ -45,26 +45,14 @@ namespace BFTools.Systems.GlobalBootstrapper.Editor
 
             foreach (GameObject prefab in prefabs)
             {
-                if (prefab == null || Contains(arrayProp, prefab))
+                if (prefab == null)
                     continue;
 
-                arrayProp.InsertArrayElementAtIndex(arrayProp.arraySize);
-                arrayProp.GetArrayElementAtIndex(arrayProp.arraySize - 1).objectReferenceValue = prefab;
+                BFEditorAssetUtility.AppendIfMissing(arrayProp, prefab);
             }
 
             so.ApplyModifiedProperties();
             EditorUtility.SetDirty(config);
-        }
-
-        private static bool Contains(SerializedProperty arrayProp, GameObject value)
-        {
-            for (int i = 0; i < arrayProp.arraySize; i++)
-            {
-                if (arrayProp.GetArrayElementAtIndex(i).objectReferenceValue == value)
-                    return true;
-            }
-
-            return false;
         }
     }
 }

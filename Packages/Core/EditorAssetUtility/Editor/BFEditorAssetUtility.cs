@@ -167,16 +167,24 @@ namespace BFTools.Core.EditorAssetUtility.Editor
                 return;
             }
 
+            if (!AppendIfMissing(arrayProp, config))
+                return;
+
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(target);
+        }
+
+        public static bool AppendIfMissing(SerializedProperty arrayProp, Object value)
+        {
             for (int i = 0; i < arrayProp.arraySize; i++)
             {
-                if (arrayProp.GetArrayElementAtIndex(i).objectReferenceValue == config)
-                    return;
+                if (arrayProp.GetArrayElementAtIndex(i).objectReferenceValue == value)
+                    return false;
             }
 
             arrayProp.InsertArrayElementAtIndex(arrayProp.arraySize);
-            arrayProp.GetArrayElementAtIndex(arrayProp.arraySize - 1).objectReferenceValue = config;
-            so.ApplyModifiedProperties();
-            EditorUtility.SetDirty(target);
+            arrayProp.GetArrayElementAtIndex(arrayProp.arraySize - 1).objectReferenceValue = value;
+            return true;
         }
 
         private static bool TryHandleExisting(Object existing, string fullPath, string label)
