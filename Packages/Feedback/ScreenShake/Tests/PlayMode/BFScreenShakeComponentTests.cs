@@ -217,5 +217,34 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
 
             Assert.AreEqual(camera.transform, GetTarget(screenShake));
         }
+
+        [UnityTest]
+        public IEnumerator OnSceneLoaded_DuringActiveShake_CancelsShakeAndRestoresPreviousTarget()
+        {
+            Camera camera = CreateMainCamera();
+            Vector3 originalPosition = camera.transform.localPosition;
+            BFScreenShakeConfig config = CreateConfig(("Explosion", 0.5f, 1f));
+            createdAssets.Add(config);
+            BFScreenShake screenShake = CreateScreenShake(config);
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            yield return null;
+
+            Assert.AreNotEqual(originalPosition, camera.transform.localPosition,
+                "Shake should have applied an offset before the scene load happens.");
+
+            cameraGo.tag = "Untagged";
+            InvokeOnSceneLoaded(screenShake);
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "Cancelling the shake on scene load should restore the previous target's original position.");
+            Assert.IsNull(GetTarget(screenShake));
+
+            yield return null;
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "The cancelled shake coroutine must not resume and move the old target on a later frame.");
+        }
     }
 }

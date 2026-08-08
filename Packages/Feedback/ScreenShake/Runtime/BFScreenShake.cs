@@ -43,6 +43,14 @@ namespace BFTools.Feedback.ScreenShake
 
         private void ResolveTarget()
         {
+            if (activeShake != null)
+            {
+                StopCoroutine(activeShake);
+                activeShake = null;
+                if (target != null)
+                    target.localPosition = originalPosition;
+            }
+
             target = Camera.main != null ? Camera.main.transform : null;
             if (target == null)
                 BFLogger.Warning(LogTag, "No main camera found to shake.", this);
