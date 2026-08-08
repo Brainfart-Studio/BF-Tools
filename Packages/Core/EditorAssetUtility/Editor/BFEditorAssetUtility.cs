@@ -18,7 +18,10 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
             string trimmed = assetPath.Trim().TrimEnd('/');
             if (AssetDatabase.IsValidFolder(trimmed))
+            {
+                BFLogger.Trace(LogTag, $"Folder '{trimmed}' already exists.");
                 return;
+            }
 
             string[] parts = trimmed.Split('/');
             string current = parts[0];
@@ -44,6 +47,10 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
                     BFLogger.Debug(LogTag, $"Created folder '{next}'.");
                 }
+                else
+                {
+                    BFLogger.Trace(LogTag, $"Folder segment '{next}' already exists.");
+                }
 
                 current = next;
             }
@@ -54,6 +61,7 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             EnsureFolderExists(folderPath);
 
             string fullPath = $"{folderPath}/{assetName}";
+            BFLogger.Trace(LogTag, $"Checking for existing {typeof(T).Name} at '{fullPath}'.");
             T existing = AssetDatabase.LoadAssetAtPath<T>(fullPath);
             if (existing != null)
             {
@@ -83,6 +91,7 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
         public static GameObject CreatePrefabVariant(string basePrefabPath, string folderPath, string assetName)
         {
+            BFLogger.Trace(LogTag, $"Loading base prefab at '{basePrefabPath}'.");
             GameObject basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(basePrefabPath);
             if (basePrefab == null)
             {
@@ -93,6 +102,7 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             EnsureFolderExists(folderPath);
 
             string fullPath = $"{folderPath}/{assetName}";
+            BFLogger.Trace(LogTag, $"Checking for existing prefab variant at '{fullPath}'.");
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(fullPath);
             if (existing != null)
             {

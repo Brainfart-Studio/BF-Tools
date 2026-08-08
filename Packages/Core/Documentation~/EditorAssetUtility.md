@@ -33,9 +33,8 @@ BFEditorAssetUtility.CreatePrefabVariant(
 - If the target folder still isn't valid after `EnsureFolderExists` (e.g. because `folderPath` was malformed), both creation methods log an `Error` and return `null` rather than attempting to write into a bad path.
 - `CreatePrefabVariant` loads the base prefab, instantiates it, saves the instance as a prefab variant at the target path via `PrefabUtility.SaveAsPrefabAsset`, then destroys the temporary scene instance.
 - On success, all three methods select and ping the created (or pre-existing) asset in the Project window, so the menu action immediately shows the user the result.
-- All logging goes through `BFLogger` under the `EditorAssetUtility` tag, at `Debug` (folder segment created), `Info` (asset created), `Warning` (asset already exists), or `Error` (bad input, invalid folder, missing base prefab) — see Notes for a gap here.
+- All logging goes through `BFLogger` under the `EditorAssetUtility` tag, at `Trace` (folder/asset lookups and skips), `Debug` (folder segment created), `Info` (asset created), `Warning` (asset already exists), or `Error` (bad input, invalid folder, missing base prefab).
 
 ## Notes
-- No `Trace`-level logging anywhere in this module, unlike `EventBus`/`ServiceLocator`, which use `Trace` for per-call tracing. There's no fine-grained way to see what path was checked or skipped without a Debug/Warning/Error already firing.
 - `CreateConfigAsset` and `CreatePrefabVariant` don't validate `assetName` or `folderPath` for null/empty before building the target path. A null/empty `assetName` silently becomes a trailing-slash path, and the resulting failure is reported as "folder does not exist" even when the real problem is the asset name.
 - `CreateConfigAsset`/`CreatePrefabVariant` repeat the same "already exists → warn/select/ping" and "folder invalid → error" blocks rather than sharing a helper; a third asset-creation method would triple that duplication.
