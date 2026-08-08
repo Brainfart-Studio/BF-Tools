@@ -189,5 +189,25 @@ namespace BFTools.Feedback.ScreenFlash.PlayModeTests
             Assert.AreEqual(Color.white, flashImage.color);
             Assert.IsFalse(spy.Entries.Exists(e => e.Tags != null && System.Array.IndexOf(e.Tags, "ScreenFlash") >= 0));
         }
+
+        [UnityTest]
+        public IEnumerator OnDisable_DuringActiveFlash_ResetsAlphaToZero()
+        {
+            BFScreenFlashConfig config = CreateConfig(("Damage", Color.red, 1f, 1));
+            createdAssets.Add(config);
+            CreateScreenFlash(config);
+
+            EventBus<BFScreenFlashEvent>.Fire(new BFScreenFlashEvent { eventName = "Damage" });
+
+            yield return null;
+
+            Assert.Greater(flashImage.color.a, 0f,
+                "Flash should still be mid-fade before the component is disabled.");
+
+            go.SetActive(false);
+
+            Assert.AreEqual(0f, flashImage.color.a,
+                "Disabling the component mid-flash should reset the flash image's alpha to zero.");
+        }
     }
 }

@@ -31,6 +31,21 @@ namespace BFTools.Feedback.ScreenFlash
         private void OnDisable()
         {
             EventBus<BFScreenFlashEvent>.Unsubscribe(OnScreenFlashEvent);
+            CancelActiveFlash();
+        }
+
+        private void CancelActiveFlash()
+        {
+            if (activeFlash == null)
+                return;
+
+            StopCoroutine(activeFlash);
+            activeFlash = null;
+            if (flashImage != null)
+            {
+                Color c = flashImage.color;
+                flashImage.color = new Color(c.r, c.g, c.b, 0f);
+            }
         }
 
         private void BuildLookup()
@@ -64,9 +79,7 @@ namespace BFTools.Feedback.ScreenFlash
                 return;
             }
 
-            if (activeFlash != null)
-                StopCoroutine(activeFlash);
-
+            CancelActiveFlash();
             activeFlash = StartCoroutine(FlashRoutine(entry));
         }
 
