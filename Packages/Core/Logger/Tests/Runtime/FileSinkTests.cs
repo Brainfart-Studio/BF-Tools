@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using NUnit.Framework;
 using UnityEngine;
 using BFTools.Core.Logger;
@@ -7,6 +8,8 @@ namespace BFTools.Core.Logger.Tests
 {
     public class FileSinkTests
     {
+        private const long MaxFileSizeBytes = 1 * 1024 * 1024;
+
         private string logFilePath;
         private string previousLogFilePath;
 
@@ -95,6 +98,58 @@ namespace BFTools.Core.Logger.Tests
 
             string[] lines = File.ReadAllLines(logFilePath);
             Assert.Greater(lines.Length, 1);
+        }
+
+        [Test]
+        public void Write_ExistingFileBelowMaxSize_DoesNotRotate()
+        {
+            File.WriteAllText(logFilePath, "existing content" + System.Environment.NewLine, Encoding.UTF8);
+            FileSink sink = new FileSink();
+
+            sink.Write(LogLevel.Warning, new[] { "Tag" }, "new message", null, false);
+
+            Assert.IsFalse(File.Exists(previousLogFilePath));
+            string content = File.ReadAllText(logFilePath);
+            StringAssert.Contains("existing content", content);
+            StringAssert.Contains("new message", content);
+        }
+
+        [Test]
+        public void Write_ExistingFileAtOrAboveMaxSize_RotatesToBackupBeforeAppending()
+        {
+            WriteFileOfSize(logFilePath, MaxFileSizeBytes, "old content");
+            FileSink sink = new FileSink();
+
+            sink.Write(LogLevel.Warning, new[] { "Tag" }, "new message", null, false);
+
+            Assert.IsTrue(File.Exists(previousLogFilePath));
+            StringAssert.Contains("old content", File.ReadAllText(previousLogFilePath));
+
+            string newContent = File.ReadAllText(logFilePath);
+            StringAssert.DoesNotContain("old content", newContent);
+            StringAssert.Contains("new message", newContent);
+        }
+
+        [Test]
+        public void Write_RotationWithExistingBackup_ReplacesOldBackup()
+        {
+            File.WriteAllText(previousLogFilePath, "stale backup content", Encoding.UTF8);
+            WriteFileOfSize(logFilePath, MaxFileSizeBytes, "current content");
+            FileSink sink = new FileSink();
+
+            sink.Write(LogLevel.Warning, new[] { "Tag" }, "new message", null, false);
+
+            string backupContent = File.ReadAllText(previousLogFilePath);
+            StringAssert.DoesNotContain("stale backup content", backupContent);
+            StringAssert.Contains("current content", backupContent);
+        }
+
+        private static void WriteFileOfSize(string path, long minimumSizeBytes, string marker)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(marker).Append(System.Environment.NewLine);
+            builder.Append('a', (int)minimumSizeBytes);
+            File.WriteAllText(path, builder.ToString(), Encoding.UTF8);
         }
     }
 }
