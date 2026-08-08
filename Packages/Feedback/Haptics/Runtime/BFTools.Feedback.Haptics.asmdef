@@ -3,6 +3,7 @@
     "rootNamespace": "BFTools.Feedback.Haptics",
     "references": [
         "Unity.InputSystem",
+        "BFTools.Core.ConfigLookup",
         "BFTools.Core.EventBus",
         "BFTools.Core.Logger"
     ],

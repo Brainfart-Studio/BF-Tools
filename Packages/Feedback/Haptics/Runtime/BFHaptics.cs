@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using BFTools.Core.ConfigLookup;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 
@@ -33,24 +34,18 @@ namespace BFTools.Feedback.Haptics
 
         private void BuildLookup()
         {
-            lookup = new Dictionary<string, BFHapticsEntry>();
+            lookup = BFConfigLookupBuilder.Merge(MergedEntries(), entry => entry.eventName, LogTag, name, context: this);
+        }
+
+        private IEnumerable<BFHapticsEntry> MergedEntries()
+        {
             foreach (var cfg in configs)
             {
                 if (cfg == null)
                     continue;
                 foreach (var entry in cfg.Entries)
-                {
-                    if (lookup.ContainsKey(entry.eventName))
-                    {
-                        BFLogger.Warning(LogTag,
-                            $"Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
-                            this);
-                    }
-                    lookup[entry.eventName] = entry;
-                }
+                    yield return entry;
             }
-
-            BFLogger.Debug(LogTag, $"Built lookup with {lookup.Count} entrie(s) on '{name}'.", this);
         }
 
         private void OnHapticsEvent(BFHapticsEvent evt)
