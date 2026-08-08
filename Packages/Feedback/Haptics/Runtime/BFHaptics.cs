@@ -18,6 +18,7 @@ namespace BFTools.Feedback.Haptics
 
         [SerializeField] private List<BFHapticsConfig> configs = new List<BFHapticsConfig>();
         private Dictionary<string, BFHapticsEntry> lookup;
+        private Coroutine activeTrigger;
 
         private void OnEnable()
         {
@@ -72,12 +73,16 @@ namespace BFTools.Feedback.Haptics
             }
             gamepad.SetMotorSpeeds(intensity, intensity);
             BFLogger.Trace(LogTag, $"Triggered haptics intensity={intensity} duration={duration}", this);
-            StartCoroutine(StopAfter(duration));
+
+            if (activeTrigger != null)
+                StopCoroutine(activeTrigger);
+            activeTrigger = StartCoroutine(StopAfter(duration));
         }
 
         private IEnumerator StopAfter(float duration)
         {
             yield return new WaitForSeconds(duration);
+            activeTrigger = null;
             Gamepad.current?.SetMotorSpeeds(0f, 0f);
         }
     }
