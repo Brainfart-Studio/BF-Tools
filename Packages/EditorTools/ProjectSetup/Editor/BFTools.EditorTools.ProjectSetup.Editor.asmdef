@@ -4,6 +4,7 @@
     "references": [
         "BFTools.Core.EditorAssetUtility.Editor",
         "BFTools.Core.Logger",
+        "BFTools.Core.ProjectSetup.Editor",
         "BFTools.Systems.GlobalBootstrapper",
         "BFTools.Feedback.Hitstop",
         "BFTools.Feedback.ScreenShake",
