@@ -29,10 +29,18 @@ namespace BFTools.Systems.GlobalBootstrapper
             {
                 if (prefab == null)
                     continue;
-                GameObject instance = Object.Instantiate(prefab);
-                instance.transform.SetParent(null); // ensure root-level, required for DontDestroyOnLoad
-                Object.DontDestroyOnLoad(instance);
-                spawned++;
+
+                try
+                {
+                    GameObject instance = Object.Instantiate(prefab);
+                    instance.transform.SetParent(null); // ensure root-level, required for DontDestroyOnLoad
+                    Object.DontDestroyOnLoad(instance);
+                    spawned++;
+                }
+                catch (System.Exception ex)
+                {
+                    BFLogger.Error(LogTag, $"Failed to instantiate system prefab '{prefab.name}': {ex.Message}");
+                }
             }
 
             BFLogger.Info(LogTag, $"Spawned {spawned} system prefab(s).");
