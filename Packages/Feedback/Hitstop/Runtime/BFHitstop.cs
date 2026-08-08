@@ -28,6 +28,17 @@ namespace BFTools.Feedback.Hitstop
         private void OnDisable()
         {
             EventBus<BFHitstopEvent>.Unsubscribe(OnHitstopEvent);
+            CancelActiveHitstop();
+        }
+
+        private void CancelActiveHitstop()
+        {
+            if (activeHitstop == null)
+                return;
+
+            StopCoroutine(activeHitstop);
+            activeHitstop = null;
+            Time.timeScale = 1f;
         }
 
         private void BuildLookup()
@@ -64,8 +75,7 @@ namespace BFTools.Feedback.Hitstop
 
         private void Trigger(float timescale, float duration)
         {
-            if (activeHitstop != null)
-                StopCoroutine(activeHitstop);
+            CancelActiveHitstop();
 
             Time.timeScale = timescale;
             BFLogger.Trace(LogTag, $"Triggered hitstop timescale={timescale} duration={duration}", this);
