@@ -15,8 +15,10 @@ Or run `BF Tools/New Project Setup` (in `com.bftools.editortools`): it creates t
 ### How it works
 - `BFGlobalBootstrapper.Initialize()` runs via `[RuntimeInitializeOnLoadMethod(BeforeSceneLoad)]`.
 - Loads `BFGlobalBootstrapperConfig` from `Resources/BFTools/GlobalBootstrapConfig`.
-- Instantiates each prefab in `SystemPrefabs`, sets parent to null, calls `DontDestroyOnLoad`.
-- Logs an error and aborts if the config asset is missing.
+- Logs an error and aborts if the config asset is missing, or if `SystemPrefabs` is null.
+- Instantiates each non-null prefab in `SystemPrefabs`, sets parent to null, calls `DontDestroyOnLoad`.
+- A prefab that fails to instantiate is logged as an error and skipped; the rest of the array still runs.
+- Logs Trace on config load, Warning for each skipped null entry, Debug per successful instantiation, and Info with the final spawned count.
 
 ### Notes
 - Config must live in `Resources/`. Nothing exists at boot to hold a direct reference.
