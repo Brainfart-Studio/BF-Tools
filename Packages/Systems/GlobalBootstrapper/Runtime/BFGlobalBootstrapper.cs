@@ -24,11 +24,17 @@ namespace BFTools.Systems.GlobalBootstrapper
                 return;
             }
 
+            BFLogger.Trace(LogTag, $"Loaded GlobalBootstrapConfig with {prefabs.Length} prefab entr{(prefabs.Length == 1 ? "y" : "ies")}.");
+
             int spawned = 0;
-            foreach (GameObject prefab in prefabs)
+            for (int i = 0; i < prefabs.Length; i++)
             {
+                GameObject prefab = prefabs[i];
                 if (prefab == null)
+                {
+                    BFLogger.Warning(LogTag, $"Skipped null prefab entry at index {i}.");
                     continue;
+                }
 
                 try
                 {
@@ -36,6 +42,7 @@ namespace BFTools.Systems.GlobalBootstrapper
                     instance.transform.SetParent(null); // ensure root-level, required for DontDestroyOnLoad
                     Object.DontDestroyOnLoad(instance);
                     spawned++;
+                    BFLogger.Debug(LogTag, $"Instantiated system prefab '{prefab.name}'.");
                 }
                 catch (System.Exception ex)
                 {

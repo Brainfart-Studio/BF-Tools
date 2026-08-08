@@ -95,10 +95,12 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
         [Test]
         public void Initialize_NullPrefabEntries_AreSkipped()
         {
-            InitializeLogging();
+            SpyLoggerSink spy = InitializeLogging();
             CreateConfigAsset(null, null);
 
             Assert.DoesNotThrow(InvokeInitialize);
+            Assert.AreEqual(2, spy.Entries.FindAll(e => e.Level == LogLevel.Warning && e.Message.Contains("Skipped null prefab entry")).Count);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 0 system prefab(s).")));
         }
 
         [Test]
