@@ -1,13 +1,13 @@
-using BFTools.Core.EventBus;
-using BFTools.Feedback.Haptics;
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
+using BFTools.Core.EventBus;
+using BFTools.Feedback.Haptics;
+using Assert = NUnit.Framework.Assert;
 
 namespace BFTools.Feedback.Haptics.PlayModeTests
 {
