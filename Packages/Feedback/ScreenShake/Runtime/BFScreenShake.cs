@@ -34,6 +34,7 @@ namespace BFTools.Feedback.ScreenShake
         {
             EventBus<BFScreenShakeEvent>.Unsubscribe(OnScreenShakeEvent);
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            CancelActiveShake();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -43,17 +44,22 @@ namespace BFTools.Feedback.ScreenShake
 
         private void ResolveTarget()
         {
-            if (activeShake != null)
-            {
-                StopCoroutine(activeShake);
-                activeShake = null;
-                if (target != null)
-                    target.localPosition = originalPosition;
-            }
+            CancelActiveShake();
 
             target = Camera.main != null ? Camera.main.transform : null;
             if (target == null)
                 BFLogger.Warning(LogTag, "No main camera found to shake.", this);
+        }
+
+        private void CancelActiveShake()
+        {
+            if (activeShake == null)
+                return;
+
+            StopCoroutine(activeShake);
+            activeShake = null;
+            if (target != null)
+                target.localPosition = originalPosition;
         }
 
         private void BuildLookup()

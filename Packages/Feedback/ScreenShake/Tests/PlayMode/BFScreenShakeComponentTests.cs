@@ -203,6 +203,28 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
             Assert.IsFalse(spy.Entries.Exists(e => e.Message.Contains("Triggered shake")));
         }
 
+        [UnityTest]
+        public IEnumerator OnDisable_DuringActiveShake_RestoresOriginalPosition()
+        {
+            Camera camera = CreateMainCamera();
+            Vector3 originalPosition = camera.transform.localPosition;
+            BFScreenShakeConfig config = CreateConfig(("Explosion", 0.5f, 1f));
+            createdAssets.Add(config);
+            CreateScreenShake(config);
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            yield return null;
+
+            Assert.AreNotEqual(originalPosition, camera.transform.localPosition,
+                "Shake should have applied an offset before the component is disabled.");
+
+            go.SetActive(false);
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "Disabling the component mid-shake should restore the camera's original position.");
+        }
+
         [Test]
         public void OnSceneLoaded_ReResolvesMainCameraTarget()
         {
