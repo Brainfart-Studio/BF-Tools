@@ -17,8 +17,15 @@ namespace BFTools.Systems.GlobalBootstrapper
                 return;
             }
 
+            GameObject[] prefabs = config.SystemPrefabs;
+            if (prefabs == null)
+            {
+                BFLogger.Error(LogTag, "GlobalBootstrapConfig has a null SystemPrefabs array.");
+                return;
+            }
+
             int spawned = 0;
-            foreach (GameObject prefab in config.SystemPrefabs)
+            foreach (GameObject prefab in prefabs)
             {
                 if (prefab == null)
                     continue;

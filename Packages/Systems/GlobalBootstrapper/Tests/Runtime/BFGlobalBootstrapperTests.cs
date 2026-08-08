@@ -100,5 +100,24 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
 
             Assert.DoesNotThrow(InvokeInitialize);
         }
+
+        [Test]
+        public void Initialize_NullSystemPrefabsArray_LogsErrorAndDoesNotThrow()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            EnsureFolder($"{Root}/Resources/{ConfigResourcePath.Substring(0, ConfigResourcePath.LastIndexOf('/'))}");
+
+            BFGlobalBootstrapperConfig config = ScriptableObject.CreateInstance<BFGlobalBootstrapperConfig>();
+            typeof(BFGlobalBootstrapperConfig)
+                .GetField("systemPrefabs", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(config, null);
+
+            AssetDatabase.CreateAsset(config, $"{Root}/Resources/{ConfigResourcePath}.asset");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            Assert.DoesNotThrow(InvokeInitialize);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null SystemPrefabs array")));
+        }
     }
 }
