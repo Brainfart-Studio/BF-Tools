@@ -104,6 +104,12 @@ namespace BFTools.Core.EventBus.Tests
         }
 
         [Test]
+        public void Subscribe_WithNullHandler_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => EventBus<TestEvent>.Subscribe(null));
+        }
+
+        [Test]
         public void DifferentClosedGenericTypes_AreIndependent()
         {
             int testEventCount = 0;

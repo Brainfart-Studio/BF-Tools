@@ -12,6 +12,12 @@ namespace BFTools.Core.EventBus
 
         public static void Subscribe(Action<T> handler)
         {
+            if (handler == null)
+            {
+                BFLogger.Warning(LogTag, $"Subscribe called with null handler for {typeof(T).Name}, ignoring");
+                return;
+            }
+
             if (!subscribers.Contains(handler))
             {
                 subscribers.Add(handler);
