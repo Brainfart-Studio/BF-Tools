@@ -58,6 +58,18 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
         public static T CreateConfigAsset<T>(string folderPath, string assetName) where T : ScriptableObject
         {
+            if (string.IsNullOrEmpty(folderPath))
+            {
+                BFLogger.Error(LogTag, "folderPath is null or empty.");
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(assetName))
+            {
+                BFLogger.Error(LogTag, "assetName is null or empty.");
+                return null;
+            }
+
             EnsureFolderExists(folderPath);
 
             string fullPath = $"{folderPath}/{assetName}";
@@ -82,6 +94,18 @@ namespace BFTools.Core.EditorAssetUtility.Editor
 
         public static GameObject CreatePrefabVariant(string basePrefabPath, string folderPath, string assetName)
         {
+            if (string.IsNullOrEmpty(folderPath))
+            {
+                BFLogger.Error(LogTag, "folderPath is null or empty.");
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(assetName))
+            {
+                BFLogger.Error(LogTag, "assetName is null or empty.");
+                return null;
+            }
+
             BFLogger.Trace(LogTag, $"Loading base prefab at '{basePrefabPath}'.");
             GameObject basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(basePrefabPath);
             if (basePrefab == null)
