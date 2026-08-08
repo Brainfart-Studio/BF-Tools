@@ -104,6 +104,27 @@ namespace BFTools.Core.EventBus.Tests
         }
 
         [Test]
+        public void Fire_HandlerUnsubscribingLaterPendingHandler_InvokesEachSubscriberExactlyOnce()
+        {
+            List<string> invoked = new List<string>();
+            void A(TestEvent e) => invoked.Add("A");
+            void B(TestEvent e) => invoked.Add("B");
+            void C(TestEvent e)
+            {
+                invoked.Add("C");
+                EventBus<TestEvent>.Unsubscribe(A);
+            }
+
+            EventBus<TestEvent>.Subscribe(A);
+            EventBus<TestEvent>.Subscribe(B);
+            EventBus<TestEvent>.Subscribe(C);
+
+            EventBus<TestEvent>.Fire(new TestEvent());
+
+            CollectionAssert.AreEqual(new[] { "C", "B" }, invoked);
+        }
+
+        [Test]
         public void Subscribe_WithNullHandler_DoesNotThrow()
         {
             Assert.DoesNotThrow(() => EventBus<TestEvent>.Subscribe(null));

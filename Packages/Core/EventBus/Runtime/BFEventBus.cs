@@ -35,8 +35,9 @@ namespace BFTools.Core.EventBus
         {
             BFLogger.Debug(LogTag, $"Fired {typeof(T).Name} to {subscribers.Count} subscriber(s)");
 
-            for (int i = subscribers.Count - 1; i >= 0; i--)
-                subscribers[i]?.Invoke(eventData);
+            Action<T>[] snapshot = subscribers.ToArray();
+            for (int i = snapshot.Length - 1; i >= 0; i--)
+                snapshot[i]?.Invoke(eventData);
         }
 
         public static void Clear()
