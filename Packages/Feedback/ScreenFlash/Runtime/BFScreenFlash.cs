@@ -26,6 +26,9 @@ namespace BFTools.Feedback.ScreenFlash
         {
             BuildLookup();
             EventBus<BFScreenFlashEvent>.Subscribe(OnScreenFlashEvent);
+
+            if (flashImage == null)
+                BFLogger.Warning(LogTag, "No flashImage assigned; unable to render flashes.", this);
         }
 
         private void OnDisable()
@@ -73,6 +76,12 @@ namespace BFTools.Feedback.ScreenFlash
 
         private void OnScreenFlashEvent(BFScreenFlashEvent evt)
         {
+            if (flashImage == null)
+            {
+                BFLogger.Trace(LogTag, $"No flashImage assigned, skipping screen flash trigger for eventName '{evt.eventName}'.", this);
+                return;
+            }
+
             if (lookup == null || !lookup.TryGetValue(evt.eventName, out BFScreenFlashEntry entry))
             {
                 BFLogger.Trace(LogTag, $"No screen flash entry found for eventName '{evt.eventName}'.", this);

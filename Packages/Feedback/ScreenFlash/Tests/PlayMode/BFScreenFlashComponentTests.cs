@@ -124,6 +124,28 @@ namespace BFTools.Feedback.ScreenFlash.PlayModeTests
         }
 
         [Test]
+        public void OnEnable_NoFlashImageAssigned_LogsWarningAndFireSkipsGracefully()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            BFScreenFlashConfig config = CreateConfig(("Damage", Color.red, 0.1f, 1));
+            createdAssets.Add(config);
+
+            go = new GameObject("ScreenFlash");
+            go.SetActive(false);
+            BFScreenFlash screenFlash = go.AddComponent<BFScreenFlash>();
+            typeof(BFScreenFlash)
+                .GetField("configs", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(screenFlash, new List<BFScreenFlashConfig> { config });
+            go.SetActive(true);
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Warning && e.Message.Contains("No flashImage assigned")));
+
+            Assert.DoesNotThrow(() => EventBus<BFScreenFlashEvent>.Fire(new BFScreenFlashEvent { eventName = "Damage" }));
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("No flashImage assigned, skipping screen flash trigger")));
+        }
+
+        [Test]
         public void Fire_KnownEventName_ImmediatelyBeginsFading()
         {
             BFScreenFlashConfig config = CreateConfig(("Damage", Color.red, 5f, 1));
