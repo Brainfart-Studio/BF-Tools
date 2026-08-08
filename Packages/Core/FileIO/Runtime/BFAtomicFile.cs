@@ -7,9 +7,9 @@ namespace BFTools.Core.FileIO
         public static void Replace(string sourcePath, string destinationPath)
         {
             if (File.Exists(destinationPath))
-                File.Delete(destinationPath);
-
-            File.Move(sourcePath, destinationPath);
+                File.Replace(sourcePath, destinationPath, null);
+            else
+                File.Move(sourcePath, destinationPath);
         }
     }
 }
