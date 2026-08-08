@@ -55,6 +55,13 @@ namespace BFTools.Core.ServiceLocator.Tests
         }
 
         [Test]
+        public void Register_SameTypeTwice_DoesNotThrow()
+        {
+            BFServiceLocator.Register(new FakeServiceA { Value = 1 });
+            Assert.DoesNotThrow(() => BFServiceLocator.Register(new FakeServiceA { Value = 2 }));
+        }
+
+        [Test]
         public void Unregister_RemovesService()
         {
             BFServiceLocator.Register(new FakeServiceA());
