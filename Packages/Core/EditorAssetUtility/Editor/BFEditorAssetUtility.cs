@@ -70,6 +70,8 @@ namespace BFTools.Core.EditorAssetUtility.Editor
                 return null;
             }
 
+            folderPath = folderPath.Trim().TrimEnd('/');
+
             EnsureFolderExists(folderPath);
 
             string fullPath = $"{folderPath}/{assetName}";
@@ -105,6 +107,8 @@ namespace BFTools.Core.EditorAssetUtility.Editor
                 BFLogger.Error(LogTag, "assetName is null or empty.");
                 return null;
             }
+
+            folderPath = folderPath.Trim().TrimEnd('/');
 
             BFLogger.Trace(LogTag, $"Loading base prefab at '{basePrefabPath}'.");
             GameObject basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(basePrefabPath);
