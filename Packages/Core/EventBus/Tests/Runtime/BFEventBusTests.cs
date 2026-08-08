@@ -125,6 +125,15 @@ namespace BFTools.Core.EventBus.Tests
         }
 
         [Test]
+        public void Subscribe_SameHandlerTwice_DoesNotThrow()
+        {
+            void Handler(TestEvent e) { }
+
+            EventBus<TestEvent>.Subscribe(Handler);
+            Assert.DoesNotThrow(() => EventBus<TestEvent>.Subscribe(Handler));
+        }
+
+        [Test]
         public void Subscribe_WithNullHandler_DoesNotThrow()
         {
             Assert.DoesNotThrow(() => EventBus<TestEvent>.Subscribe(null));

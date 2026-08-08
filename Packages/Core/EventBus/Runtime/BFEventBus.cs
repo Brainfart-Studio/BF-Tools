@@ -23,6 +23,10 @@ namespace BFTools.Core.EventBus
                 subscribers.Add(handler);
                 BFLogger.Trace(LogTag, $"Subscribed {handler.Method.Name} to {typeof(T).Name}");
             }
+            else
+            {
+                BFLogger.Warning(LogTag, $"{handler.Method.Name} is already subscribed to {typeof(T).Name}, ignoring duplicate Subscribe call");
+            }
         }
 
         public static void Unsubscribe(Action<T> handler)
