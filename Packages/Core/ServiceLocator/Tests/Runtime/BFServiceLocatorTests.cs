@@ -35,9 +35,10 @@ namespace BFTools.Core.ServiceLocator.Tests
         }
 
         [Test]
-        public void Get_UnregisteredType_ThrowsKeyNotFoundException()
+        public void Get_UnregisteredType_ThrowsKeyNotFoundExceptionNamingTheType()
         {
-            Assert.Throws<KeyNotFoundException>(() => BFServiceLocator.Get<FakeServiceA>());
+            KeyNotFoundException ex = Assert.Throws<KeyNotFoundException>(() => BFServiceLocator.Get<FakeServiceA>());
+            StringAssert.Contains(nameof(FakeServiceA), ex.Message);
         }
 
         [Test]

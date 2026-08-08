@@ -19,7 +19,14 @@ namespace BFTools.Core.ServiceLocator
         public static T Get<T>()
         {
             BFLogger.Trace(LogTag, $"Get {typeof(T).Name}");
-            return (T)services[typeof(T)];
+
+            if (!services.TryGetValue(typeof(T), out object service))
+            {
+                BFLogger.Error(LogTag, $"{typeof(T).Name} was requested but is not registered");
+                throw new KeyNotFoundException($"BFServiceLocator: no service of type {typeof(T).Name} is registered");
+            }
+
+            return (T)service;
         }
 
         public static void Unregister<T>()
