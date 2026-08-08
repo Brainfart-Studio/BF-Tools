@@ -2,14 +2,8 @@
     "name": "BFTools.EditorTools.ProjectSetup.Editor",
     "rootNamespace": "BFTools.EditorTools.ProjectSetup.Editor",
     "references": [
-        "BFTools.Core.EditorAssetUtility.Editor",
         "BFTools.Core.Logger",
-        "BFTools.Core.ProjectSetup.Editor",
-        "BFTools.Systems.GlobalBootstrapper",
-        "BFTools.Feedback.Hitstop",
-        "BFTools.Feedback.ScreenShake",
-        "BFTools.Feedback.ScreenFlash",
-        "BFTools.Feedback.Haptics"
+        "BFTools.Core.ProjectSetup.Editor"
     ],
     "includePlatforms": [
         "Editor"
