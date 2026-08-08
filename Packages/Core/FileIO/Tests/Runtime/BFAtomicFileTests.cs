@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NUnit.Framework;
 using BFTools.Core.FileIO;
@@ -51,6 +52,40 @@ namespace BFTools.Core.FileIO.Tests
 
             Assert.IsFalse(File.Exists(sourcePath));
             Assert.AreEqual("new content", File.ReadAllText(destinationPath));
+        }
+
+        [Test]
+        public void Replace_SourceDoesNotExist_ThrowsFileNotFoundException()
+        {
+            Assert.Throws<FileNotFoundException>(() => BFAtomicFile.Replace(sourcePath, destinationPath));
+        }
+
+        [Test]
+        public void Replace_SourcePathNull_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => BFAtomicFile.Replace(null, destinationPath));
+        }
+
+        [Test]
+        public void Replace_SourcePathEmpty_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => BFAtomicFile.Replace(string.Empty, destinationPath));
+        }
+
+        [Test]
+        public void Replace_DestinationPathNull_ThrowsArgumentException()
+        {
+            File.WriteAllText(sourcePath, "source content");
+
+            Assert.Throws<ArgumentException>(() => BFAtomicFile.Replace(sourcePath, null));
+        }
+
+        [Test]
+        public void Replace_DestinationPathEmpty_ThrowsArgumentException()
+        {
+            File.WriteAllText(sourcePath, "source content");
+
+            Assert.Throws<ArgumentException>(() => BFAtomicFile.Replace(sourcePath, string.Empty));
         }
     }
 }
