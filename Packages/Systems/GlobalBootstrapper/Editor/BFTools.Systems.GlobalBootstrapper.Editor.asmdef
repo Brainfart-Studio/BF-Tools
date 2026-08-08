@@ -4,7 +4,9 @@
     "references": [
         "BFTools.Systems.GlobalBootstrapper",
         "BFTools.Core.EditorAssetUtility.Editor",
-        "BFTools.Systems.EditorAssetUtility.Editor"
+        "BFTools.Systems.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger",
+        "BFTools.Core.ProjectSetup.Editor"
     ],
     "includePlatforms": [
         "Editor"
