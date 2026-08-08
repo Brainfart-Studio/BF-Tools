@@ -34,7 +34,7 @@ namespace BFTools.Feedback.Haptics
 
         private void BuildLookup()
         {
-            lookup = BFConfigLookupBuilder.Merge(MergedEntries(), entry => entry.eventName, LogTag, name, context: this);
+            lookup = BFConfigLookupBuilder.Merge(MergedEntries(), entry => entry.eventName, LogTag, name, "eventName", this);
         }
 
         private IEnumerable<BFHapticsEntry> MergedEntries()

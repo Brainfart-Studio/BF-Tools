@@ -43,7 +43,7 @@ namespace BFTools.Core.ConfigLookup.Tests
                 new TestEntry { key = "Explosion", value = 2 }
             };
 
-            Dictionary<string, TestEntry> lookup = BFConfigLookupBuilder.Merge(entries, e => e.key, "Test", "Owner");
+            Dictionary<string, TestEntry> lookup = BFConfigLookupBuilder.Merge(entries, e => e.key, "Test", "Owner", "eventName");
 
             Assert.AreEqual(2, lookup.Count);
             Assert.AreEqual(1, lookup["Hit"].value);
@@ -60,7 +60,7 @@ namespace BFTools.Core.ConfigLookup.Tests
                 new TestEntry { key = "Hit", value = 2 }
             };
 
-            Dictionary<string, TestEntry> lookup = BFConfigLookupBuilder.Merge(entries, e => e.key, "Test", "Owner");
+            Dictionary<string, TestEntry> lookup = BFConfigLookupBuilder.Merge(entries, e => e.key, "Test", "Owner", "eventName");
 
             Assert.AreEqual(1, lookup.Count);
             Assert.AreEqual(2, lookup["Hit"].value);
@@ -87,7 +87,7 @@ namespace BFTools.Core.ConfigLookup.Tests
         {
             SpyLoggerSink spy = InitializeLogging();
 
-            Dictionary<string, TestEntry> lookup = BFConfigLookupBuilder.Merge(new List<TestEntry>(), e => e.key, "Test", "Owner");
+            Dictionary<string, TestEntry> lookup = BFConfigLookupBuilder.Merge(new List<TestEntry>(), e => e.key, "Test", "Owner", "eventName");
 
             Assert.AreEqual(0, lookup.Count);
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Debug && e.Message.Contains("Built lookup with 0 entrie(s) on 'Owner'")));

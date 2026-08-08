@@ -12,7 +12,7 @@ namespace BFTools.Core.ConfigLookup
             Func<TEntry, string> keySelector,
             string logTag,
             string ownerName,
-            string keyLabel = "eventName",
+            string keyLabel,
             UnityEngine.Object context = null)
         {
             Dictionary<string, TEntry> lookup = new Dictionary<string, TEntry>();
