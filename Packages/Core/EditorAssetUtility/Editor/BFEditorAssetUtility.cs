@@ -139,6 +139,46 @@ namespace BFTools.Core.EditorAssetUtility.Editor
             return variant;
         }
 
+        public static void AssignConfigIfMissing(Component target, string listFieldName, Object config)
+        {
+            if (target == null)
+            {
+                BFLogger.Error(LogTag, "target is null.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(listFieldName))
+            {
+                BFLogger.Error(LogTag, "listFieldName is null or empty.");
+                return;
+            }
+
+            if (config == null)
+            {
+                BFLogger.Error(LogTag, "config is null.");
+                return;
+            }
+
+            SerializedObject so = new SerializedObject(target);
+            SerializedProperty arrayProp = so.FindProperty(listFieldName);
+            if (arrayProp == null)
+            {
+                BFLogger.Error(LogTag, $"{target.GetType().Name} has no '{listFieldName}' field.");
+                return;
+            }
+
+            for (int i = 0; i < arrayProp.arraySize; i++)
+            {
+                if (arrayProp.GetArrayElementAtIndex(i).objectReferenceValue == config)
+                    return;
+            }
+
+            arrayProp.InsertArrayElementAtIndex(arrayProp.arraySize);
+            arrayProp.GetArrayElementAtIndex(arrayProp.arraySize - 1).objectReferenceValue = config;
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(target);
+        }
+
         private static bool TryHandleExisting(Object existing, string fullPath, string label)
         {
             if (existing == null)
