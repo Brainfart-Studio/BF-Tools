@@ -12,6 +12,12 @@ namespace BFTools.Core.ServiceLocator
 
         public static void Register<T>(T service)
         {
+            if (service == null)
+            {
+                BFLogger.Warning(LogTag, $"Register called with null service for {typeof(T).Name}, ignoring");
+                return;
+            }
+
             if (services.ContainsKey(typeof(T)))
                 BFLogger.Warning(LogTag, $"{typeof(T).Name} is already registered, overwriting previous instance");
 

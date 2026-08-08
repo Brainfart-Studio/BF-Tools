@@ -62,6 +62,13 @@ namespace BFTools.Core.ServiceLocator.Tests
         }
 
         [Test]
+        public void Register_NullService_DoesNotThrowAndIsNotRegistered()
+        {
+            Assert.DoesNotThrow(() => BFServiceLocator.Register<FakeServiceA>(null));
+            Assert.IsFalse(BFServiceLocator.IsRegistered<FakeServiceA>());
+        }
+
+        [Test]
         public void Unregister_RemovesService()
         {
             BFServiceLocator.Register(new FakeServiceA());
