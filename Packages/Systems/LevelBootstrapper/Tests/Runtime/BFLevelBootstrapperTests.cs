@@ -109,5 +109,16 @@ namespace BFTools.Systems.LevelBootstrapper.Tests
             Assert.IsNotNull(instanceB);
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 2 prefab(s).")));
         }
+
+        [Test]
+        public void Awake_NullPrefabsToInstantiateArray_LogsErrorAndDoesNotThrow()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            BFLevelBootstrapConfig config = CreateConfig(null);
+            createdAssets.Add(config);
+
+            Assert.DoesNotThrow(() => CreateBootstrapper(config));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null PrefabsToInstantiate array")));
+        }
     }
 }

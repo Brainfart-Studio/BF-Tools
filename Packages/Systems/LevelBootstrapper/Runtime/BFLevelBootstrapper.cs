@@ -17,8 +17,15 @@ namespace BFTools.Systems.LevelBootstrapper
                 return;
             }
 
+            GameObject[] prefabs = config.PrefabsToInstantiate;
+            if (prefabs == null)
+            {
+                BFLogger.Error(LogTag, "LevelBootstrapConfig has a null PrefabsToInstantiate array.", this);
+                return;
+            }
+
             int spawned = 0;
-            foreach (GameObject prefab in config.PrefabsToInstantiate)
+            foreach (GameObject prefab in prefabs)
             {
                 if (prefab == null)
                     continue;
