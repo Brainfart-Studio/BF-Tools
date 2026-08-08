@@ -18,6 +18,13 @@ namespace BFTools.Core.Logger
             sinks.Clear();
             if (activeSinks != null)
                 sinks.AddRange(activeSinks);
+
+            if (sinks.Count == 0)
+            {
+                UnityEngine.Debug.LogWarning("[BFLogger] Initialize was called with no sinks. Falling back to a UnityConsoleSink so log calls aren't silently dropped.");
+                sinks.Add(new UnityConsoleSink());
+            }
+
             initialized = true;
         }
 
