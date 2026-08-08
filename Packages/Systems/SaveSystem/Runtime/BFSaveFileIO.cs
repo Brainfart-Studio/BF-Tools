@@ -1,5 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
+using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
 
 namespace BFTools.Systems.SaveSystem
@@ -19,10 +20,7 @@ namespace BFTools.Systems.SaveSystem
                 await fileStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
             }
 
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-
-            File.Move(tempPath, filePath);
+            BFAtomicFile.Replace(tempPath, filePath);
 
             BFLogger.Trace(LogTag, $"Wrote '{filePath}'");
         }

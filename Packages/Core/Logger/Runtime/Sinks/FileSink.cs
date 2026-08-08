@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using BFTools.Core.FileIO;
 using UnityEngine;
 
 namespace BFTools.Core.Logger
@@ -13,6 +14,7 @@ namespace BFTools.Core.Logger
 
         private readonly string logFilePath;
         private readonly string previousLogFilePath;
+
         private bool disabledAfterFailure;
 
         public FileSink()
@@ -67,10 +69,7 @@ namespace BFTools.Core.Logger
             if (new FileInfo(logFilePath).Length < MaxFileSizeBytes)
                 return;
 
-            if (File.Exists(previousLogFilePath))
-                File.Delete(previousLogFilePath);
-
-            File.Move(logFilePath, previousLogFilePath);
+            BFAtomicFile.Replace(logFilePath, previousLogFilePath);
         }
     }
 }

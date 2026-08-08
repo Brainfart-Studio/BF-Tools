@@ -1,9 +1,7 @@
 {
-    "name": "BFTools.Core.Logger",
-    "rootNamespace": "BFTools.Core.Logger",
-    "references": [
-        "BFTools.Core.FileIO"
-    ],
+    "name": "BFTools.Core.FileIO",
+    "rootNamespace": "BFTools.Core.FileIO",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
