@@ -95,5 +95,22 @@ namespace BFTools.Feedback.Haptics.PlayModeTests
 
             Assert.IsNull(GetActiveTrigger(haptics));
         }
+
+        [Test]
+        public void OnDisable_DuringActiveTrigger_ClearsActiveTriggerAndStopsMotors()
+        {
+            BFHapticsConfig config = CreateConfig(("Hit", 1f, 1f));
+            BFHaptics haptics = CreateHaptics(config);
+
+            EventBus<BFHapticsEvent>.Fire(new BFHapticsEvent { eventName = "Hit" });
+
+            Assert.IsNotNull(GetActiveTrigger(haptics),
+                "Trigger should still be active before the component is disabled.");
+
+            go.SetActive(false);
+
+            Assert.IsNull(GetActiveTrigger(haptics),
+                "Disabling the component mid-trigger should cancel the active trigger so the gamepad isn't left rumbling.");
+        }
     }
 }

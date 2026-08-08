@@ -30,6 +30,17 @@ namespace BFTools.Feedback.Haptics
         private void OnDisable()
         {
             EventBus<BFHapticsEvent>.Unsubscribe(OnHapticsEvent);
+            CancelActiveTrigger();
+        }
+
+        private void CancelActiveTrigger()
+        {
+            if (activeTrigger == null)
+                return;
+
+            StopCoroutine(activeTrigger);
+            activeTrigger = null;
+            Gamepad.current?.SetMotorSpeeds(0f, 0f);
         }
 
         private void BuildLookup()
@@ -66,11 +77,10 @@ namespace BFTools.Feedback.Haptics
                 BFLogger.Trace(LogTag, "No gamepad connected, skipping haptics trigger.", this);
                 return;
             }
+            CancelActiveTrigger();
+
             gamepad.SetMotorSpeeds(intensity, intensity);
             BFLogger.Trace(LogTag, $"Triggered haptics intensity={intensity} duration={duration}", this);
-
-            if (activeTrigger != null)
-                StopCoroutine(activeTrigger);
             activeTrigger = StartCoroutine(StopAfter(duration));
         }
 
