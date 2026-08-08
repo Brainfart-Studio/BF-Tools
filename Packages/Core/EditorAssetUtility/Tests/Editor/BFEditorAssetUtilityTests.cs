@@ -97,6 +97,26 @@ namespace BFTools.Core.EditorAssetUtility.Tests
         }
 
         [Test]
+        public void CreateConfigAsset_NullFolderPath_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("folderPath is null or empty"));
+
+            FakeConfig result = BFEditorAssetUtility.CreateConfigAsset<FakeConfig>(null, "FakeConfig.asset");
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void CreateConfigAsset_EmptyAssetName_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("assetName is null or empty"));
+
+            FakeConfig result = BFEditorAssetUtility.CreateConfigAsset<FakeConfig>(Root, string.Empty);
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
         public void CreateConfigAsset_MalformedFolderPath_ReturnsNull()
         {
             string badFolder = $"{Root}//BadFolder";
@@ -131,6 +151,26 @@ namespace BFTools.Core.EditorAssetUtility.Tests
             GameObject second = BFEditorAssetUtility.CreatePrefabVariant(basePrefabPath, Root, "Variant.prefab");
 
             Assert.AreSame(first, second);
+        }
+
+        [Test]
+        public void CreatePrefabVariant_NullFolderPath_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("folderPath is null or empty"));
+
+            GameObject result = BFEditorAssetUtility.CreatePrefabVariant($"{Root}/Base.prefab", null, "Variant.prefab");
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void CreatePrefabVariant_EmptyAssetName_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("assetName is null or empty"));
+
+            GameObject result = BFEditorAssetUtility.CreatePrefabVariant($"{Root}/Base.prefab", Root, string.Empty);
+
+            Assert.IsNull(result);
         }
 
         [Test]
