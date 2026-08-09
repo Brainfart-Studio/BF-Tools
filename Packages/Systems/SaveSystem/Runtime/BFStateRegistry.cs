@@ -41,7 +41,7 @@ namespace BFTools.Systems.SaveSystem
             for (int i = 0; i < items.Count; i++)
             {
                 T item = items[i];
-                states[item.GetType().Name] = item.CaptureState();
+                states[item.GetType().FullName] = item.CaptureState();
             }
 
             BFLogger.Debug(logTag, $"Captured state from {items.Count} item(s){context}");
@@ -56,7 +56,7 @@ namespace BFTools.Systems.SaveSystem
             for (int i = 0; i < items.Count; i++)
             {
                 T item = items[i];
-                string key = item.GetType().Name;
+                string key = item.GetType().FullName;
 
                 if (states.TryGetValue(key, out object state))
                 {
