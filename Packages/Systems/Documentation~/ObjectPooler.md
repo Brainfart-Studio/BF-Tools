@@ -23,7 +23,8 @@ pooler.Release(instance);
 - Each prewarm/get/release logs a `Trace`-level message under the `ObjectPooler` tag.
 
 ## Notes
-- `Get` and `Release` key their internal dictionaries by exact string `key` / instance reference. Neither throws on bad input: an unassigned config, a config entry with no prefab, a duplicate key, an unknown or `null` key passed to `Get`, and a `null` or untracked instance passed to `Release` are all logged at `Error` level and handled without an exception, so a bad pool reference degrades to a console error instead of crashing the caller.
+- `Get` and `Release` key their internal dictionaries by exact string `key` / instance reference. Neither throws on bad input: an unassigned config, a config entry with no key, a config entry with no prefab, a duplicate key, an unknown or `null` key passed to `Get`, and a `null` or untracked instance passed to `Release` are all logged at `Error` level and handled without an exception, so a bad pool reference degrades to a console error instead of crashing the caller.
+- `Release` rejects an instance that's already back in its pool, logging an `Error` instead of enqueueing it a second time. Without this check, a double `Release` would hand the same instance out to two callers on subsequent `Get` calls.
 - No pool shrinking. Instances created to cover exhaustion stay in rotation after being released.
 
 ## Editor tooling
