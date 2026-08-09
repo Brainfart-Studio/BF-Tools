@@ -18,7 +18,7 @@ namespace BFTools.Systems.SaveSystem
 
             // Migration steps added here as versions increment.
 
-            BFLogger.Trace(LogTag, $"Migrated data from version {fromVersion} to {CurrentVersion}");
+            BFLogger.Warning(LogTag, $"No migration steps implemented for version {fromVersion} to {CurrentVersion}; passing data through unchanged.");
 
             return data;
         }

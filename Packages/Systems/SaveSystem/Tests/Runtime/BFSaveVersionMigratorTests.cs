@@ -45,7 +45,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
-        public void Migrate_FromOlderVersion_ReturnsSameInstanceAndLogsMigrated()
+        public void Migrate_FromOlderVersion_ReturnsSameInstanceAndLogsNoStepsImplemented()
         {
             SpyLoggerSink spy = InitializeLogging();
             FakeSaveData data = new FakeSaveData();
@@ -53,7 +53,7 @@ namespace BFTools.Systems.SaveSystem.Tests
             object result = BFSaveVersionMigrator.Migrate(data, BFSaveVersionMigrator.CurrentVersion - 1);
 
             Assert.AreSame(data, result);
-            Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("Migrated data from version")));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Warning && e.Message.Contains("No migration steps implemented")));
         }
     }
 }
