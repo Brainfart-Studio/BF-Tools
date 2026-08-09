@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BFTools.Systems.SaveSystem
 {
-    public static class BFSaveChecksum
+    internal static class BFSaveChecksum
     {
         public static string Generate(byte[] data)
         {

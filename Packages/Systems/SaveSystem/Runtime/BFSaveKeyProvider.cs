@@ -6,7 +6,7 @@ using BFTools.Core.Logger;
 
 namespace BFTools.Systems.SaveSystem
 {
-    public static class BFSaveKeyProvider
+    internal static class BFSaveKeyProvider
     {
         private const string LogTag = "Save";
         private const int KeySizeInBytes = 32;

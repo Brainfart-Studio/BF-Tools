@@ -2,7 +2,7 @@ using BFTools.Core.Logger;
 
 namespace BFTools.Systems.SaveSystem
 {
-    public static class BFSaveVersionMigrator
+    internal static class BFSaveVersionMigrator
     {
         private const string LogTag = "Save";
 

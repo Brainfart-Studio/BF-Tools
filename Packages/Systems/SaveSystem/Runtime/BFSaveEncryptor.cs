@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace BFTools.Systems.SaveSystem
 {
-    public static class BFSaveEncryptor
+    internal static class BFSaveEncryptor
     {
         public static byte[] Encrypt(string plainText)
         {

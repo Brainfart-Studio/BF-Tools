@@ -3,7 +3,7 @@ using BFTools.Core.Logger;
 
 namespace BFTools.Systems.SaveSystem
 {
-    public static class BFSaveSerializer
+    internal static class BFSaveSerializer
     {
         private const string LogTag = "Save";
 
