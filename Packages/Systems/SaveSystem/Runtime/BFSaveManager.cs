@@ -195,8 +195,15 @@ namespace BFTools.Systems.SaveSystem
 
                 if (saveData.saveableStates.TryGetValue(key, out object state))
                 {
-                    saveable.RestoreState(state);
-                    restoredCount++;
+                    try
+                    {
+                        saveable.RestoreState(state);
+                        restoredCount++;
+                    }
+                    catch (Exception exception)
+                    {
+                        BFLogger.Warning(LogTag, $"Failed to restore state for '{key}' in slot '{slotName}': {exception.Message}. Leaving it as-is and continuing with the remaining saveable(s).");
+                    }
                 }
                 else
                 {
