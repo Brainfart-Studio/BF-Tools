@@ -152,6 +152,28 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
+        public void GetFileNameForSlot_NullOrEmptySlotName_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot(null));
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot(string.Empty));
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot("   "));
+        }
+
+        [Test]
+        public void GetFileNameForSlot_PathTraversalSlotName_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot("../Slot1"));
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot("Slot1/../../etc"));
+        }
+
+        [Test]
+        public void GetFileNameForSlot_SlotNameWithPathSeparators_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot("Sub/Slot1"));
+            Assert.Throws<ArgumentException>(() => BFSaveManager.GetFileNameForSlot("Sub\\Slot1"));
+        }
+
+        [Test]
         public void SaveAsync_LoadAsync_RoundTrip_PersistsAndRestoresRegisteredSaveableState()
         {
             FakeSaveable saveable = new FakeSaveable { State = new FakeState { value = 42 } };

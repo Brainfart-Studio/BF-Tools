@@ -58,6 +58,17 @@ namespace BFTools.Systems.SaveSystem
 
         public static string GetFileNameForSlot(string slotName)
         {
+            if (string.IsNullOrWhiteSpace(slotName))
+                throw new ArgumentException("Slot name must not be null or empty.", nameof(slotName));
+
+            if (slotName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0
+                || slotName.IndexOf('/') >= 0
+                || slotName.IndexOf('\\') >= 0
+                || slotName.Contains(".."))
+            {
+                throw new ArgumentException($"Slot name '{slotName}' contains characters that are not allowed in a file name.", nameof(slotName));
+            }
+
             return $"save_{slotName}.dat";
         }
 
