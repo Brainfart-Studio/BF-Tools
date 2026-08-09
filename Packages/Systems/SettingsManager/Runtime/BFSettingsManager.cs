@@ -31,7 +31,7 @@ namespace BFTools.Systems.SettingsManager
             providers.Unregister(provider);
         }
 
-        public static Task SaveAsync()
+        public static Task<bool> SaveAsync()
         {
             return SaveAsync(BFSavePath.DefaultDirectory);
         }
@@ -41,22 +41,33 @@ namespace BFTools.Systems.SettingsManager
             return LoadAsync(BFSavePath.DefaultDirectory);
         }
 
-        public static async Task SaveAsync(string directoryPath)
+        public static async Task<bool> SaveAsync(string directoryPath)
         {
             BFLogger.Trace(LogTag, "SaveAsync started");
 
-            BFSettingsData settingsData = new BFSettingsData
-            {
-                providerStates = providers.CaptureAll()
-            };
-
-            string json = BFSaveSerializer.Serialize(settingsData);
-            byte[] bytes = Encoding.UTF8.GetBytes(json);
-
             string filePath = Path.Combine(directoryPath, FileName);
-            await BFFileIO.WriteAsync(filePath, bytes).ConfigureAwait(false);
 
-            BFLogger.Trace(LogTag, $"SaveAsync completed ({bytes.Length} byte(s) written to '{filePath}')");
+            try
+            {
+                BFSettingsData settingsData = new BFSettingsData
+                {
+                    providerStates = providers.CaptureAll()
+                };
+
+                string json = BFSaveSerializer.Serialize(settingsData);
+                byte[] bytes = Encoding.UTF8.GetBytes(json);
+
+                await BFFileIO.WriteAsync(filePath, bytes).ConfigureAwait(false);
+
+                BFLogger.Trace(LogTag, $"SaveAsync completed ({bytes.Length} byte(s) written to '{filePath}')");
+            }
+            catch (Exception exception)
+            {
+                BFLogger.Warning(LogTag, $"Failed to save settings: {exception.Message}. The settings file may now be missing or incomplete.");
+                return false;
+            }
+
+            return true;
         }
 
         public static async Task<bool> LoadAsync(string directoryPath)

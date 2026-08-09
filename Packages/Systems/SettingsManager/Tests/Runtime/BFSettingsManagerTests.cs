@@ -35,6 +35,13 @@ namespace BFTools.Systems.SettingsManager.Tests
             public void RestoreState(object state) => State = (FakeState)state;
         }
 
+        private class ThrowingCaptureSettingsProvider : ISettingsProvider
+        {
+            public Type StateType => typeof(FakeState);
+            public object CaptureState() => throw new InvalidOperationException("Capture failed");
+            public void RestoreState(object state) { }
+        }
+
         private string scratchDir;
 
         [SetUp]
@@ -173,6 +180,16 @@ namespace BFTools.Systems.SettingsManager.Tests
 
             Assert.IsTrue(loaded);
             Assert.AreEqual(99, otherProvider.State.value);
+        }
+
+        [Test]
+        public void SaveAsync_ProviderCaptureStateThrows_ReturnsFalseInsteadOfThrowing()
+        {
+            BFSettingsManager.Register(new ThrowingCaptureSettingsProvider());
+
+            bool saved = BFSettingsManager.SaveAsync(scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsFalse(saved);
         }
     }
 }
