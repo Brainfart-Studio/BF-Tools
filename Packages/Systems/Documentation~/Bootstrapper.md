@@ -35,7 +35,9 @@ Instantiates scene-specific prefabs via `Awake()` on a `MonoBehaviour`, using a 
 
 ### How it works
 - `BFLevelBootstrapper.Awake()` iterates `config.PrefabsToInstantiate` and instantiates each.
-- Logs an error and aborts if no config is assigned.
+- Logs an error and aborts if no config is assigned, or if `PrefabsToInstantiate` is null.
+- A prefab that fails to instantiate is logged as an error and skipped; the rest of the array still runs.
+- Logs Trace on config load, Warning for each skipped null entry, Debug per successful instantiation, and Info with the final spawned count.
 
 ### Notes
 - Unlike Global, config is a direct serialized reference. No `Resources/` folder needed.
