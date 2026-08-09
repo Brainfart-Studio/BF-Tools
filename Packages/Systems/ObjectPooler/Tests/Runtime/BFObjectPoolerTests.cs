@@ -244,5 +244,37 @@ namespace BFTools.Systems.ObjectPooler.Tests
 
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("not tracked by this pooler")));
         }
+
+        [Test]
+        public void Get_NullKey_LogsErrorAndReturnsNull()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            GameObject instance = null;
+            Assert.DoesNotThrow(() => instance = pooler.Get(null));
+
+            Assert.IsNull(instance);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null key")));
+        }
+
+        [Test]
+        public void Release_NullInstance_LogsErrorAndDoesNotThrow()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            Assert.DoesNotThrow(() => pooler.Release(null));
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null instance")));
+        }
     }
 }

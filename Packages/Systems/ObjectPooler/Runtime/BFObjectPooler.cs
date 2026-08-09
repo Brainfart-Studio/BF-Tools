@@ -73,6 +73,12 @@ namespace BFTools.Systems.ObjectPooler
 
         public GameObject Get(string key)
         {
+            if (key == null)
+            {
+                BFLogger.Error(LogTag, "Get called with a null key.");
+                return null;
+            }
+
             if (!pools.TryGetValue(key, out Queue<GameObject> pool))
             {
                 BFLogger.Error(LogTag, $"Get called with unknown key '{key}'. No pool exists for this key.");
@@ -97,9 +103,15 @@ namespace BFTools.Systems.ObjectPooler
 
         public void Release(GameObject instance)
         {
+            if (instance == null)
+            {
+                BFLogger.Error(LogTag, "Release called with a null instance.");
+                return;
+            }
+
             if (!keysByInstance.TryGetValue(instance, out string key))
             {
-                BFLogger.Error(LogTag, $"Release called with an instance not tracked by this pooler: '{instance?.name}'.");
+                BFLogger.Error(LogTag, $"Release called with an instance not tracked by this pooler: '{instance.name}'.");
                 return;
             }
 
