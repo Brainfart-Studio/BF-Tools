@@ -57,7 +57,11 @@ namespace BFTools.Systems.ObjectPooler
 
         public GameObject Get(string key)
         {
-            Queue<GameObject> pool = pools[key];
+            if (!pools.TryGetValue(key, out Queue<GameObject> pool))
+            {
+                BFLogger.Error(LogTag, $"Get called with unknown key '{key}'. No pool exists for this key.");
+                return null;
+            }
 
             GameObject instance;
             if (pool.Count > 0)
