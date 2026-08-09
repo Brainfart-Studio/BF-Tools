@@ -64,6 +64,12 @@ namespace BFTools.Systems.SaveSystem
 
         public int RestoreAll(Dictionary<string, object> states, string context = "")
         {
+            if (states == null)
+            {
+                BFLogger.Warning(logTag, $"No state data to restore{context} (states dictionary was null); leaving all registered item(s) as-is.");
+                return 0;
+            }
+
             T[] snapshot;
             lock (syncRoot)
             {
