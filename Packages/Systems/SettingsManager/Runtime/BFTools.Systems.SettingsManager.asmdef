@@ -2,6 +2,7 @@
     "name": "BFTools.Systems.SettingsManager",
     "rootNamespace": "BFTools.Systems.SettingsManager",
     "references": [
+        "BFTools.Core.FileIO",
         "BFTools.Core.Logger",
         "BFTools.Systems.SaveSystem"
     ],

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
 using BFTools.Systems.SaveSystem;
 
@@ -67,7 +68,7 @@ namespace BFTools.Systems.SettingsManager
             byte[] bytes = Encoding.UTF8.GetBytes(json);
 
             string filePath = Path.Combine(directoryPath, FileName);
-            await BFSaveFileIO.WriteAsync(filePath, bytes).ConfigureAwait(false);
+            await BFFileIO.WriteAsync(filePath, bytes).ConfigureAwait(false);
 
             BFLogger.Trace(LogTag, $"SaveAsync completed ({bytes.Length} byte(s) written to '{filePath}')");
         }
@@ -77,7 +78,7 @@ namespace BFTools.Systems.SettingsManager
             BFLogger.Trace(LogTag, "LoadAsync started");
 
             string filePath = Path.Combine(directoryPath, FileName);
-            byte[] bytes = await BFSaveFileIO.ReadAsync(filePath).ConfigureAwait(false);
+            byte[] bytes = await BFFileIO.ReadAsync(filePath).ConfigureAwait(false);
 
             if (bytes == null)
             {
