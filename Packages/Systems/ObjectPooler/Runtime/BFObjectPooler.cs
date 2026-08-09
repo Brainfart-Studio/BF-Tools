@@ -38,6 +38,12 @@ namespace BFTools.Systems.ObjectPooler
 
             foreach (BFObjectPoolConfig.PoolEntry entry in config.PoolEntries)
             {
+                if (entry.key == null)
+                {
+                    BFLogger.Error(LogTag, "Pool entry has no key assigned. Skipping.");
+                    continue;
+                }
+
                 if (entry.prefab == null)
                 {
                     BFLogger.Error(LogTag, $"Pool entry '{entry.key}' has no prefab assigned. Skipping.");

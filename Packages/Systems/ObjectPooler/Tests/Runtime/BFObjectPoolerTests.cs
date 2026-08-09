@@ -183,6 +183,22 @@ namespace BFTools.Systems.ObjectPooler.Tests
         }
 
         [Test]
+        public void Prewarm_EntryWithNullKey_LogsErrorAndSkipsEntry()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig((null, bulletPrefab, 1), ("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            SpyLoggerSink spy = InitializeLogging();
+            BFObjectPooler pooler = null;
+
+            Assert.DoesNotThrow(() => pooler = CreatePooler(config));
+
+            Assert.AreEqual(1, GetPoolCount(pooler, "Bullet"));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("no key assigned")));
+        }
+
+        [Test]
         public void Prewarm_EntryWithNullPrefab_LogsErrorAndSkipsEntry()
         {
             GameObject bulletPrefab = new GameObject("Bullet");
