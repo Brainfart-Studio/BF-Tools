@@ -14,6 +14,7 @@ namespace BFTools.Systems.ObjectPooler
         private readonly Dictionary<string, Queue<GameObject>> pools = new Dictionary<string, Queue<GameObject>>();
         private readonly Dictionary<string, GameObject> prefabsByKey = new Dictionary<string, GameObject>();
         private readonly Dictionary<GameObject, string> keysByInstance = new Dictionary<GameObject, string>();
+        private readonly HashSet<GameObject> activeInstances = new HashSet<GameObject>();
 
         private void Awake()
         {
@@ -103,6 +104,7 @@ namespace BFTools.Systems.ObjectPooler
             }
 
             instance.SetActive(true);
+            activeInstances.Add(instance);
             BFLogger.Trace(LogTag, $"Got instance from pool '{key}'");
             return instance;
         }
@@ -118,6 +120,12 @@ namespace BFTools.Systems.ObjectPooler
             if (!keysByInstance.TryGetValue(instance, out string key))
             {
                 BFLogger.Error(LogTag, $"Release called with an instance not tracked by this pooler: '{instance.name}'.");
+                return;
+            }
+
+            if (!activeInstances.Remove(instance))
+            {
+                BFLogger.Error(LogTag, $"Release called with an instance already released to pool '{key}': '{instance.name}'.");
                 return;
             }
 

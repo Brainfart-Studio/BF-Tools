@@ -292,5 +292,23 @@ namespace BFTools.Systems.ObjectPooler.Tests
 
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null instance")));
         }
+
+        [Test]
+        public void Release_AlreadyReleasedInstance_LogsErrorAndDoesNotDuplicateInPool()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            GameObject instance = pooler.Get("Bullet");
+            pooler.Release(instance);
+            SpyLoggerSink spy = InitializeLogging();
+
+            Assert.DoesNotThrow(() => pooler.Release(instance));
+
+            Assert.AreEqual(1, GetPoolCount(pooler, "Bullet"));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("already released")));
+        }
     }
 }
