@@ -8,6 +8,9 @@ namespace BFTools.Systems.SaveSystem
     {
         public static byte[] Encrypt(string plainText)
         {
+            if (plainText == null)
+                throw new ArgumentNullException(nameof(plainText));
+
             using (Aes aes = Aes.Create())
             {
                 aes.Key = BFSaveKeyProvider.GetKey();
@@ -34,11 +37,18 @@ namespace BFTools.Systems.SaveSystem
 
         public static string Decrypt(byte[] cipherBytes)
         {
+            if (cipherBytes == null)
+                throw new ArgumentNullException(nameof(cipherBytes));
+
             using (Aes aes = Aes.Create())
             {
+                int ivLength = aes.BlockSize / 8;
+
+                if (cipherBytes.Length < ivLength)
+                    throw new ArgumentException($"Cipher data must be at least {ivLength} byte(s) long to contain an IV.", nameof(cipherBytes));
+
                 aes.Key = BFSaveKeyProvider.GetKey();
 
-                int ivLength = aes.BlockSize / 8;
                 byte[] iv = new byte[ivLength];
                 Array.Copy(cipherBytes, iv, ivLength);
                 aes.IV = iv;

@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using NUnit.Framework;
 using BFTools.Systems.SaveSystem;
@@ -7,6 +8,18 @@ namespace BFTools.Systems.SaveSystem.Tests
 {
     public class BFSaveChecksumTests
     {
+        [Test]
+        public void Generate_NullData_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => BFSaveChecksum.Generate(null));
+        }
+
+        [Test]
+        public void Validate_NullData_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => BFSaveChecksum.Validate(null, "checksum"));
+        }
+
         [Test]
         public void Generate_SameInput_ProducesSameChecksum()
         {

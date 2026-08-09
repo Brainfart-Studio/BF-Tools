@@ -1,3 +1,4 @@
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -7,6 +8,9 @@ namespace BFTools.Systems.SaveSystem
     {
         public static string Generate(byte[] data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
             using (HMACSHA256 hmac = new HMACSHA256(BFSaveKeyProvider.GetMacKey()))
             {
                 byte[] hash = hmac.ComputeHash(data);
