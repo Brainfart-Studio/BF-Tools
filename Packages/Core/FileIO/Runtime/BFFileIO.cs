@@ -35,7 +35,18 @@ namespace BFTools.Core.FileIO
             using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
             {
                 byte[] buffer = new byte[fileStream.Length];
-                await fileStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                int totalBytesRead = 0;
+
+                while (totalBytesRead < buffer.Length)
+                {
+                    int bytesRead = await fileStream.ReadAsync(buffer, totalBytesRead, buffer.Length - totalBytesRead).ConfigureAwait(false);
+
+                    if (bytesRead == 0)
+                        throw new EndOfStreamException($"Reached end of stream after reading {totalBytesRead} of {buffer.Length} byte(s) from '{filePath}'.");
+
+                    totalBytesRead += bytesRead;
+                }
+
                 return buffer;
             }
         }
