@@ -116,6 +116,7 @@ namespace BFTools.Systems.LevelBootstrapper.Tests
 
             Assert.IsNotNull(instanceA);
             Assert.IsNotNull(instanceB);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Warning && e.Message.Contains("Skipped null prefab entry at index 1")));
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 2 prefab(s).")));
         }
 

@@ -26,16 +26,23 @@ namespace BFTools.Systems.LevelBootstrapper
                 return;
             }
 
+            BFLogger.Trace(LogTag, $"Loaded LevelBootstrapConfig with {prefabs.Length} prefab entr{(prefabs.Length == 1 ? "y" : "ies")}.", this);
+
             int spawned = 0;
-            foreach (GameObject prefab in prefabs)
+            for (int i = 0; i < prefabs.Length; i++)
             {
+                GameObject prefab = prefabs[i];
                 if (prefab == null)
+                {
+                    BFLogger.Warning(LogTag, $"Skipped null prefab entry at index {i}.", this);
                     continue;
+                }
 
                 try
                 {
                     instantiateFunc(prefab);
                     spawned++;
+                    BFLogger.Debug(LogTag, $"Instantiated prefab '{prefab.name}'.", this);
                 }
                 catch (System.Exception ex)
                 {
