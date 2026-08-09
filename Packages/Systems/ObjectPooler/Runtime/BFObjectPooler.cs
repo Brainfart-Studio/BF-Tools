@@ -81,7 +81,12 @@ namespace BFTools.Systems.ObjectPooler
 
         public void Release(GameObject instance)
         {
-            string key = keysByInstance[instance];
+            if (!keysByInstance.TryGetValue(instance, out string key))
+            {
+                BFLogger.Error(LogTag, $"Release called with an instance not tracked by this pooler: '{instance?.name}'.");
+                return;
+            }
+
             instance.SetActive(false);
             pools[key].Enqueue(instance);
             BFLogger.Trace(LogTag, $"Released instance to pool '{key}'");
