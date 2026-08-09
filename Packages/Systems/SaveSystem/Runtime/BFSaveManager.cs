@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
 
 namespace BFTools.Systems.SaveSystem
@@ -111,8 +112,15 @@ namespace BFTools.Systems.SaveSystem
                 byte[] encryptedBytes = BFSaveEncryptor.Encrypt(json);
                 string checksum = BFSaveChecksum.Generate(encryptedBytes);
 
-                await BFSaveFileIO.WriteAsync(filePath, encryptedBytes).ConfigureAwait(false);
-                await BFSaveFileIO.WriteAsync(checksumPath, System.Text.Encoding.UTF8.GetBytes(checksum)).ConfigureAwait(false);
+                byte[] checksumBytes = System.Text.Encoding.UTF8.GetBytes(checksum);
+
+                BFLogger.Trace(LogTag, $"Writing {encryptedBytes.Length} byte(s) to '{filePath}'");
+                await BFFileIO.WriteAsync(filePath, encryptedBytes).ConfigureAwait(false);
+                BFLogger.Trace(LogTag, $"Wrote '{filePath}'");
+
+                BFLogger.Trace(LogTag, $"Writing {checksumBytes.Length} byte(s) to '{checksumPath}'");
+                await BFFileIO.WriteAsync(checksumPath, checksumBytes).ConfigureAwait(false);
+                BFLogger.Trace(LogTag, $"Wrote '{checksumPath}'");
 
                 BFLogger.Trace(LogTag, $"SaveAsync completed for slot '{slotName}' ({encryptedBytes.Length} byte(s) written to '{filePath}')");
             }
@@ -138,8 +146,17 @@ namespace BFTools.Systems.SaveSystem
             string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
             string checksumPath = filePath + ".chk";
 
-            byte[] encryptedBytes = await BFSaveFileIO.ReadAsync(filePath).ConfigureAwait(false);
-            byte[] checksumBytes = await BFSaveFileIO.ReadAsync(checksumPath).ConfigureAwait(false);
+            byte[] encryptedBytes = await BFFileIO.ReadAsync(filePath).ConfigureAwait(false);
+            if (encryptedBytes == null)
+                BFLogger.Trace(LogTag, $"No file found at '{filePath}'");
+            else
+                BFLogger.Trace(LogTag, $"Read {encryptedBytes.Length} byte(s) from '{filePath}'");
+
+            byte[] checksumBytes = await BFFileIO.ReadAsync(checksumPath).ConfigureAwait(false);
+            if (checksumBytes == null)
+                BFLogger.Trace(LogTag, $"No file found at '{checksumPath}'");
+            else
+                BFLogger.Trace(LogTag, $"Read {checksumBytes.Length} byte(s) from '{checksumPath}'");
 
             if (encryptedBytes == null && checksumBytes == null)
             {
