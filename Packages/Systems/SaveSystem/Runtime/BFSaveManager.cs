@@ -200,9 +200,6 @@ namespace BFTools.Systems.SaveSystem
                 return false;
             }
 
-            if (saveData.metadata.version != BFSaveVersionMigrator.CurrentVersion)
-                BFLogger.Info(LogTag, $"Migrating slot '{slotName}' from version {saveData.metadata.version} to {BFSaveVersionMigrator.CurrentVersion}");
-
             object migrated = BFSaveVersionMigrator.Migrate(saveData, saveData.metadata.version);
             saveData = (BFSaveData)migrated;
 
