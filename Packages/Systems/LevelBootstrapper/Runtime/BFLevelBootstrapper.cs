@@ -9,6 +9,8 @@ namespace BFTools.Systems.LevelBootstrapper
 
         [SerializeField] private BFLevelBootstrapConfig config;
 
+        private static System.Func<GameObject, GameObject> instantiateFunc = prefab => Object.Instantiate(prefab);
+
         private void Awake()
         {
             if (config == null)
@@ -29,8 +31,16 @@ namespace BFTools.Systems.LevelBootstrapper
             {
                 if (prefab == null)
                     continue;
-                Instantiate(prefab);
-                spawned++;
+
+                try
+                {
+                    instantiateFunc(prefab);
+                    spawned++;
+                }
+                catch (System.Exception ex)
+                {
+                    BFLogger.Error(LogTag, $"Failed to instantiate prefab '{prefab.name}': {ex.Message}", this);
+                }
             }
 
             BFLogger.Info(LogTag, $"Spawned {spawned} prefab(s).", this);

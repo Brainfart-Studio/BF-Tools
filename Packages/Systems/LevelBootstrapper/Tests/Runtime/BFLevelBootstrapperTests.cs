@@ -35,6 +35,15 @@ namespace BFTools.Systems.LevelBootstrapper.Tests
                 Object.DestroyImmediate(asset);
 
             BFLoggerTestUtility.ResetState();
+            ResetInstantiateFunc();
+        }
+
+        private static readonly FieldInfo InstantiateFuncField =
+            typeof(BFLevelBootstrapper).GetField("instantiateFunc", BindingFlags.NonPublic | BindingFlags.Static);
+
+        private static void ResetInstantiateFunc()
+        {
+            InstantiateFuncField.SetValue(null, (System.Func<GameObject, GameObject>)Object.Instantiate);
         }
 
         private static BFLevelBootstrapConfig CreateConfig(params GameObject[] prefabs)
@@ -119,6 +128,37 @@ namespace BFTools.Systems.LevelBootstrapper.Tests
 
             Assert.DoesNotThrow(() => CreateBootstrapper(config));
             Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null PrefabsToInstantiate array")));
+        }
+
+        [Test]
+        public void Awake_PrefabInstantiationThrows_LogsErrorAndContinuesRemaining()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            GameObject failingPrefab = new GameObject("FailingPrefab");
+            GameObject goodPrefab = new GameObject("GoodPrefab");
+            createdAssets.Add(failingPrefab);
+            createdAssets.Add(goodPrefab);
+            BFLevelBootstrapConfig config = CreateConfig(failingPrefab, goodPrefab);
+            createdAssets.Add(config);
+
+            InstantiateFuncField.SetValue(null, (System.Func<GameObject, GameObject>)(prefab =>
+            {
+                if (prefab.name == "FailingPrefab")
+                    throw new System.InvalidOperationException("simulated instantiation failure");
+
+                return Object.Instantiate(prefab);
+            }));
+
+            Assert.DoesNotThrow(() => CreateBootstrapper(config));
+
+            GameObject instance = GameObject.Find("GoodPrefab(Clone)");
+            if (instance != null)
+                spawnedInstances.Add(instance);
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error &&
+                e.Message.Contains("Failed to instantiate prefab 'FailingPrefab'") &&
+                e.Message.Contains("simulated instantiation failure")));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 1 prefab(s).")));
         }
     }
 }
