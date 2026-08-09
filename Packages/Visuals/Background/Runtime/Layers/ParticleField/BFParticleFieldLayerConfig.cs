@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BFTools.Visuals.Background
 {
-    public class BFParticleFieldLayerConfig : ScriptableObject
+    public class BFParticleFieldLayerConfig : BFBackgroundLayerConfig
     {
         [Header("Emission")]
         [Tooltip("Number of particles spawned per second.")]
@@ -54,5 +54,11 @@ namespace BFTools.Visuals.Background
 
         [Tooltip("Scroll speed of the turbulence noise.")]
         public float TurbulenceSpeed = 1f;
+
+        public override IBFBackgroundLayer CreateLayer()
+        {
+            return new BFParticleFieldLayer(this);
+        }
+
     }
 }

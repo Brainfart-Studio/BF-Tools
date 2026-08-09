@@ -50,6 +50,8 @@ namespace BFTools.Visuals.Background
 
         public void Tick(float dt)
         {
+            ConfigureParticleSystem();
+
             if (Screen.width != lastWidth || Screen.height != lastHeight)
             {
                 UpdateEmitterBounds();
@@ -77,6 +79,8 @@ namespace BFTools.Visuals.Background
 
         private void ConfigureParticleSystem()
         {
+            if (particleSystem == null) return;
+
             var main = particleSystem.main;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.startLifetime = new ParticleSystem.MinMaxCurve(config.MinLifetime, config.MaxLifetime);
@@ -84,6 +88,7 @@ namespace BFTools.Visuals.Background
             main.startSize = new ParticleSystem.MinMaxCurve(config.MinSize, config.MaxSize);
             main.gravityModifier = config.GravityModifier;
             main.startColor = Color.white;
+            main.scalingMode = ParticleSystemScalingMode.Hierarchy;
 
             float angleRad = config.Angle * Mathf.Deg2Rad;
             Vector3 direction = new Vector3(Mathf.Sin(angleRad), Mathf.Cos(angleRad), 0f);
@@ -109,6 +114,14 @@ namespace BFTools.Visuals.Background
             {
                 noise.enabled = false;
             }
+
+            if (particleRenderer != null && config.ParticleTexture != null && particleRenderer.sharedMaterial != null)
+            {
+                if (particleRenderer.sharedMaterial.mainTexture != config.ParticleTexture)
+                {
+                    particleRenderer.sharedMaterial.mainTexture = config.ParticleTexture;
+                }
+            }
         }
 
         private void UpdateEmitterBounds()
@@ -116,10 +129,15 @@ namespace BFTools.Visuals.Background
             lastWidth = Screen.width;
             lastHeight = Screen.height;
 
+            float worldHeight = Screen.height;
+            float worldWidth = Screen.width;
+
+            root.position = new Vector3(worldWidth * 0.5f, worldHeight * 0.5f, 10f);
+
             var shape = particleSystem.shape;
             shape.enabled = true;
             shape.shapeType = ParticleSystemShapeType.Box;
-            shape.scale = new Vector3(lastWidth, lastHeight, 1f);
+            shape.scale = new Vector3(worldWidth * 1.5f, worldHeight * 1.5f, 1f);
         }
     }
 }
