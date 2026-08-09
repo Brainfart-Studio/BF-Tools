@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -7,7 +7,7 @@ namespace BFTools.Systems.SaveSystem
 {
     public sealed class BFSaveTypeAllowlistBinder : ISerializationBinder
     {
-        private readonly Dictionary<string, Type> allowedTypesByName = new Dictionary<string, Type>();
+        private readonly ConcurrentDictionary<string, Type> allowedTypesByName = new ConcurrentDictionary<string, Type>();
 
         public void Allow(Type type)
         {
