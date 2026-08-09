@@ -1,11 +1,6 @@
-using System;
-
 namespace BFTools.Systems.SaveSystem
 {
-    public interface ISaveable
+    public interface ISaveable : IStateCapturable
     {
-        Type StateType { get; }
-        object CaptureState();
-        void RestoreState(object state);
     }
 }

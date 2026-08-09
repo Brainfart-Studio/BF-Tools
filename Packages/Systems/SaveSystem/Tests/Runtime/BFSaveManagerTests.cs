@@ -51,28 +51,43 @@ namespace BFTools.Systems.SaveSystem.Tests
         {
             Type managerType = typeof(BFSaveManager);
 
-            List<ISaveable> saveables = (List<ISaveable>)managerType
+            object saveablesRegistry = managerType
                 .GetField("saveables", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
-            saveables.Clear();
+            ClearRegistry(saveablesRegistry);
 
             List<BFSaveSlot> slots = (List<BFSaveSlot>)managerType
                 .GetField("slots", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
             slots.Clear();
+        }
 
-            HashSet<Type> registeredStateTypes = (HashSet<Type>)managerType
-                .GetField("registeredStateTypes", BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
-            registeredStateTypes.Clear();
+        private static void ClearRegistry(object registry)
+        {
+            Type registryType = registry.GetType();
+
+            object items = registryType
+                .GetField("items", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+            items.GetType().GetMethod("Clear").Invoke(items, null);
+
+            object registeredStateTypes = registryType
+                .GetField("registeredStateTypes", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+            registeredStateTypes.GetType().GetMethod("Clear").Invoke(registeredStateTypes, null);
         }
 
         private static int GetSaveablesCount()
         {
-            List<ISaveable> saveables = (List<ISaveable>)typeof(BFSaveManager)
+            object registry = typeof(BFSaveManager)
                 .GetField("saveables", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
-            return saveables.Count;
+
+            object items = registry.GetType()
+                .GetField("items", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+
+            return (int)items.GetType().GetProperty("Count").GetValue(items);
         }
 
         [Test]

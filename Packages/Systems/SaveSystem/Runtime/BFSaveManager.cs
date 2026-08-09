@@ -10,27 +10,17 @@ namespace BFTools.Systems.SaveSystem
     {
         private const string LogTag = "Save";
 
-        private static readonly List<ISaveable> saveables = new List<ISaveable>();
+        private static readonly BFStateRegistry<ISaveable> saveables = new BFStateRegistry<ISaveable>(LogTag);
         private static readonly List<BFSaveSlot> slots = new List<BFSaveSlot>();
-        private static readonly HashSet<Type> registeredStateTypes = new HashSet<Type>();
 
         public static void Register(ISaveable saveable)
         {
-            if (!saveables.Contains(saveable))
-            {
-                saveables.Add(saveable);
-
-                if (registeredStateTypes.Add(saveable.StateType))
-                    BFSaveSerializer.AllowType(saveable.StateType);
-
-                BFLogger.Trace(LogTag, $"Registered {saveable.GetType().Name}");
-            }
+            saveables.Register(saveable);
         }
 
         public static void Unregister(ISaveable saveable)
         {
-            if (saveables.Remove(saveable))
-                BFLogger.Trace(LogTag, $"Unregistered {saveable.GetType().Name}");
+            saveables.Unregister(saveable);
         }
 
         public static void RegisterSlot(BFSaveSlot slot)
@@ -95,13 +85,7 @@ namespace BFTools.Systems.SaveSystem
                 }
             };
 
-            for (int i = 0; i < saveables.Count; i++)
-            {
-                ISaveable saveable = saveables[i];
-                saveData.saveableStates[saveable.GetType().Name] = saveable.CaptureState();
-            }
-
-            BFLogger.Debug(LogTag, $"Captured state from {saveables.Count} saveable(s) for slot '{slotName}'");
+            saveData.saveableStates = saveables.CaptureAll($" for slot '{slotName}'");
 
             string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
             string checksumPath = filePath + ".chk";
@@ -204,31 +188,7 @@ namespace BFTools.Systems.SaveSystem
             object migrated = BFSaveVersionMigrator.Migrate(saveData, saveData.metadata.version);
             saveData = (BFSaveData)migrated;
 
-            int restoredCount = 0;
-            for (int i = 0; i < saveables.Count; i++)
-            {
-                ISaveable saveable = saveables[i];
-                string key = saveable.GetType().Name;
-
-                if (saveData.saveableStates.TryGetValue(key, out object state))
-                {
-                    try
-                    {
-                        saveable.RestoreState(state);
-                        restoredCount++;
-                    }
-                    catch (Exception exception)
-                    {
-                        BFLogger.Warning(LogTag, $"Failed to restore state for '{key}' in slot '{slotName}': {exception.Message}. Leaving it as-is and continuing with the remaining saveable(s).");
-                    }
-                }
-                else
-                {
-                    BFLogger.Trace(LogTag, $"No saved state found for '{key}' in slot '{slotName}', leaving as-is");
-                }
-            }
-
-            BFLogger.Debug(LogTag, $"Restored state for {restoredCount} of {saveables.Count} saveable(s) from slot '{slotName}'");
+            saveables.RestoreAll(saveData.saveableStates, $" in slot '{slotName}'");
 
             RegisterSlot(new BFSaveSlot
             {

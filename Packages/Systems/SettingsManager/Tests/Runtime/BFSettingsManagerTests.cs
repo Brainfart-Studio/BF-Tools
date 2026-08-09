@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -64,23 +63,38 @@ namespace BFTools.Systems.SettingsManager.Tests
         {
             Type managerType = typeof(BFSettingsManager);
 
-            List<ISettingsProvider> providers = (List<ISettingsProvider>)managerType
+            object providersRegistry = managerType
                 .GetField("providers", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
-            providers.Clear();
+            ClearRegistry(providersRegistry);
+        }
 
-            HashSet<Type> registeredStateTypes = (HashSet<Type>)managerType
-                .GetField("registeredStateTypes", BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
-            registeredStateTypes.Clear();
+        private static void ClearRegistry(object registry)
+        {
+            Type registryType = registry.GetType();
+
+            object items = registryType
+                .GetField("items", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+            items.GetType().GetMethod("Clear").Invoke(items, null);
+
+            object registeredStateTypes = registryType
+                .GetField("registeredStateTypes", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+            registeredStateTypes.GetType().GetMethod("Clear").Invoke(registeredStateTypes, null);
         }
 
         private static int GetProvidersCount()
         {
-            List<ISettingsProvider> providers = (List<ISettingsProvider>)typeof(BFSettingsManager)
+            object registry = typeof(BFSettingsManager)
                 .GetField("providers", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
-            return providers.Count;
+
+            object items = registry.GetType()
+                .GetField("items", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+
+            return (int)items.GetType().GetProperty("Count").GetValue(items);
         }
 
         private static SpyLoggerSink InitializeLogging()

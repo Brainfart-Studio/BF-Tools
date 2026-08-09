@@ -1,11 +1,8 @@
-using System;
+using BFTools.Systems.SaveSystem;
 
 namespace BFTools.Systems.SettingsManager
 {
-    public interface ISettingsProvider
+    public interface ISettingsProvider : IStateCapturable
     {
-        Type StateType { get; }
-        object CaptureState();
-        void RestoreState(object state);
     }
 }
