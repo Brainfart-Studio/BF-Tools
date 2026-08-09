@@ -1,6 +1,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
 
 namespace BFTools.Systems.SaveSystem
@@ -61,11 +62,7 @@ namespace BFTools.Systems.SaveSystem
 
             string tempPath = keyPath + ".tmp";
             File.WriteAllBytes(tempPath, key);
-
-            if (File.Exists(keyPath))
-                File.Delete(keyPath);
-
-            File.Move(tempPath, keyPath);
+            BFAtomicFile.Replace(tempPath, keyPath);
 
             return key;
         }
