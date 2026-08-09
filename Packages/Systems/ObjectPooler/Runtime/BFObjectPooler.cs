@@ -30,6 +30,12 @@ namespace BFTools.Systems.ObjectPooler
 
         private void Prewarm()
         {
+            if (config == null)
+            {
+                BFLogger.Error(LogTag, "No config assigned. Skipping prewarm.");
+                return;
+            }
+
             foreach (BFObjectPoolConfig.PoolEntry entry in config.PoolEntries)
             {
                 if (!pools.ContainsKey(entry.key))
