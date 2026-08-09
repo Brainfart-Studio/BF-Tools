@@ -103,13 +103,13 @@ namespace BFTools.Systems.SaveSystem
                 }
             };
 
-            saveData.saveableStates = saveables.CaptureAll($" for slot '{slotName}'");
-
             string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
             string checksumPath = filePath + ".chk";
 
             try
             {
+                saveData.saveableStates = saveables.CaptureAll($" for slot '{slotName}'");
+
                 string json = BFSaveSerializer.Serialize(saveData);
                 byte[] encryptedBytes = BFSaveEncryptor.Encrypt(json);
                 string checksum = BFSaveChecksum.Generate(encryptedBytes);

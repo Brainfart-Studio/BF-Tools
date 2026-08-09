@@ -25,6 +25,13 @@ namespace BFTools.Systems.SaveSystem.Tests
             public void RestoreState(object state) => State = (FakeState)state;
         }
 
+        private class ThrowingCaptureSaveable : ISaveable
+        {
+            public Type StateType => typeof(FakeState);
+            public object CaptureState() => throw new InvalidOperationException("Capture failed");
+            public void RestoreState(object state) { }
+        }
+
         private string scratchDir;
 
         [SetUp]
@@ -196,6 +203,16 @@ namespace BFTools.Systems.SaveSystem.Tests
             bool loaded = BFSaveManager.LoadAsync("MissingSlot", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(loaded);
+        }
+
+        [Test]
+        public void SaveAsync_SaveableCaptureStateThrows_ReturnsFalseInsteadOfThrowing()
+        {
+            BFSaveManager.Register(new ThrowingCaptureSaveable());
+
+            bool saved = BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsFalse(saved);
         }
     }
 }
