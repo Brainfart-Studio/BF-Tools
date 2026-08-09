@@ -38,9 +38,19 @@ namespace BFTools.Systems.ObjectPooler
 
             foreach (BFObjectPoolConfig.PoolEntry entry in config.PoolEntries)
             {
-                if (!pools.ContainsKey(entry.key))
-                    pools[entry.key] = new Queue<GameObject>();
+                if (entry.prefab == null)
+                {
+                    BFLogger.Error(LogTag, $"Pool entry '{entry.key}' has no prefab assigned. Skipping.");
+                    continue;
+                }
 
+                if (pools.ContainsKey(entry.key))
+                {
+                    BFLogger.Error(LogTag, $"Duplicate pool key '{entry.key}' in config. Skipping duplicate entry.");
+                    continue;
+                }
+
+                pools[entry.key] = new Queue<GameObject>();
                 prefabsByKey[entry.key] = entry.prefab;
 
                 for (int i = 0; i < entry.prewarmCount; i++)
