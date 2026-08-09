@@ -12,42 +12,49 @@ namespace BFTools.Systems.SaveSystem
         private const int KeySizeInBytes = 32;
 
         private static readonly RandomNumberGenerator rng = RandomNumberGenerator.Create();
+        private static readonly object keyLock = new object();
 
         private static byte[] cachedKey;
         private static byte[] cachedMacKey;
 
         public static byte[] GetKey()
         {
-            if (cachedKey != null)
+            lock (keyLock)
+            {
+                if (cachedKey != null)
+                    return cachedKey;
+
+                string keyPath = BFSavePath.KeyFilePath;
+
+                if (File.Exists(keyPath))
+                {
+                    cachedKey = File.ReadAllBytes(keyPath);
+                    BFLogger.Trace(LogTag, $"Loaded existing save key from '{keyPath}'");
+                }
+                else
+                {
+                    cachedKey = GenerateAndPersistKey(keyPath);
+                    BFLogger.Info(LogTag, $"Generated new save key at '{keyPath}'");
+                }
+
                 return cachedKey;
-
-            string keyPath = BFSavePath.KeyFilePath;
-
-            if (File.Exists(keyPath))
-            {
-                cachedKey = File.ReadAllBytes(keyPath);
-                BFLogger.Trace(LogTag, $"Loaded existing save key from '{keyPath}'");
             }
-            else
-            {
-                cachedKey = GenerateAndPersistKey(keyPath);
-                BFLogger.Info(LogTag, $"Generated new save key at '{keyPath}'");
-            }
-
-            return cachedKey;
         }
 
         public static byte[] GetMacKey()
         {
-            if (cachedMacKey != null)
-                return cachedMacKey;
-
-            using (HMACSHA256 hmac = new HMACSHA256(GetKey()))
+            lock (keyLock)
             {
-                cachedMacKey = hmac.ComputeHash(Encoding.UTF8.GetBytes("BFSaveSystem.MacKey"));
-            }
+                if (cachedMacKey != null)
+                    return cachedMacKey;
 
-            return cachedMacKey;
+                using (HMACSHA256 hmac = new HMACSHA256(GetKey()))
+                {
+                    cachedMacKey = hmac.ComputeHash(Encoding.UTF8.GetBytes("BFSaveSystem.MacKey"));
+                }
+
+                return cachedMacKey;
+            }
         }
 
         public static void FillRandomBytes(byte[] buffer)

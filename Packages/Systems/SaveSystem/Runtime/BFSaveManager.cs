@@ -11,6 +11,7 @@ namespace BFTools.Systems.SaveSystem
         private const string LogTag = "Save";
 
         private static readonly BFStateRegistry<ISaveable> saveables = new BFStateRegistry<ISaveable>(LogTag);
+        private static readonly object slotsLock = new object();
         private static readonly List<BFSaveSlot> slots = new List<BFSaveSlot>();
 
         public static void Register(ISaveable saveable)
@@ -25,35 +26,41 @@ namespace BFTools.Systems.SaveSystem
 
         public static void RegisterSlot(BFSaveSlot slot)
         {
-            for (int i = 0; i < slots.Count; i++)
+            lock (slotsLock)
             {
-                if (slots[i].slotName == slot.slotName)
+                for (int i = 0; i < slots.Count; i++)
                 {
-                    slots[i] = slot;
-                    BFLogger.Trace(LogTag, $"Updated slot '{slot.slotName}'");
-                    return;
+                    if (slots[i].slotName == slot.slotName)
+                    {
+                        slots[i] = slot;
+                        BFLogger.Trace(LogTag, $"Updated slot '{slot.slotName}'");
+                        return;
+                    }
                 }
-            }
 
-            slots.Add(slot);
-            BFLogger.Trace(LogTag, $"Registered new slot '{slot.slotName}'");
+                slots.Add(slot);
+                BFLogger.Trace(LogTag, $"Registered new slot '{slot.slotName}'");
+            }
         }
 
         public static bool TryGetSlot(string slotName, out BFSaveSlot slot)
         {
-            for (int i = 0; i < slots.Count; i++)
+            lock (slotsLock)
             {
-                if (slots[i].slotName == slotName)
+                for (int i = 0; i < slots.Count; i++)
                 {
-                    slot = slots[i];
-                    BFLogger.Trace(LogTag, $"Found slot '{slotName}'");
-                    return true;
+                    if (slots[i].slotName == slotName)
+                    {
+                        slot = slots[i];
+                        BFLogger.Trace(LogTag, $"Found slot '{slotName}'");
+                        return true;
+                    }
                 }
-            }
 
-            slot = default;
-            BFLogger.Trace(LogTag, $"No slot found for '{slotName}'");
-            return false;
+                slot = default;
+                BFLogger.Trace(LogTag, $"No slot found for '{slotName}'");
+                return false;
+            }
         }
 
         public static string GetFileNameForSlot(string slotName)

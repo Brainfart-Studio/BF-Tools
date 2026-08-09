@@ -7,6 +7,7 @@ namespace BFTools.Systems.SaveSystem
     public sealed class BFStateRegistry<T> where T : IStateCapturable
     {
         private readonly string logTag;
+        private readonly object syncRoot = new object();
         private readonly List<T> items = new List<T>();
         private readonly HashSet<Type> registeredStateTypes = new HashSet<Type>();
 
@@ -17,45 +18,63 @@ namespace BFTools.Systems.SaveSystem
 
         public void Register(T item)
         {
-            if (!items.Contains(item))
+            lock (syncRoot)
             {
-                items.Add(item);
+                if (!items.Contains(item))
+                {
+                    items.Add(item);
 
-                if (registeredStateTypes.Add(item.StateType))
-                    BFSaveSerializer.AllowType(item.StateType);
+                    if (registeredStateTypes.Add(item.StateType))
+                        BFSaveSerializer.AllowType(item.StateType);
 
-                BFLogger.Trace(logTag, $"Registered {item.GetType().Name}");
+                    BFLogger.Trace(logTag, $"Registered {item.GetType().Name}");
+                }
             }
         }
 
         public void Unregister(T item)
         {
-            if (items.Remove(item))
-                BFLogger.Trace(logTag, $"Unregistered {item.GetType().Name}");
+            lock (syncRoot)
+            {
+                if (items.Remove(item))
+                    BFLogger.Trace(logTag, $"Unregistered {item.GetType().Name}");
+            }
         }
 
         public Dictionary<string, object> CaptureAll(string context = "")
         {
+            T[] snapshot;
+            lock (syncRoot)
+            {
+                snapshot = items.ToArray();
+            }
+
             Dictionary<string, object> states = new Dictionary<string, object>();
 
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < snapshot.Length; i++)
             {
-                T item = items[i];
+                T item = snapshot[i];
                 states[item.GetType().FullName] = item.CaptureState();
             }
 
-            BFLogger.Debug(logTag, $"Captured state from {items.Count} item(s){context}");
+            BFLogger.Debug(logTag, $"Captured state from {snapshot.Length} item(s){context}");
 
             return states;
         }
 
         public int RestoreAll(Dictionary<string, object> states, string context = "")
         {
+            T[] snapshot;
+            lock (syncRoot)
+            {
+                snapshot = items.ToArray();
+            }
+
             int restoredCount = 0;
 
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < snapshot.Length; i++)
             {
-                T item = items[i];
+                T item = snapshot[i];
                 string key = item.GetType().FullName;
 
                 if (states.TryGetValue(key, out object state))
@@ -76,7 +95,7 @@ namespace BFTools.Systems.SaveSystem
                 }
             }
 
-            BFLogger.Debug(logTag, $"Restored state for {restoredCount} of {items.Count} item(s){context}");
+            BFLogger.Debug(logTag, $"Restored state for {restoredCount} of {snapshot.Length} item(s){context}");
 
             return restoredCount;
         }
