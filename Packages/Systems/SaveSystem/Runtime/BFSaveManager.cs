@@ -70,7 +70,7 @@ namespace BFTools.Systems.SaveSystem
             return $"save_{slotName}.dat";
         }
 
-        public static Task SaveAsync(string slotName)
+        public static Task<bool> SaveAsync(string slotName)
         {
             return SaveAsync(slotName, BFSavePath.DefaultDirectory);
         }
@@ -80,7 +80,7 @@ namespace BFTools.Systems.SaveSystem
             return LoadAsync(slotName, BFSavePath.DefaultDirectory);
         }
 
-        public static async Task SaveAsync(string slotName, string directoryPath)
+        public static async Task<bool> SaveAsync(string slotName, string directoryPath)
         {
             BFLogger.Trace(LogTag, $"SaveAsync started for slot '{slotName}'");
 
@@ -102,15 +102,25 @@ namespace BFTools.Systems.SaveSystem
 
             BFLogger.Debug(LogTag, $"Captured state from {saveables.Count} saveable(s) for slot '{slotName}'");
 
-            string json = BFSaveSerializer.Serialize(saveData);
-            byte[] encryptedBytes = BFSaveEncryptor.Encrypt(json);
-            string checksum = BFSaveChecksum.Generate(encryptedBytes);
-
             string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
             string checksumPath = filePath + ".chk";
 
-            await BFSaveFileIO.WriteAsync(filePath, encryptedBytes).ConfigureAwait(false);
-            await BFSaveFileIO.WriteAsync(checksumPath, System.Text.Encoding.UTF8.GetBytes(checksum)).ConfigureAwait(false);
+            try
+            {
+                string json = BFSaveSerializer.Serialize(saveData);
+                byte[] encryptedBytes = BFSaveEncryptor.Encrypt(json);
+                string checksum = BFSaveChecksum.Generate(encryptedBytes);
+
+                await BFSaveFileIO.WriteAsync(filePath, encryptedBytes).ConfigureAwait(false);
+                await BFSaveFileIO.WriteAsync(checksumPath, System.Text.Encoding.UTF8.GetBytes(checksum)).ConfigureAwait(false);
+
+                BFLogger.Trace(LogTag, $"SaveAsync completed for slot '{slotName}' ({encryptedBytes.Length} byte(s) written to '{filePath}')");
+            }
+            catch (Exception exception)
+            {
+                BFLogger.Warning(LogTag, $"Failed to save slot '{slotName}': {exception.Message}. The slot's on-disk files may now be missing or incomplete.");
+                return false;
+            }
 
             RegisterSlot(new BFSaveSlot
             {
@@ -118,7 +128,7 @@ namespace BFTools.Systems.SaveSystem
                 metadata = saveData.metadata
             });
 
-            BFLogger.Trace(LogTag, $"SaveAsync completed for slot '{slotName}' ({encryptedBytes.Length} byte(s) written to '{filePath}')");
+            return true;
         }
 
         public static async Task<bool> LoadAsync(string slotName, string directoryPath)
