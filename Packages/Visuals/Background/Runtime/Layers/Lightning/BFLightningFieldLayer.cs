@@ -8,10 +8,13 @@ namespace BFTools.Visuals.Background
         private static readonly string[] LogTags = { "Background", "LightningField" };
         private static readonly Color32 Color32Opaque = new Color32(255, 255, 255, 255);
 
-        private const int BoltSegments = 16;
+        private const int MaxBolts = 4;
+        private const int SegmentsPerBolt = 12;
         private const int VerticesPerSegment = 4;
-        private const int TotalVertices = (BoltSegments + 1) * VerticesPerSegment;
-        private const int TotalIndices = BoltSegments * 6;
+        private const int VerticesPerBolt = (SegmentsPerBolt + 1) * VerticesPerSegment;
+        private const int TotalVertices = MaxBolts * VerticesPerBolt;
+        private const int IndicesPerBolt = SegmentsPerBolt * 6;
+        private const int TotalIndices = MaxBolts * IndicesPerBolt;
 
         private readonly BFLightningFieldLayerConfig config;
 
@@ -26,7 +29,7 @@ namespace BFTools.Visuals.Background
         private float currentFlashTimer;
         private bool isFlashing;
         private float activeBoltSeed;
-        private float boltXPosition;
+        private float[] boltXPositions = new float[MaxBolts];
 
         public BFLightningFieldLayer(BFLightningFieldLayerConfig config)
         {
@@ -36,7 +39,10 @@ namespace BFTools.Visuals.Background
         public void Init(Transform parent, int sortingOrder)
         {
             activeBoltSeed = Random.Range(0f, 1000f);
-            boltXPosition = Random.Range(0.2f, 0.8f);
+            for (int i = 0; i < MaxBolts; i++)
+            {
+                boltXPositions[i] = Random.Range(0.15f, 0.85f);
+            }
             ScheduleNextFlash();
 
             GameObject obj = new GameObject("BFLightningFieldLayer");
@@ -133,7 +139,10 @@ namespace BFTools.Visuals.Background
             isFlashing = true;
             currentFlashTimer = Mathf.Max(0.001f, config.FlashDuration);
             activeBoltSeed = Random.Range(0f, 1000f);
-            boltXPosition = Random.Range(0.2f, 0.8f);
+            for (int i = 0; i < MaxBolts; i++)
+            {
+                boltXPositions[i] = Random.Range(0.1f, 0.9f);
+            }
             UpdateGeometry();
         }
 
@@ -150,55 +159,60 @@ namespace BFTools.Visuals.Background
             Vector3[] vertices = new Vector3[TotalVertices];
             Vector2[] uvs = new Vector2[TotalVertices];
 
-            float boltThickness = Mathf.Max(10f, config.BoltScale * 25f);
-            float startX = worldWidth * boltXPosition;
+            float boltThickness = Mathf.Max(8f, config.BoltScale * 35f);
 
-            float prevX = startX;
-            float prevY = worldHeight * 0.5f;
-
-            for (int i = 0; i <= BoltSegments; i++)
+            for (int b = 0; b < MaxBolts; b++)
             {
-                float t = (float)i / BoltSegments;
-                float currentY = Mathf.Lerp(worldHeight * 0.5f, -worldHeight * 0.5f, t);
+                int vertexBase = b * VerticesPerBolt;
+                float startX = worldWidth * boltXPositions[b];
+                float seedOffset = activeBoltSeed + (b * 133.7f);
 
-                float currentX = startX;
-                if (i > 0 && i < BoltSegments)
+                float prevX = startX;
+                float prevY = worldHeight * 0.5f;
+
+                for (int i = 0; i <= SegmentsPerBolt; i++)
                 {
-                    float noise = Mathf.PerlinNoise(t * 5f + activeBoltSeed, activeBoltSeed);
-                    float jaggedOffset = (noise - 0.5f) * worldWidth * 0.4f * config.BranchingIntensity;
-                    currentX += jaggedOffset;
+                    float t = (float)i / SegmentsPerBolt;
+                    float currentY = Mathf.Lerp(worldHeight * 0.5f, -worldHeight * 0.5f, t);
+
+                    float currentX = startX;
+                    if (i > 0 && i < SegmentsPerBolt)
+                    {
+                        float noise = Mathf.PerlinNoise(t * 6f + seedOffset, seedOffset);
+                        float jaggedOffset = (noise - 0.5f) * worldWidth * 0.35f * config.BranchingIntensity;
+                        currentX += jaggedOffset;
+                    }
+
+                    Vector2 currentPos = new Vector2(currentX, currentY);
+                    Vector2 dir = (i == 0) ? Vector2.down : (currentPos - new Vector2(prevX, prevY)).normalized;
+                    Vector2 normal = new Vector2(-dir.y, dir.x) * (boltThickness * 0.5f);
+
+                    int vIndex = vertexBase + (i * VerticesPerSegment);
+                    vertices[vIndex + 0] = new Vector3(currentPos.x - normal.x, currentPos.y - normal.y, 0f);
+                    vertices[vIndex + 1] = new Vector3(currentPos.x + normal.x, currentPos.y + normal.y, 0f);
+
+                    // Add jagged side forks/branches
+                    if (config.BranchingIntensity > 0.1f && i > 2 && i < SegmentsPerBolt - 2 && i % 3 == 0)
+                    {
+                        float branchDir = (Mathf.Sin(i + seedOffset) > 0f) ? 1f : -1f;
+                        Vector2 branchTip = currentPos + new Vector2(branchDir * boltThickness * 5f, -boltThickness * 5f);
+                        vertices[vIndex + 2] = new Vector3(currentPos.x, currentPos.y, 0f);
+                        vertices[vIndex + 3] = new Vector3(branchTip.x, branchTip.y, 0f);
+                    }
+                    else
+                    {
+                        vertices[vIndex + 2] = vertices[vIndex + 0];
+                        vertices[vIndex + 3] = vertices[vIndex + 1];
+                    }
+
+                    uvs[vIndex + 0] = new Vector2(0f, t);
+                    uvs[vIndex + 1] = new Vector2(1f, t);
+                    uvs[vIndex + 2] = new Vector2(0f, t);
+                    uvs[vIndex + 3] = new Vector2(1f, t);
+
+                    prevX = currentX;
+                    prevY = currentY;
                 }
-
-                Vector2 currentPos = new Vector2(currentX, currentY);
-                Vector2 dir = (i == 0) ? Vector2.down : (currentPos - new Vector2(prevX, prevY)).normalized;
-                Vector2 normal = new Vector2(-dir.y, dir.x) * (boltThickness * 0.5f);
-
-                int vIndex = i * VerticesPerSegment;
-                vertices[vIndex + 0] = new Vector3(currentPos.x - normal.x, currentPos.y - normal.y, 0f);
-                vertices[vIndex + 1] = new Vector3(currentPos.x + normal.x, currentPos.y + normal.y, 0f);
-
-                // Optional branching stub
-                if (config.BranchingIntensity > 0.2f && i > 3 && i < BoltSegments - 3 && i % 4 == 0)
-                {
-                    float branchDir = (Mathf.Sin(i + activeBoltSeed) > 0f) ? 1f : -1f;
-                    Vector2 branchPos = currentPos + new Vector2(branchDir * boltThickness * 4f, -boltThickness * 4f);
-                    vertices[vIndex + 2] = new Vector3(currentPos.x, currentPos.y, 0f);
-                    vertices[vIndex + 3] = new Vector3(branchPos.x, branchPos.y, 0f);
-                }
-                else
-                {
-                    vertices[vIndex + 2] = vertices[vIndex + 0];
-                    vertices[vIndex + 3] = vertices[vIndex + 1];
-                }
-
-                float vCoord = t;
-                uvs[vIndex + 0] = new Vector2(0f, vCoord);
-                uvs[vIndex + 1] = new Vector2(1f, vCoord);
-                uvs[vIndex + 2] = new Vector2(0f, vCoord);
-                uvs[vIndex + 3] = new Vector2(1f, vCoord);
-
-                prevX = currentX;
-                prevY = currentY;
             }
 
             mesh.vertices = vertices;
@@ -231,19 +245,24 @@ namespace BFTools.Visuals.Background
         {
             int[] triangles = new int[TotalIndices];
             int t = 0;
-            for (int i = 0; i < BoltSegments; i++)
+            for (int b = 0; b < MaxBolts; b++)
             {
-                int baseIndex = i * VerticesPerSegment;
-                int nextIndex = (i + 1) * VerticesPerSegment;
+                int vertexBase = b * VerticesPerBolt;
+                int indexBase = b * IndicesPerBolt;
 
-                // Main bolt quad
-                triangles[t++] = baseIndex + 0;
-                triangles[t++] = nextIndex + 0;
-                triangles[t++] = baseIndex + 1;
+                for (int i = 0; i < SegmentsPerBolt; i++)
+                {
+                    int baseIndex = vertexBase + (i * VerticesPerSegment);
+                    int nextIndex = vertexBase + ((i + 1) * VerticesPerSegment);
 
-                triangles[t++] = baseIndex + 1;
-                triangles[t++] = nextIndex + 0;
-                triangles[t++] = nextIndex + 1;
+                    triangles[t++] = baseIndex + 0;
+                    triangles[t++] = nextIndex + 0;
+                    triangles[t++] = baseIndex + 1;
+
+                    triangles[t++] = baseIndex + 1;
+                    triangles[t++] = nextIndex + 0;
+                    triangles[t++] = nextIndex + 1;
+                }
             }
             return triangles;
         }
