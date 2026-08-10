@@ -4,6 +4,7 @@
     "references": [
         "BFTools.Core.FileIO",
         "BFTools.Core.Logger",
+        "BFTools.Core.Serialization",
         "BFTools.Systems.SaveSystem"
     ],
     "includePlatforms": [],

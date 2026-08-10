@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
+using BFTools.Core.Serialization;
 using BFTools.Systems.SaveSystem;
 
 namespace BFTools.Systems.SettingsManager
@@ -19,7 +20,8 @@ namespace BFTools.Systems.SettingsManager
             public Dictionary<string, object> providerStates = new Dictionary<string, object>();
         }
 
-        private static readonly BFStateRegistry<ISettingsProvider> providers = new BFStateRegistry<ISettingsProvider>(LogTag);
+        private static readonly BFAllowlistJsonSerializer serializer = new BFAllowlistJsonSerializer(LogTag);
+        private static readonly BFStateRegistry<ISettingsProvider> providers = new BFStateRegistry<ISettingsProvider>(LogTag, serializer);
 
         public static void Register(ISettingsProvider provider)
         {
@@ -54,7 +56,7 @@ namespace BFTools.Systems.SettingsManager
                     providerStates = providers.CaptureAll()
                 };
 
-                string json = BFSaveSerializer.Serialize(settingsData);
+                string json = serializer.Serialize(settingsData);
                 byte[] bytes = Encoding.UTF8.GetBytes(json);
 
                 await BFFileIO.WriteAsync(filePath, bytes).ConfigureAwait(false);
@@ -88,7 +90,7 @@ namespace BFTools.Systems.SettingsManager
 
             try
             {
-                settingsData = BFSaveSerializer.Deserialize<BFSettingsData>(json);
+                settingsData = serializer.Deserialize<BFSettingsData>(json);
             }
             catch (Exception exception)
             {

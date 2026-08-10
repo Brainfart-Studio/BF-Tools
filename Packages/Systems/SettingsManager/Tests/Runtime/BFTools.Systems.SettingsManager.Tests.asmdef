@@ -3,7 +3,7 @@
     "rootNamespace": "BFTools.Systems.SettingsManager.Tests",
     "references": [
         "BFTools.Systems.SettingsManager",
-        "BFTools.Systems.SaveSystem",
+        "BFTools.Core.Serialization",
         "BFTools.Core.Logger",
         "BFTools.Core.Logger.TestUtilities",
         "UnityEngine.TestRunner",

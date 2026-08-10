@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
+using BFTools.Core.Serialization;
 
 namespace BFTools.Systems.SaveSystem
 {
@@ -10,7 +11,8 @@ namespace BFTools.Systems.SaveSystem
     {
         private const string LogTag = "Save";
 
-        private static readonly BFStateRegistry<ISaveable> saveables = new BFStateRegistry<ISaveable>(LogTag);
+        private static readonly BFAllowlistJsonSerializer serializer = new BFAllowlistJsonSerializer(LogTag);
+        private static readonly BFStateRegistry<ISaveable> saveables = new BFStateRegistry<ISaveable>(LogTag, serializer);
         private static readonly object slotsLock = new object();
         private static readonly List<BFSaveSlot> slots = new List<BFSaveSlot>();
 
@@ -110,7 +112,7 @@ namespace BFTools.Systems.SaveSystem
             {
                 saveData.saveableStates = saveables.CaptureAll($" for slot '{slotName}'");
 
-                string json = BFSaveSerializer.Serialize(saveData);
+                string json = serializer.Serialize(saveData);
                 byte[] encryptedBytes = BFSaveEncryptor.Encrypt(json);
                 string checksum = BFSaveChecksum.Generate(encryptedBytes);
 
@@ -186,7 +188,7 @@ namespace BFTools.Systems.SaveSystem
             try
             {
                 json = BFSaveEncryptor.Decrypt(encryptedBytes);
-                saveData = BFSaveSerializer.Deserialize<BFSaveData>(json);
+                saveData = serializer.Deserialize<BFSaveData>(json);
             }
             catch (Exception exception)
             {

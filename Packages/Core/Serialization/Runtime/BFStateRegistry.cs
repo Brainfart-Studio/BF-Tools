@@ -2,18 +2,20 @@ using System;
 using System.Collections.Generic;
 using BFTools.Core.Logger;
 
-namespace BFTools.Systems.SaveSystem
+namespace BFTools.Core.Serialization
 {
     public sealed class BFStateRegistry<T> where T : IStateCapturable
     {
         private readonly string logTag;
+        private readonly BFAllowlistJsonSerializer serializer;
         private readonly object syncRoot = new object();
         private readonly List<T> items = new List<T>();
         private readonly HashSet<Type> registeredStateTypes = new HashSet<Type>();
 
-        public BFStateRegistry(string logTag)
+        public BFStateRegistry(string logTag, BFAllowlistJsonSerializer serializer)
         {
             this.logTag = logTag;
+            this.serializer = serializer;
         }
 
         public void Register(T item)
@@ -25,7 +27,7 @@ namespace BFTools.Systems.SaveSystem
                     items.Add(item);
 
                     if (registeredStateTypes.Add(item.StateType))
-                        BFSaveSerializer.AllowType(item.StateType);
+                        serializer.AllowType(item.StateType);
 
                     BFLogger.Trace(logTag, $"Registered {item.GetType().Name}");
                 }

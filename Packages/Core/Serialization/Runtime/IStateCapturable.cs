@@ -1,6 +1,6 @@
 using System;
 
-namespace BFTools.Systems.SaveSystem
+namespace BFTools.Core.Serialization
 {
     public interface IStateCapturable
     {

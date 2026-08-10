@@ -1,4 +1,4 @@
-using BFTools.Systems.SaveSystem;
+using BFTools.Core.Serialization;
 
 namespace BFTools.Systems.SettingsManager
 {

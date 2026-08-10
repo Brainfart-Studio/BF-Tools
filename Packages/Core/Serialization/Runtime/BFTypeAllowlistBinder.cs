@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace BFTools.Systems.SaveSystem
+namespace BFTools.Core.Serialization
 {
-    public sealed class BFSaveTypeAllowlistBinder : ISerializationBinder
+    public sealed class BFTypeAllowlistBinder : ISerializationBinder
     {
         private readonly ConcurrentDictionary<string, Type> allowedTypesByName = new ConcurrentDictionary<string, Type>();
 
@@ -22,13 +22,13 @@ namespace BFTools.Systems.SaveSystem
             if (allowedTypesByName.TryGetValue(typeName, out Type type))
                 return type;
 
-            throw new JsonSerializationException($"Type '{typeName}' is not in the save system's type allowlist.");
+            throw new JsonSerializationException($"Type '{typeName}' is not in this serializer's type allowlist.");
         }
 
         public void BindToName(Type serializedType, out string assemblyName, out string typeName)
         {
             if (!allowedTypesByName.ContainsKey(serializedType.FullName))
-                throw new JsonSerializationException($"Type '{serializedType.FullName}' is not in the save system's type allowlist.");
+                throw new JsonSerializationException($"Type '{serializedType.FullName}' is not in this serializer's type allowlist.");
 
             assemblyName = null;
             typeName = serializedType.FullName;

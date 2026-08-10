@@ -5,10 +5,10 @@ using NUnit.Framework;
 using UnityEngine;
 using BFTools.Core.Logger;
 using BFTools.Core.Logger.TestUtilities;
-using BFTools.Systems.SaveSystem;
+using BFTools.Core.Serialization;
 using Assert = NUnit.Framework.Assert;
 
-namespace BFTools.Systems.SaveSystem.Tests
+namespace BFTools.Core.Serialization.Tests
 {
     public class BFStateRegistryTests
     {
@@ -60,10 +60,15 @@ namespace BFTools.Systems.SaveSystem.Tests
             return spy;
         }
 
+        private static BFStateRegistry<T> CreateRegistry<T>() where T : IStateCapturable
+        {
+            return new BFStateRegistry<T>("Test", new BFAllowlistJsonSerializer("Test"));
+        }
+
         [Test]
         public void Register_AddsItem_CaptureAllReturnsOneEntry()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
 
             registry.Register(new FakeCapturable());
 
@@ -73,7 +78,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void Register_SameItemTwice_OnlyAddedOnce()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
             FakeCapturable item = new FakeCapturable();
 
             registry.Register(item);
@@ -85,7 +90,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void Unregister_RemovesItem()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
             FakeCapturable item = new FakeCapturable();
             registry.Register(item);
 
@@ -97,7 +102,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void Unregister_ItemNeverRegistered_DoesNotThrow()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
 
             Assert.DoesNotThrow(() => registry.Unregister(new FakeCapturable()));
         }
@@ -105,7 +110,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void CaptureAll_KeysStatesByFullyQualifiedTypeName()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
             registry.Register(new FakeCapturable());
 
             Dictionary<string, object> states = registry.CaptureAll();
@@ -116,7 +121,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void CaptureAll_MultipleItems_CapturesEachSeparately()
         {
-            BFStateRegistry<IStateCapturable> registry = new BFStateRegistry<IStateCapturable>("Test");
+            BFStateRegistry<IStateCapturable> registry = CreateRegistry<IStateCapturable>();
             registry.Register(new FakeCapturable());
             registry.Register(new OtherFakeCapturable());
 
@@ -128,7 +133,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void RestoreAll_MatchingKey_RestoresStateAndReturnsOne()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
             FakeCapturable item = new FakeCapturable { State = new FakeState { value = 42 } };
             registry.Register(item);
             Dictionary<string, object> states = registry.CaptureAll();
@@ -143,7 +148,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void RestoreAll_NoMatchingKey_LeavesItemAsIsAndReturnsZero()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
             FakeCapturable item = new FakeCapturable { State = new FakeState { value = 7 } };
             registry.Register(item);
 
@@ -156,7 +161,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void RestoreAll_NullStates_ReturnsZeroInsteadOfThrowing()
         {
-            BFStateRegistry<FakeCapturable> registry = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registry = CreateRegistry<FakeCapturable>();
             registry.Register(new FakeCapturable());
 
             int restoredCount = registry.RestoreAll(null);
@@ -168,7 +173,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         public void RestoreAll_ItemRestoreStateThrows_SkipsItemAndLogsWarningInsteadOfThrowing()
         {
             SpyLoggerSink spy = InitializeLogging();
-            BFStateRegistry<ThrowingRestoreCapturable> registry = new BFStateRegistry<ThrowingRestoreCapturable>("Test");
+            BFStateRegistry<ThrowingRestoreCapturable> registry = CreateRegistry<ThrowingRestoreCapturable>();
             ThrowingRestoreCapturable item = new ThrowingRestoreCapturable();
             registry.Register(item);
             Dictionary<string, object> states = new Dictionary<string, object>
@@ -186,8 +191,8 @@ namespace BFTools.Systems.SaveSystem.Tests
         [Test]
         public void TwoIndependentRegistries_DoNotShareRegisteredItems()
         {
-            BFStateRegistry<FakeCapturable> registryA = new BFStateRegistry<FakeCapturable>("Test");
-            BFStateRegistry<FakeCapturable> registryB = new BFStateRegistry<FakeCapturable>("Test");
+            BFStateRegistry<FakeCapturable> registryA = CreateRegistry<FakeCapturable>();
+            BFStateRegistry<FakeCapturable> registryB = CreateRegistry<FakeCapturable>();
 
             registryA.Register(new FakeCapturable());
 
