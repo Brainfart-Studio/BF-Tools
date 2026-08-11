@@ -16,7 +16,7 @@ namespace BFTools.Systems.SceneManager
             if (!other.CompareTag(playerTag))
                 return;
 
-            BFSceneLoadRequest activeRequest = ResolveRequest();
+            BFSceneLoadRequest activeRequest = BFSceneLoadRequestResolver.Resolve(request, sharedRequest);
             if (activeRequest == null)
             {
                 BFLogger.Error(LogTag, "No scene name configured. Ignoring preload zone trigger.", this);
@@ -25,12 +25,6 @@ namespace BFTools.Systems.SceneManager
 
             BFLogger.Debug(LogTag, $"Preload zone entered by '{other.name}'. Preloading '{activeRequest.SceneName}'.", this);
             BFSceneLoader.Preload(activeRequest.SceneName, activeRequest.LoadMode);
-        }
-
-        private BFSceneLoadRequest ResolveRequest()
-        {
-            BFSceneLoadRequest activeRequest = sharedRequest != null ? sharedRequest.Request : request;
-            return activeRequest.HasSceneName ? activeRequest : null;
         }
     }
 }

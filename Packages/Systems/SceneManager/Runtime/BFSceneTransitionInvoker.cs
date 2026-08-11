@@ -13,7 +13,7 @@ namespace BFTools.Systems.SceneManager
 
         public void Invoke()
         {
-            BFSceneLoadRequest activeRequest = ResolveRequest();
+            BFSceneLoadRequest activeRequest = BFSceneLoadRequestResolver.Resolve(request, sharedRequest);
             if (activeRequest == null)
             {
                 BFLogger.Error(LogTag, "No scene name configured. Ignoring invoke.", this);
@@ -22,12 +22,6 @@ namespace BFTools.Systems.SceneManager
 
             BFLogger.Debug(LogTag, $"Invoked. Transitioning to '{activeRequest.SceneName}'.", this);
             BFServiceLocator.Get<BFSceneTransitionController>().BeginTransition(activeRequest);
-        }
-
-        private BFSceneLoadRequest ResolveRequest()
-        {
-            BFSceneLoadRequest activeRequest = sharedRequest != null ? sharedRequest.Request : request;
-            return activeRequest.HasSceneName ? activeRequest : null;
         }
     }
 }
