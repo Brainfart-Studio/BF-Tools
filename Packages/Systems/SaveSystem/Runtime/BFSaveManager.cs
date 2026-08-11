@@ -311,14 +311,14 @@ namespace BFTools.Systems.SaveSystem
                 if (encryptedBytes == null || checksumBytes == null)
                 {
                     string missing = encryptedBytes == null ? "save data" : "checksum";
-                    BFLogger.Warning(LogTag, $"Slot '{slotName}' is missing its {missing} file while the other is present. Save is incomplete or was interrupted mid-write.");
+                    BFLogger.Error(LogTag, $"Slot '{slotName}' is missing its {missing} file while the other is present. Save is incomplete or was interrupted mid-write.");
                     return false;
                 }
 
                 string expectedChecksum = System.Text.Encoding.UTF8.GetString(checksumBytes);
                 if (!BFSaveChecksum.Validate(encryptedBytes, expectedChecksum))
                 {
-                    BFLogger.Warning(LogTag, $"Checksum mismatch for slot '{slotName}'. Save data may be corrupted or tampered with.");
+                    BFLogger.Error(LogTag, $"Checksum mismatch for slot '{slotName}'. Save data may be corrupted or tampered with.");
                     return false;
                 }
 
@@ -332,13 +332,13 @@ namespace BFTools.Systems.SaveSystem
                 }
                 catch (Exception exception)
                 {
-                    BFLogger.Warning(LogTag, $"Failed to decrypt or parse save data for slot '{slotName}': {exception.Message}. Save may be corrupted, encrypted with a different key, or reference a type outside the save allowlist.");
+                    BFLogger.Error(LogTag, $"Failed to decrypt or parse save data for slot '{slotName}': {exception.Message}. Save may be corrupted, encrypted with a different key, or reference a type outside the save allowlist.");
                     return false;
                 }
 
                 if (saveData == null)
                 {
-                    BFLogger.Warning(LogTag, $"Decrypted save data for slot '{slotName}' was empty or invalid.");
+                    BFLogger.Error(LogTag, $"Decrypted save data for slot '{slotName}' was empty or invalid.");
                     return false;
                 }
 

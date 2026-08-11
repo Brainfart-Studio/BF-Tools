@@ -4,6 +4,9 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using UnityEngine;
+using BFTools.Core.Logger;
+using BFTools.Core.Logger.TestUtilities;
 using BFTools.Systems.SaveSystem;
 using Assert = NUnit.Framework.Assert;
 
@@ -49,9 +52,22 @@ namespace BFTools.Systems.SaveSystem.Tests
         public void TearDown()
         {
             ResetState();
+            BFLoggerTestUtility.ResetState();
 
             if (Directory.Exists(scratchDir))
                 Directory.Delete(scratchDir, true);
+        }
+
+        private static SpyLoggerSink InitializeLogging()
+        {
+            BFLoggerConfig config = ScriptableObject.CreateInstance<BFLoggerConfig>();
+            typeof(BFLoggerConfig)
+                .GetField("globalMinimumLevel", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(config, LogLevel.Trace);
+
+            SpyLoggerSink spy = new SpyLoggerSink();
+            BFLogger.Initialize(config, spy);
+            return spy;
         }
 
         private static void ResetState()
@@ -213,6 +229,42 @@ namespace BFTools.Systems.SaveSystem.Tests
             bool loaded = BFSaveManager.LoadAsync("MissingSlot", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(loaded);
+        }
+
+        [Test]
+        public void LoadAsync_ChecksumMismatch_LogsErrorLevelInsteadOfWarning()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            string dataPath = Path.Combine(scratchDir, BFSaveManager.GetFileNameForSlot("Slot1"));
+            byte[] dataBytes = File.ReadAllBytes(dataPath);
+            dataBytes[dataBytes.Length - 1] ^= 0xFF;
+            File.WriteAllBytes(dataPath, dataBytes);
+
+            SpyLoggerSink spy = InitializeLogging();
+
+            bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsFalse(loaded);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("Checksum mismatch")), "Tamper/corruption detection should log at Error, not Warning.");
+        }
+
+        [Test]
+        public void LoadAsync_MissingCompanionFile_LogsErrorLevelInsteadOfWarning()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            string checksumPath = Path.Combine(scratchDir, BFSaveManager.GetFileNameForSlot("Slot1")) + ".chk";
+            File.Delete(checksumPath);
+
+            SpyLoggerSink spy = InitializeLogging();
+
+            bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsFalse(loaded);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("missing its")), "An interrupted/incomplete save should log at Error, not Warning.");
         }
 
         [Test]
