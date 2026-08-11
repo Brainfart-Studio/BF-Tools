@@ -72,6 +72,11 @@ namespace BFTools.Systems.SaveSystem.Tests
                 .GetField("slotOperationLocks", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
             slotOperationLocks.GetType().GetMethod("Clear").Invoke(slotOperationLocks, null);
+
+            object playtimeTrackers = managerType
+                .GetField("playtimeTrackers", BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
+            playtimeTrackers.GetType().GetMethod("Clear").Invoke(playtimeTrackers, null);
         }
 
         private static void ClearRegistry(object registry)
@@ -208,6 +213,34 @@ namespace BFTools.Systems.SaveSystem.Tests
             bool loaded = BFSaveManager.LoadAsync("MissingSlot", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(loaded);
+        }
+
+        [Test]
+        public void SaveAsync_CalledTwiceForSameSlot_PlaytimeSecondsIncreasesInsteadOfStayingZero()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            BFSaveManager.TryGetSlot("Slot1", out BFSaveSlot firstSave);
+
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            BFSaveManager.TryGetSlot("Slot1", out BFSaveSlot secondSave);
+
+            Assert.Greater(secondSave.metadata.playtimeSeconds, firstSave.metadata.playtimeSeconds);
+        }
+
+        [Test]
+        public void SaveAsync_AfterLoadAsync_PlaytimeSecondsContinuesFromLoadedValueInsteadOfResettingToZero()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            BFSaveManager.TryGetSlot("Slot1", out BFSaveSlot savedSlot);
+
+            BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            BFSaveManager.TryGetSlot("Slot1", out BFSaveSlot resavedSlot);
+
+            Assert.GreaterOrEqual(resavedSlot.metadata.playtimeSeconds, savedSlot.metadata.playtimeSeconds);
         }
 
         [Test]

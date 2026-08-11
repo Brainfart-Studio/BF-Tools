@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using BFTools.Core.FileIO;
@@ -15,11 +16,25 @@ namespace BFTools.Systems.SaveSystem
         private const string SlotFilePrefix = "save_";
         private const string SlotFileSuffix = ".dat";
 
+        private sealed class PlaytimeTracker
+        {
+            private readonly float basePlaytimeSeconds;
+            private readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
+            public PlaytimeTracker(float basePlaytimeSeconds)
+            {
+                this.basePlaytimeSeconds = basePlaytimeSeconds;
+            }
+
+            public float CurrentPlaytimeSeconds => basePlaytimeSeconds + (float)stopwatch.Elapsed.TotalSeconds;
+        }
+
         private static readonly BFAllowlistJsonSerializer serializer = new BFAllowlistJsonSerializer(LogTag);
         private static readonly BFStateRegistry<ISaveable> saveables = new BFStateRegistry<ISaveable>(LogTag, serializer);
         private static readonly object slotsLock = new object();
         private static readonly List<BFSaveSlot> slots = new List<BFSaveSlot>();
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> slotOperationLocks = new ConcurrentDictionary<string, SemaphoreSlim>();
+        private static readonly ConcurrentDictionary<string, PlaytimeTracker> playtimeTrackers = new ConcurrentDictionary<string, PlaytimeTracker>();
 
         private static SemaphoreSlim GetSlotOperationLock(string slotName)
         {
@@ -171,6 +186,8 @@ namespace BFTools.Systems.SaveSystem
                     }
                 }
 
+                playtimeTrackers.TryRemove(slotName, out _);
+
                 if (!dataExisted && !checksumExisted)
                 {
                     BFLogger.Trace(LogTag, $"DeleteSlot found nothing on disk for slot '{slotName}'");
@@ -206,13 +223,15 @@ namespace BFTools.Systems.SaveSystem
             {
                 BFLogger.Trace(LogTag, $"SaveAsync started for slot '{slotName}'");
 
+                PlaytimeTracker playtimeTracker = playtimeTrackers.GetOrAdd(slotName, _ => new PlaytimeTracker(0f));
+
                 BFSaveData saveData = new BFSaveData
                 {
                     metadata = new BFSaveMetadata
                     {
                         version = BFSaveVersionMigrator.CurrentVersion,
                         timestamp = DateTime.UtcNow,
-                        playtimeSeconds = 0f
+                        playtimeSeconds = playtimeTracker.CurrentPlaytimeSeconds
                     }
                 };
 
@@ -325,6 +344,8 @@ namespace BFTools.Systems.SaveSystem
 
                 object migrated = BFSaveVersionMigrator.Migrate(saveData, saveData.metadata.version);
                 saveData = (BFSaveData)migrated;
+
+                playtimeTrackers[slotName] = new PlaytimeTracker(saveData.metadata.playtimeSeconds);
 
                 saveables.RestoreAll(saveData.saveableStates, $" in slot '{slotName}'");
 
