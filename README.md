@@ -12,7 +12,7 @@ Foundational systems every other package builds on.
 - **Project Setup**: `IBFProjectSetupStep`, `IBFSystemPrefabContributor`, and `IBFSystemPrefabConsumer` interfaces for building self-contained, auto-discovered setup tooling — any implementer anywhere in the project is picked up automatically by EditorTools' `BF Tools > New Project Setup`. See [EditorTools README](Packages/EditorTools/README.md#project-setup) for the tool that consumes these.
 - **Service Locator**: static registry for locating shared services by type at runtime. See [ServiceLocator.md](Packages/Core/Documentation~/ServiceLocator.md).
 
-No dependencies.
+Depends on `com.unity.nuget.newtonsoft-json` (3.2.1).
 
 ### [Systems](Packages/Systems/README.md): `com.bftools.systems` (1.0.0)
 Gameplay-facing systems built on Core.
@@ -98,7 +98,7 @@ Each package installs independently via git URL (recommended) or as a `manifest.
 ## Requirements
 - Unity 2022.3+
 - `com.unity.inputsystem` 1.7.0+ (Feedback, EditorTools)
-- `com.unity.nuget.newtonsoft-json` 3.2.1+ (Systems / Save System only)
+- `com.unity.nuget.newtonsoft-json` 3.2.1+ (Core / Serialization, Systems / Save System)
 - `com.unity.textmeshpro` 3.0.6+ (EditorTools only)
 
 ## Changelogs

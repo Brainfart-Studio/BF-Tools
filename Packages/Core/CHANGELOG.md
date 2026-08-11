@@ -12,6 +12,7 @@
 
 ### Fixed
 - `BFFileIO.ReadAsync` now loops until the full buffer is read, instead of assuming a single `ReadAsync` call fills it, and throws `EndOfStreamException` if the stream ends early
+- `package.json` now declares `com.unity.nuget.newtonsoft-json` as a dependency, matching what `BFTools.Core.Serialization` has required since it was added; a fresh install without Newtonsoft already present would fail to compile
 
 ## [0.11.0] - Project Setup Steps
 

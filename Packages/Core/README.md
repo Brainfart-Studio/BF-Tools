@@ -41,7 +41,7 @@ Static registry for locating shared services by type at runtime. See [Documentat
 `BFFileIO`, `BFAtomicFile`, and `BFPersistentDataPath`, shared async file read/write, atomic writes, and default persistent data path resolution.
 
 ## Dependencies
-None.
+- `com.unity.nuget.newtonsoft-json` @ 3.2.1 (Serialization)
 
 ## Installation
 
