@@ -55,6 +55,12 @@ namespace BFTools.Systems.SceneManager
                 return;
             }
 
+            if (transition == null)
+            {
+                BFLogger.Error(LogTag, "No transition assigned. Ignoring transition request.", this);
+                return;
+            }
+
             StartCoroutine(TransitionRoutine(request));
         }
 
