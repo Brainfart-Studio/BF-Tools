@@ -14,6 +14,12 @@ namespace BFTools.Systems.SceneManager
 
         public static Task LoadAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                BFLogger.Error(LogTag, "Load requested with a null or empty scene name. Ignoring.");
+                return Task.CompletedTask;
+            }
+
             if (operations.ContainsKey(sceneName))
             {
                 BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate load request.");
@@ -29,6 +35,12 @@ namespace BFTools.Systems.SceneManager
 
         public static void Preload(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                BFLogger.Error(LogTag, "Preload requested with a null or empty scene name. Ignoring.");
+                return;
+            }
+
             if (operations.ContainsKey(sceneName))
             {
                 BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate preload request.");
