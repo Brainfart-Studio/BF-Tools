@@ -1,7 +1,7 @@
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using BFTools.Systems.SaveSystem;
+using BFTools.Core.FileIO;
 
 namespace BFTools.Systems.SaveSystem.Tests
 {
@@ -18,7 +18,7 @@ namespace BFTools.Systems.SaveSystem.Tests
                 Directory.Delete(scratchDir, true);
             Directory.CreateDirectory(scratchDir);
 
-            typeof(BFSavePath)
+            typeof(BFPersistentDataPath)
                 .GetField("directoryOverride", BindingFlags.NonPublic | BindingFlags.Static)
                 .SetValue(null, scratchDir);
         }
@@ -26,7 +26,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            typeof(BFSavePath)
+            typeof(BFPersistentDataPath)
                 .GetField("directoryOverride", BindingFlags.NonPublic | BindingFlags.Static)
                 .SetValue(null, null);
 

@@ -3,6 +3,7 @@
     "rootNamespace": "BFTools.Systems.SaveSystem.Tests",
     "references": [
         "BFTools.Systems.SaveSystem",
+        "BFTools.Core.FileIO",
         "BFTools.Core.Serialization",
         "BFTools.Core.Logger",
         "BFTools.Core.Logger.TestUtilities",

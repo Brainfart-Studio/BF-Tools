@@ -2,6 +2,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using BFTools.Core.FileIO;
 using BFTools.Systems.SaveSystem;
 using Assert = NUnit.Framework.Assert;
 
@@ -10,7 +11,7 @@ namespace BFTools.Systems.SaveSystem.Tests
     public class BFSavePathTests
     {
         private static readonly FieldInfo DirectoryOverrideField =
-            typeof(BFSavePath).GetField("directoryOverride", BindingFlags.NonPublic | BindingFlags.Static);
+            typeof(BFPersistentDataPath).GetField("directoryOverride", BindingFlags.NonPublic | BindingFlags.Static);
 
         private string previousOverride;
 

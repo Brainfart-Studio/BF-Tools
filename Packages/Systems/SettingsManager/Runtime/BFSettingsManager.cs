@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BFTools.Core.FileIO;
 using BFTools.Core.Logger;
 using BFTools.Core.Serialization;
-using BFTools.Systems.SaveSystem;
 
 namespace BFTools.Systems.SettingsManager
 {
@@ -35,12 +34,12 @@ namespace BFTools.Systems.SettingsManager
 
         public static Task<bool> SaveAsync()
         {
-            return SaveAsync(BFSavePath.DefaultDirectory);
+            return SaveAsync(BFPersistentDataPath.Directory);
         }
 
         public static Task<bool> LoadAsync()
         {
-            return LoadAsync(BFSavePath.DefaultDirectory);
+            return LoadAsync(BFPersistentDataPath.Directory);
         }
 
         public static async Task<bool> SaveAsync(string directoryPath)
