@@ -41,16 +41,6 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             BFLoggerTestUtility.ResetState();
         }
 
-        private BFSceneLoadRequest CreateRequest(string sceneName)
-        {
-            BFSceneLoadRequest request = ScriptableObject.CreateInstance<BFSceneLoadRequest>();
-            typeof(BFSceneLoadRequest)
-                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(request, sceneName);
-            createdObjects.Add(request);
-            return request;
-        }
-
         private BFSceneTransitionController CreateController()
         {
             GameObject go = new GameObject("SceneTransitionController");
@@ -74,17 +64,47 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             return controller;
         }
 
-        private BFSceneTransitionInvoker CreateInvoker(BFSceneLoadRequest request)
+        private BFSceneTransitionInvoker CreateInvoker()
         {
             GameObject go = new GameObject("SceneTransitionInvoker");
             go.SetActive(false);
             BFSceneTransitionInvoker invoker = go.AddComponent<BFSceneTransitionInvoker>();
-            typeof(BFSceneTransitionInvoker)
-                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(invoker, request);
             go.SetActive(true);
             createdObjects.Add(go);
             return invoker;
+        }
+
+        private static void SetSceneName(BFSceneTransitionInvoker invoker, string sceneName)
+        {
+            object request = typeof(BFSceneTransitionInvoker)
+                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(invoker);
+
+            request.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(request, sceneName);
+        }
+
+        private BFSceneLoadRequestAsset CreateSharedRequestAsset(string sceneName)
+        {
+            BFSceneLoadRequestAsset asset = ScriptableObject.CreateInstance<BFSceneLoadRequestAsset>();
+            object request = typeof(BFSceneLoadRequestAsset)
+                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(asset);
+
+            request.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(request, sceneName);
+
+            createdObjects.Add(asset);
+            return asset;
+        }
+
+        private static void SetSharedRequest(BFSceneTransitionInvoker invoker, BFSceneLoadRequestAsset asset)
+        {
+            typeof(BFSceneTransitionInvoker)
+                .GetField("sharedRequest", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(invoker, asset);
         }
 
         private static SpyLoggerSink InitializeLogging()
@@ -100,12 +120,12 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         }
 
         [Test]
-        public void Invoke_RequestAssigned_BeginsTransitionWithConfiguredRequest()
+        public void Invoke_SceneNameConfigured_BeginsTransitionWithConfiguredRequest()
         {
             SpyLoggerSink spy = InitializeLogging();
             CreateController();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFSceneTransitionInvoker invoker = CreateInvoker(request);
+            BFSceneTransitionInvoker invoker = CreateInvoker();
+            SetSceneName(invoker, "Level1");
 
             string startedScene = null;
             EventBus<BFSceneTransitionStartedEvent>.Subscribe(e => startedScene = e.sceneName);
@@ -117,11 +137,11 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         }
 
         [Test]
-        public void Invoke_NoRequestAssigned_LogsErrorAndDoesNotBeginTransition()
+        public void Invoke_NoSceneNameConfigured_LogsErrorAndDoesNotBeginTransition()
         {
             SpyLoggerSink spy = InitializeLogging();
             CreateController();
-            BFSceneTransitionInvoker invoker = CreateInvoker(null);
+            BFSceneTransitionInvoker invoker = CreateInvoker();
 
             bool started = false;
             EventBus<BFSceneTransitionStartedEvent>.Subscribe(_ => started = true);
@@ -129,7 +149,23 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             invoker.Invoke();
 
             Assert.IsFalse(started);
-            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No BFSceneLoadRequest assigned")));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No scene name configured")));
+        }
+
+        [Test]
+        public void Invoke_SharedRequestAndInlineRequestBothSet_PrefersSharedRequest()
+        {
+            CreateController();
+            BFSceneTransitionInvoker invoker = CreateInvoker();
+            SetSceneName(invoker, "Level1");
+            SetSharedRequest(invoker, CreateSharedRequestAsset("Level2"));
+
+            string startedScene = null;
+            EventBus<BFSceneTransitionStartedEvent>.Subscribe(e => startedScene = e.sceneName);
+
+            invoker.Invoke();
+
+            Assert.AreEqual("Level2", startedScene);
         }
     }
 }

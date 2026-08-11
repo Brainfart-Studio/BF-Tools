@@ -42,16 +42,6 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             BFLoggerTestUtility.ResetState();
         }
 
-        private BFSceneLoadRequest CreateRequest(string sceneName)
-        {
-            BFSceneLoadRequest request = ScriptableObject.CreateInstance<BFSceneLoadRequest>();
-            typeof(BFSceneLoadRequest)
-                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(request, sceneName);
-            createdObjects.Add(request);
-            return request;
-        }
-
         private BFSceneTransitionController CreateController()
         {
             GameObject go = new GameObject("SceneTransitionController");
@@ -75,20 +65,50 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             return controller;
         }
 
-        private BFDoorActivationTrigger CreateDoorTrigger(BFSceneLoadRequest request, string playerTag = "Player")
+        private BFDoorActivationTrigger CreateDoorTrigger(string playerTag = "Player")
         {
             GameObject go = new GameObject("DoorTrigger");
             go.SetActive(false);
             BFDoorActivationTrigger trigger = go.AddComponent<BFDoorActivationTrigger>();
-            typeof(BFDoorActivationTrigger)
-                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(trigger, request);
             typeof(BFDoorActivationTrigger)
                 .GetField("playerTag", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(trigger, playerTag);
             go.SetActive(true);
             createdObjects.Add(go);
             return trigger;
+        }
+
+        private static void SetSceneName(BFDoorActivationTrigger trigger, string sceneName)
+        {
+            object request = typeof(BFDoorActivationTrigger)
+                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(trigger);
+
+            request.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(request, sceneName);
+        }
+
+        private BFSceneLoadRequestAsset CreateSharedRequestAsset(string sceneName)
+        {
+            BFSceneLoadRequestAsset asset = ScriptableObject.CreateInstance<BFSceneLoadRequestAsset>();
+            object request = typeof(BFSceneLoadRequestAsset)
+                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(asset);
+
+            request.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(request, sceneName);
+
+            createdObjects.Add(asset);
+            return asset;
+        }
+
+        private static void SetSharedRequest(BFDoorActivationTrigger trigger, BFSceneLoadRequestAsset asset)
+        {
+            typeof(BFDoorActivationTrigger)
+                .GetField("sharedRequest", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(trigger, asset);
         }
 
         private Collider2D CreateCollider(string tag)
@@ -121,17 +141,6 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
                 .GetValue(trigger);
         }
 
-        private static void SetInlineSceneName(BFDoorActivationTrigger trigger, string sceneName)
-        {
-            object inlineRequest = typeof(BFDoorActivationTrigger)
-                .GetField("inlineRequest", BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(trigger);
-
-            inlineRequest.GetType()
-                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(inlineRequest, sceneName);
-        }
-
         private static SpyLoggerSink InitializeLogging()
         {
             BFLoggerConfig config = ScriptableObject.CreateInstance<BFLoggerConfig>();
@@ -149,8 +158,8 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         {
             SpyLoggerSink spy = InitializeLogging();
             CreateController();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(request);
+            BFDoorActivationTrigger trigger = CreateDoorTrigger();
+            SetSceneName(trigger, "Level1");
             Collider2D player = CreateCollider("Player");
 
             string startedScene = null;
@@ -166,8 +175,8 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         public void OnTriggerEnter2D_NonPlayerTag_DoesNotBeginTransition()
         {
             CreateController();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(request);
+            BFDoorActivationTrigger trigger = CreateDoorTrigger();
+            SetSceneName(trigger, "Level1");
             Collider2D other = CreateCollider("Untagged");
 
             bool started = false;
@@ -182,8 +191,8 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         public void OnTriggerEnter2D_CalledTwiceWithoutExit_SuppressesSecondTrigger()
         {
             CreateController();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(request);
+            BFDoorActivationTrigger trigger = CreateDoorTrigger();
+            SetSceneName(trigger, "Level1");
             Collider2D player = CreateCollider("Player");
 
             int startedCount = 0;
@@ -199,8 +208,8 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         public void OnTriggerExit2D_PlayerTag_ClearsSuppressionAllowingReentry()
         {
             CreateController();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(request);
+            BFDoorActivationTrigger trigger = CreateDoorTrigger();
+            SetSceneName(trigger, "Level1");
             Collider2D player = CreateCollider("Player");
 
             InvokeOnTriggerEnter2D(trigger, player);
@@ -211,11 +220,11 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         }
 
         [Test]
-        public void OnTriggerEnter2D_NoRequestAndNoInlineSceneName_LogsErrorAndDoesNotBeginTransition()
+        public void OnTriggerEnter2D_NoSceneNameConfigured_LogsErrorAndDoesNotBeginTransition()
         {
             SpyLoggerSink spy = InitializeLogging();
             CreateController();
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(null);
+            BFDoorActivationTrigger trigger = CreateDoorTrigger();
             Collider2D player = CreateCollider("Player");
 
             bool started = false;
@@ -224,15 +233,16 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             InvokeOnTriggerEnter2D(trigger, player);
 
             Assert.IsFalse(started);
-            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("no inline scene name set")));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No scene name configured")));
         }
 
         [Test]
-        public void OnTriggerEnter2D_NoRequestButInlineSceneNameSet_BeginsTransitionUsingInlineRequest()
+        public void OnTriggerEnter2D_SharedRequestAndInlineRequestBothSet_PrefersSharedRequest()
         {
             CreateController();
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(null);
-            SetInlineSceneName(trigger, "Level1");
+            BFDoorActivationTrigger trigger = CreateDoorTrigger();
+            SetSceneName(trigger, "Level1");
+            SetSharedRequest(trigger, CreateSharedRequestAsset("Level2"));
             Collider2D player = CreateCollider("Player");
 
             string startedScene = null;
@@ -240,24 +250,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
 
             InvokeOnTriggerEnter2D(trigger, player);
 
-            Assert.AreEqual("Level1", startedScene);
-        }
-
-        [Test]
-        public void OnTriggerEnter2D_RequestAndInlineSceneNameBothSet_PrefersExplicitRequest()
-        {
-            CreateController();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFDoorActivationTrigger trigger = CreateDoorTrigger(request);
-            SetInlineSceneName(trigger, "Level2");
-            Collider2D player = CreateCollider("Player");
-
-            string startedScene = null;
-            EventBus<BFSceneTransitionStartedEvent>.Subscribe(e => startedScene = e.sceneName);
-
-            InvokeOnTriggerEnter2D(trigger, player);
-
-            Assert.AreEqual("Level1", startedScene);
+            Assert.AreEqual("Level2", startedScene);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BFTools.Systems.SceneManager.Editor
         [MenuItem("Assets/Create/BFTools/Systems/Config/Scene Load Request", priority = BFSystemsMenuPriority.SceneManager)]
         private static void Create()
         {
-            BFEditorAssetUtility.CreateConfigAsset<BFSceneLoadRequest>(TargetPath, AssetName);
+            BFEditorAssetUtility.CreateConfigAsset<BFSceneLoadRequestAsset>(TargetPath, AssetName);
         }
     }
 }

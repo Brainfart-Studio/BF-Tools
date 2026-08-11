@@ -84,9 +84,9 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             return secondaryController;
         }
 
-        private BFSceneLoadRequest CreateRequest(string sceneName, bool showLoadingScreen = false)
+        private static BFSceneLoadRequest CreateRequest(string sceneName, bool showLoadingScreen = false)
         {
-            BFSceneLoadRequest request = ScriptableObject.CreateInstance<BFSceneLoadRequest>();
+            BFSceneLoadRequest request = new BFSceneLoadRequest();
             typeof(BFSceneLoadRequest)
                 .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(request, sceneName);
@@ -94,7 +94,6 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
                 .GetField("showLoadingScreen", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(request, showLoadingScreen);
 
-            createdObjects.Add(request);
             return request;
         }
 

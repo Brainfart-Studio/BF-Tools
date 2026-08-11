@@ -8,11 +8,9 @@ namespace BFTools.Systems.SceneManager
     {
         private const string LogTag = "SceneManager";
 
-        [SerializeField] private BFSceneLoadRequest request;
+        [SerializeField] private BFSceneLoadRequest request = new BFSceneLoadRequest();
+        [SerializeField] private BFSceneLoadRequestAsset sharedRequest;
         [SerializeField] private string playerTag = "Player";
-
-        [Header("Inline Request (used when Request is unassigned)")]
-        [SerializeField] private BFInlineSceneLoadRequest inlineRequest = new BFInlineSceneLoadRequest();
 
         private bool suppressed;
 
@@ -21,10 +19,10 @@ namespace BFTools.Systems.SceneManager
             if (suppressed || !other.CompareTag(playerTag))
                 return;
 
-            BFSceneLoadRequest activeRequest = inlineRequest.Resolve(request);
+            BFSceneLoadRequest activeRequest = ResolveRequest();
             if (activeRequest == null)
             {
-                BFLogger.Error(LogTag, "No BFSceneLoadRequest assigned and no inline scene name set. Ignoring door trigger.", this);
+                BFLogger.Error(LogTag, "No scene name configured. Ignoring door trigger.", this);
                 return;
             }
 
@@ -37,6 +35,12 @@ namespace BFTools.Systems.SceneManager
         {
             if (other.CompareTag(playerTag))
                 suppressed = false;
+        }
+
+        private BFSceneLoadRequest ResolveRequest()
+        {
+            BFSceneLoadRequest activeRequest = sharedRequest != null ? sharedRequest.Request : request;
+            return activeRequest.HasSceneName ? activeRequest : null;
         }
     }
 }

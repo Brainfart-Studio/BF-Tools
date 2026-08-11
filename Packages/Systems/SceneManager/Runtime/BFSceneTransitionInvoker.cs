@@ -8,22 +8,26 @@ namespace BFTools.Systems.SceneManager
     {
         private const string LogTag = "SceneManager";
 
-        [SerializeField] private BFSceneLoadRequest request;
-
-        [Header("Inline Request (used when Request is unassigned)")]
-        [SerializeField] private BFInlineSceneLoadRequest inlineRequest = new BFInlineSceneLoadRequest();
+        [SerializeField] private BFSceneLoadRequest request = new BFSceneLoadRequest();
+        [SerializeField] private BFSceneLoadRequestAsset sharedRequest;
 
         public void Invoke()
         {
-            BFSceneLoadRequest activeRequest = inlineRequest.Resolve(request);
+            BFSceneLoadRequest activeRequest = ResolveRequest();
             if (activeRequest == null)
             {
-                BFLogger.Error(LogTag, "No BFSceneLoadRequest assigned and no inline scene name set. Ignoring invoke.", this);
+                BFLogger.Error(LogTag, "No scene name configured. Ignoring invoke.", this);
                 return;
             }
 
             BFLogger.Debug(LogTag, $"Invoked. Transitioning to '{activeRequest.SceneName}'.", this);
             BFServiceLocator.Get<BFSceneTransitionController>().BeginTransition(activeRequest);
+        }
+
+        private BFSceneLoadRequest ResolveRequest()
+        {
+            BFSceneLoadRequest activeRequest = sharedRequest != null ? sharedRequest.Request : request;
+            return activeRequest.HasSceneName ? activeRequest : null;
         }
     }
 }
