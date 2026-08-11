@@ -39,12 +39,16 @@ namespace BFTools.Visuals.Palette
 
             EventBus<BFPaletteEvent>.Subscribe(OnPaletteEvent);
             EventBus<BFPaletteConfigChangedEvent>.Subscribe(OnPaletteConfigChanged);
+
+            BFLogger.Info(LogTag, $"BFPalette: enabled on '{name}', subscribed to palette events.", this);
         }
 
         private void OnDisable()
         {
             EventBus<BFPaletteEvent>.Unsubscribe(OnPaletteEvent);
             EventBus<BFPaletteConfigChangedEvent>.Unsubscribe(OnPaletteConfigChanged);
+
+            BFLogger.Info(LogTag, $"BFPalette: disabled on '{name}', unsubscribed from palette events.", this);
         }
 
         public void Select(string eventName)
