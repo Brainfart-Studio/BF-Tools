@@ -61,38 +61,45 @@ namespace BFTools.Systems.SceneManager
         private IEnumerator TransitionRoutine(BFSceneLoadRequest request)
         {
             isTransitioning = true;
-            string sceneName = request.SceneName;
 
-            EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent
+            try
             {
-                sceneName = sceneName,
-                showLoadingScreen = request.ShowLoadingScreen
-            });
+                string sceneName = request.SceneName;
 
-            yield return Transition.PlayOut();
+                EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent
+                {
+                    sceneName = sceneName,
+                    showLoadingScreen = request.ShowLoadingScreen
+                });
 
-            float loadStartTime = Time.time;
+                yield return Transition.PlayOut();
 
-            if (BFSceneLoader.IsTracked(sceneName))
-                yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
-            else
-                yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
+                float loadStartTime = Time.time;
 
-            float remainingDisplayTime = request.MinimumDisplayTime - (Time.time - loadStartTime);
-            if (remainingDisplayTime > 0f)
-                yield return new WaitForSeconds(remainingDisplayTime);
+                if (BFSceneLoader.IsTracked(sceneName))
+                    yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
+                else
+                    yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
 
-            EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
+                float remainingDisplayTime = request.MinimumDisplayTime - (Time.time - loadStartTime);
+                if (remainingDisplayTime > 0f)
+                    yield return new WaitForSeconds(remainingDisplayTime);
 
-            yield return Transition.PlayIn();
+                EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
 
-            if (!string.IsNullOrEmpty(currentSceneName))
-                yield return WaitForTask(BFSceneLoader.UnloadAsync(currentSceneName));
+                yield return Transition.PlayIn();
 
-            currentSceneName = sceneName;
-            isTransitioning = false;
+                if (!string.IsNullOrEmpty(currentSceneName))
+                    yield return WaitForTask(BFSceneLoader.UnloadAsync(currentSceneName));
 
-            EventBus<BFSceneTransitionCompleteEvent>.Fire(new BFSceneTransitionCompleteEvent { sceneName = sceneName });
+                currentSceneName = sceneName;
+
+                EventBus<BFSceneTransitionCompleteEvent>.Fire(new BFSceneTransitionCompleteEvent { sceneName = sceneName });
+            }
+            finally
+            {
+                isTransitioning = false;
+            }
         }
 
         private static IEnumerator WaitForTask(Task task)
