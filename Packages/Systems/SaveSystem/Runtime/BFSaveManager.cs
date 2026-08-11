@@ -51,7 +51,7 @@ namespace BFTools.Systems.SaveSystem
             saveables.Unregister(saveable);
         }
 
-        public static void RegisterSlot(BFSaveSlot slot)
+        internal static void RegisterSlot(BFSaveSlot slot)
         {
             lock (slotsLock)
             {
