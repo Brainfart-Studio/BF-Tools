@@ -11,6 +11,7 @@ namespace BFTools.Systems.SceneManager
         private const string LogTag = "SceneManager";
 
         private static readonly Dictionary<string, AsyncOperation> operations = new Dictionary<string, AsyncOperation>();
+        private static readonly Dictionary<string, Task> pendingLoadTasks = new Dictionary<string, Task>();
 
         public static Task LoadAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
@@ -20,14 +21,25 @@ namespace BFTools.Systems.SceneManager
                 return Task.CompletedTask;
             }
 
-            if (IsAlreadyTracked(sceneName, "load"))
+            if (operations.ContainsKey(sceneName))
+            {
+                if (pendingLoadTasks.TryGetValue(sceneName, out Task pendingTask))
+                {
+                    BFLogger.Debug(LogTag, $"'{sceneName}' is already loading. Returning the in-flight load's task instead of starting a new one.");
+                    return pendingTask;
+                }
+
+                BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate load request.");
                 return Task.CompletedTask;
+            }
 
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, mode);
             operations[sceneName] = operation;
             BFLogger.Debug(LogTag, $"Loading '{sceneName}' ({mode}).");
 
-            return AwaitCompletion(operation, sceneName);
+            Task loadTask = AwaitCompletion(operation, sceneName);
+            pendingLoadTasks[sceneName] = loadTask;
+            return loadTask;
         }
 
         public static void Preload(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
@@ -101,7 +113,10 @@ namespace BFTools.Systems.SceneManager
             operation.completed += _ =>
             {
                 if (sceneNameToUntrack != null)
+                {
                     operations.Remove(sceneNameToUntrack);
+                    pendingLoadTasks.Remove(sceneNameToUntrack);
+                }
 
                 tcs.SetResult(true);
             };
