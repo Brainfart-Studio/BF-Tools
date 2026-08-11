@@ -94,6 +94,17 @@ namespace BFTools.Systems.SceneManager.Tests
             return spy;
         }
 
+        private static void SetInlineSceneName(BFPreloadZoneTrigger trigger, string sceneName)
+        {
+            object inlineRequest = typeof(BFPreloadZoneTrigger)
+                .GetField("inlineRequest", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(trigger);
+
+            inlineRequest.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(inlineRequest, sceneName);
+        }
+
         [Test]
         public void OnTriggerEnter2D_NonPlayerTag_DoesNotPreload()
         {
@@ -121,6 +132,45 @@ namespace BFTools.Systems.SceneManager.Tests
 
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("Preload zone entered by") && e.Message.Contains("Level1")));
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("already loading or loaded")));
+        }
+
+        [Test]
+        public void OnTriggerEnter2D_NoRequestAndNoInlineSceneName_LogsErrorAndDoesNotPreload()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            BFPreloadZoneTrigger trigger = CreateTrigger(null);
+            Collider2D player = CreateCollider("Player");
+
+            InvokeOnTriggerEnter2D(trigger, player);
+
+            Assert.AreEqual(0, GetOperations().Count);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("no inline scene name set")));
+        }
+
+        [Test]
+        public void OnTriggerEnter2D_NoRequestButInlineSceneNameSet_PreloadsUsingInlineRequest()
+        {
+            BFPreloadZoneTrigger trigger = CreateTrigger(null);
+            SetInlineSceneName(trigger, "Level1");
+            Collider2D player = CreateCollider("Player");
+
+            InvokeOnTriggerEnter2D(trigger, player);
+
+            Assert.IsTrue(BFSceneLoader.IsTracked("Level1"));
+        }
+
+        [Test]
+        public void OnTriggerEnter2D_RequestAndInlineSceneNameBothSet_PrefersExplicitRequest()
+        {
+            BFSceneLoadRequest request = CreateRequest("Level1");
+            BFPreloadZoneTrigger trigger = CreateTrigger(request);
+            SetInlineSceneName(trigger, "Level2");
+            Collider2D player = CreateCollider("Player");
+
+            InvokeOnTriggerEnter2D(trigger, player);
+
+            Assert.IsTrue(BFSceneLoader.IsTracked("Level1"));
+            Assert.IsFalse(BFSceneLoader.IsTracked("Level2"));
         }
     }
 }

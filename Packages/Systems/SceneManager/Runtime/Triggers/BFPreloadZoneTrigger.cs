@@ -11,7 +11,7 @@ namespace BFTools.Systems.SceneManager
         [SerializeField] private string playerTag = "Player";
 
         [Header("Inline Request (used when Request is unassigned)")]
-        [SerializeField] private BFInlineSceneLoadRequest inlineRequest;
+        [SerializeField] private BFInlineSceneLoadRequest inlineRequest = new BFInlineSceneLoadRequest();
 
         private void OnTriggerEnter2D(Collider2D other)
         {
