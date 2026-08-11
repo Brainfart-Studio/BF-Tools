@@ -225,6 +225,28 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
                 "Disabling the component mid-shake should restore the camera's original position.");
         }
 
+        [UnityTest]
+        public IEnumerator Fire_WhileAlreadyActive_RestoresOriginalPositionBeforeApplyingNewShake()
+        {
+            Camera camera = CreateMainCamera();
+            Vector3 originalPosition = camera.transform.localPosition;
+            BFScreenShakeConfig config = CreateConfig(("Explosion", 0.5f, 1f));
+            createdAssets.Add(config);
+            CreateScreenShake(config);
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            yield return null;
+
+            Assert.AreNotEqual(originalPosition, camera.transform.localPosition,
+                "First shake should have applied an offset before the second trigger.");
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "Re-triggering mid-shake should restore the camera to its true original position before the new shake starts, not treat the offset position as the new baseline.");
+        }
+
         [Test]
         public void OnSceneLoaded_ReResolvesMainCameraTarget()
         {

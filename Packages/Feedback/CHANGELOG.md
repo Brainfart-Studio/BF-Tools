@@ -5,6 +5,9 @@
 ### Changed
 - Bumped `com.bftools.core` dependency to 1.0.0
 
+### Fixed
+- `BFScreenShake.Trigger` now restores the camera to its original position before starting a new shake when re-triggered mid-shake, instead of treating the current offset position as the new baseline; repeated re-triggers (combos, chained explosions) no longer leave the camera drifted from its true resting position
+
 ## [0.7.0] - Project Setup Steps
 
 ### Added

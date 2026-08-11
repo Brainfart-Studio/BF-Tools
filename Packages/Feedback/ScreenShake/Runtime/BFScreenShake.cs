@@ -100,8 +100,7 @@ namespace BFTools.Feedback.ScreenShake
         {
             BFLogger.Trace(LogTag, $"Triggered shake amplitude={amplitude} duration={duration}", this);
 
-            if (activeShake != null)
-                StopCoroutine(activeShake);
+            CancelActiveShake();
             activeShake = StartCoroutine(ShakeRoutine(amplitude, duration));
         }
 
