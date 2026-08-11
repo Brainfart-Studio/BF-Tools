@@ -27,6 +27,7 @@ EventBus<BFPaletteEvent>.Fire(new BFPaletteEvent { eventName = "ground" });
 - `Apply(eventName)` does the actual lookup. It scans the assigned config's `Entries` for a matching `name` and sets `SpriteRenderer.color`. No match, including an unassigned selection, is a no-op with a `Trace` log.
 - `OnPaletteConfigChanged` re-`Apply`s the current selection whenever the *assigned* config fires a change event; a `BFPalette` watching a different config asset ignores it.
 - Only `SpriteRenderer` is supported as a paint target. `[RequireComponent(typeof(SpriteRenderer))]` enforces this.
+- All logging in this module goes through `BFLogger` under a single shared `"Palette"` tag, covering both `BFPalette` and `BFPaletteConfig`. `BFPalette` logs `Info` on enable/disable (subscribing/unsubscribing from palette events), `Warning` when applying with no config assigned, and `Trace` on every apply attempt (match or no match found). `BFPaletteConfig` logs `Info` whenever it fires a config-changed event, and `Warning` on duplicate entry names.
 
 ## Notes
 - One config per `BFPalette`, not a list. For names shared across scenes, reuse the same config asset rather than duplicating entries.

@@ -17,6 +17,8 @@ Only one `BFBackgroundStackManager` may be enabled at a time; enabling a second 
 ## How it works
 - `BFBackgroundStackManager` owns a `BFBackgroundStackCamera` and a list of runtime `BFBackgroundStack` instances, one per assigned `BFBackgroundStackConfig`. It builds everything in `OnEnable` and tears it down in `OnDisable`.
 - `BFBackgroundStackCamera` creates a dedicated orthographic camera that exclusively renders a reserved Unity layer (`BFBackgroundStackManager.BackgroundLayer`, index 30) at a very low depth, then reconfigures the scene's output camera (`Target Camera Override` or `Camera.main`) to clear only depth and to exclude that reserved layer from its own culling mask. That's what lets the background render underneath the scene's normal camera output without either camera erasing the other's draw. If the output camera is destroyed later (e.g. a scene swap while the manager persists), it's detected and re-resolved automatically.
+- Output camera resolution goes through Core's shared `BFCameraResolver` (also used by Parallax). If neither `Target Camera Override` nor `Camera.main` can be found, it logs one error and keeps retrying every frame rather than spamming the console until a camera resolves.
+- `BFBackgroundStackManager`'s single-active-instance enforcement is backed by Core's `BFActiveInstanceGuard`, and `BFBackgroundStack` builds on Core's shared `BFLayerStackBase` for per-layer instantiation and sorting order assignment.
 - `BFBackgroundStack` instantiates one `IBFBackgroundLayer` per non-null entry in its config's `Layers` list, via each `BFBackgroundLayerConfig.CreateLayer()`. Layers within a stack, and stacks within the manager, are assigned increasing `sortingOrder` values so they draw in list order.
 - Three concrete layers ship today.
   - **Gradient** renders a full-screen subdivided mesh sampling a multi-key `Gradient` ramp along a configurable axis, with Midpoint and Spread controlling where the blend sits and how gradual it is. The axis can be rotated (Angle) and animated (drift, rotation, rotation oscillation), and the color transition line can be displaced into an animated wave (wave amplitude/frequency, wave oscillation, wave amplitude randomness).
@@ -27,4 +29,4 @@ Only one `BFBackgroundStackManager` may be enabled at a time; enabling a second 
 ## Notes
 - The reserved rendering layer (index 30) is exclusively owned by this system. Don't assign scene objects to it, or they'll be drawn by the background camera unexpectedly.
 - Aurora Ribbons needs at least one entry in `Ribbon Colors`; an emptied list falls back to white and logs an error rather than throwing.
-- Depends on `com.bftools.core` (Logger).
+- Depends on `com.bftools.core` (Logger, CameraUtility, LayerStack, SingletonGuard).
