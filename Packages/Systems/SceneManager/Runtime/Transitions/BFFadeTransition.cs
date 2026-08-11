@@ -9,6 +9,12 @@ namespace BFTools.Systems.SceneManager
         [SerializeField] private float fadeOutDuration = 0.5f;
         [SerializeField] private float fadeInDuration = 0.5f;
 
+        private void Awake()
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.blocksRaycasts = false;
+        }
+
         public override IEnumerator PlayOut()
         {
             canvasGroup.blocksRaycasts = true;
