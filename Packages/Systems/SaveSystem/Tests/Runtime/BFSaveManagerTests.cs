@@ -67,6 +67,11 @@ namespace BFTools.Systems.SaveSystem.Tests
                 .GetField("slots", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
             slots.Clear();
+
+            object slotOperationLocks = managerType
+                .GetField("slotOperationLocks", BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
+            slotOperationLocks.GetType().GetMethod("Clear").Invoke(slotOperationLocks, null);
         }
 
         private static void ClearRegistry(object registry)
@@ -213,6 +218,48 @@ namespace BFTools.Systems.SaveSystem.Tests
             bool saved = BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(saved);
+        }
+
+        [Test]
+        public void SaveAsync_ConcurrentCallsForSameSlot_AllSucceedAndLeaveAConsistentFile()
+        {
+            FakeSaveable saveable = new FakeSaveable();
+            BFSaveManager.Register(saveable);
+
+            Task<bool>[] saveTasks = new Task<bool>[8];
+            for (int i = 0; i < saveTasks.Length; i++)
+            {
+                saveable.State = new FakeState { value = i };
+                saveTasks[i] = BFSaveManager.SaveAsync("Slot1", scratchDir);
+            }
+
+            bool[] results = Task.WhenAll(saveTasks).GetAwaiter().GetResult();
+
+            Assert.IsTrue(Array.TrueForAll(results, result => result), "Every concurrent SaveAsync call for the same slot should succeed instead of losing the race on the shared temp file.");
+
+            bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsTrue(loaded, "The save data and checksum files should remain a consistent pair after concurrent writes.");
+        }
+
+        [Test]
+        public void LoadAsync_ConcurrentWithSaveAsyncForSameSlot_NeverReportsChecksumMismatch()
+        {
+            FakeSaveable saveable = new FakeSaveable { State = new FakeState { value = 1 } };
+            BFSaveManager.Register(saveable);
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            Task<bool>[] tasks = new Task<bool>[6];
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                tasks[i] = i % 2 == 0
+                    ? BFSaveManager.SaveAsync("Slot1", scratchDir)
+                    : BFSaveManager.LoadAsync("Slot1", scratchDir);
+            }
+
+            bool[] results = Task.WhenAll(tasks).GetAwaiter().GetResult();
+
+            Assert.IsTrue(Array.TrueForAll(results, result => result), "A load racing a save for the same slot should never see a torn data/checksum pair.");
         }
     }
 }
