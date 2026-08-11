@@ -251,20 +251,20 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
-        public void LoadAsync_MissingCompanionFile_LogsErrorLevelInsteadOfWarning()
+        public void LoadAsync_FileSmallerThanChecksumHeader_LogsErrorLevelInsteadOfWarning()
         {
             BFSaveManager.Register(new FakeSaveable());
             BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
 
-            string checksumPath = Path.Combine(scratchDir, BFSaveManager.GetFileNameForSlot("Slot1")) + ".chk";
-            File.Delete(checksumPath);
+            string dataPath = Path.Combine(scratchDir, BFSaveManager.GetFileNameForSlot("Slot1"));
+            File.WriteAllBytes(dataPath, new byte[] { 1, 2, 3 });
 
             SpyLoggerSink spy = InitializeLogging();
 
             bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
 
             Assert.IsFalse(loaded);
-            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("missing its")), "An interrupted/incomplete save should log at Error, not Warning.");
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("smaller than")), "An interrupted/incomplete save should log at Error, not Warning.");
         }
 
         [Test]
@@ -326,7 +326,7 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
-        public void GetSlotNamesOnDisk_IgnoresChecksumAndKeyFiles()
+        public void GetSlotNamesOnDisk_IgnoresUnrelatedFiles()
         {
             BFSaveManager.Register(new FakeSaveable());
             BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
@@ -390,7 +390,7 @@ namespace BFTools.Systems.SaveSystem.Tests
 
             bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
 
-            Assert.IsTrue(loaded, "The save data and checksum files should remain a consistent pair after concurrent writes.");
+            Assert.IsTrue(loaded, "The save data and checksum should remain consistent after concurrent writes.");
         }
 
         [Test]
@@ -410,7 +410,7 @@ namespace BFTools.Systems.SaveSystem.Tests
 
             bool[] results = Task.WhenAll(tasks).GetAwaiter().GetResult();
 
-            Assert.IsTrue(Array.TrueForAll(results, result => result), "A load racing a save for the same slot should never see a torn data/checksum pair.");
+            Assert.IsTrue(Array.TrueForAll(results, result => result), "A load racing a save for the same slot should never see a torn checksum/data pair.");
         }
     }
 }

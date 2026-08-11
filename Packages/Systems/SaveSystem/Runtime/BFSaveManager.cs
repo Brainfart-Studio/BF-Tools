@@ -16,6 +16,12 @@ namespace BFTools.Systems.SaveSystem
         private const string SlotFilePrefix = "save_";
         private const string SlotFileSuffix = ".dat";
 
+        // HMAC-SHA256 hex-encoded is always 64 ASCII characters, so it's stored as a fixed-length
+        // header at the start of the save file instead of a separate companion file. A single file
+        // means a single atomic write, so a save can't be left with a data/checksum pair torn apart
+        // by a crash or process kill mid-write.
+        private const int ChecksumHeaderLength = 64;
+
         private sealed class PlaytimeTracker
         {
             private readonly float basePlaytimeSeconds;
@@ -148,10 +154,8 @@ namespace BFTools.Systems.SaveSystem
                 BFLogger.Trace(LogTag, $"DeleteSlot started for slot '{slotName}'");
 
                 string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
-                string checksumPath = filePath + ".chk";
 
                 bool dataExisted = System.IO.File.Exists(filePath);
-                bool checksumExisted = System.IO.File.Exists(checksumPath);
 
                 try
                 {
@@ -160,16 +164,10 @@ namespace BFTools.Systems.SaveSystem
                         System.IO.File.Delete(filePath);
                         BFLogger.Trace(LogTag, $"Deleted '{filePath}'");
                     }
-
-                    if (checksumExisted)
-                    {
-                        System.IO.File.Delete(checksumPath);
-                        BFLogger.Trace(LogTag, $"Deleted '{checksumPath}'");
-                    }
                 }
                 catch (Exception exception)
                 {
-                    BFLogger.Warning(LogTag, $"Failed to delete slot '{slotName}': {exception.Message}. Its on-disk files may now be partially deleted.");
+                    BFLogger.Warning(LogTag, $"Failed to delete slot '{slotName}': {exception.Message}.");
                     return false;
                 }
 
@@ -188,7 +186,7 @@ namespace BFTools.Systems.SaveSystem
 
                 playtimeTrackers.TryRemove(slotName, out _);
 
-                if (!dataExisted && !checksumExisted)
+                if (!dataExisted)
                 {
                     BFLogger.Trace(LogTag, $"DeleteSlot found nothing on disk for slot '{slotName}'");
                     return false;
@@ -236,7 +234,6 @@ namespace BFTools.Systems.SaveSystem
                 };
 
                 string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
-                string checksumPath = filePath + ".chk";
 
                 try
                 {
@@ -245,18 +242,17 @@ namespace BFTools.Systems.SaveSystem
                     string json = serializer.Serialize(saveData);
                     byte[] encryptedBytes = BFSaveEncryptor.Encrypt(json);
                     string checksum = BFSaveChecksum.Generate(encryptedBytes);
-
                     byte[] checksumBytes = System.Text.Encoding.UTF8.GetBytes(checksum);
 
-                    BFLogger.Trace(LogTag, $"Writing {encryptedBytes.Length} byte(s) to '{filePath}'");
-                    await BFFileIO.WriteAsync(filePath, encryptedBytes).ConfigureAwait(false);
+                    byte[] combinedBytes = new byte[checksumBytes.Length + encryptedBytes.Length];
+                    Buffer.BlockCopy(checksumBytes, 0, combinedBytes, 0, checksumBytes.Length);
+                    Buffer.BlockCopy(encryptedBytes, 0, combinedBytes, checksumBytes.Length, encryptedBytes.Length);
+
+                    BFLogger.Trace(LogTag, $"Writing {combinedBytes.Length} byte(s) to '{filePath}'");
+                    await BFFileIO.WriteAsync(filePath, combinedBytes).ConfigureAwait(false);
                     BFLogger.Trace(LogTag, $"Wrote '{filePath}'");
 
-                    BFLogger.Trace(LogTag, $"Writing {checksumBytes.Length} byte(s) to '{checksumPath}'");
-                    await BFFileIO.WriteAsync(checksumPath, checksumBytes).ConfigureAwait(false);
-                    BFLogger.Trace(LogTag, $"Wrote '{checksumPath}'");
-
-                    BFLogger.Trace(LogTag, $"SaveAsync completed for slot '{slotName}' ({encryptedBytes.Length} byte(s) written to '{filePath}')");
+                    BFLogger.Trace(LogTag, $"SaveAsync completed for slot '{slotName}' ({combinedBytes.Length} byte(s) written to '{filePath}')");
                 }
                 catch (Exception exception)
                 {
@@ -288,32 +284,27 @@ namespace BFTools.Systems.SaveSystem
                 BFLogger.Trace(LogTag, $"LoadAsync started for slot '{slotName}'");
 
                 string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
-                string checksumPath = filePath + ".chk";
 
-                byte[] encryptedBytes = await BFFileIO.ReadAsync(filePath).ConfigureAwait(false);
-                if (encryptedBytes == null)
-                    BFLogger.Trace(LogTag, $"No file found at '{filePath}'");
-                else
-                    BFLogger.Trace(LogTag, $"Read {encryptedBytes.Length} byte(s) from '{filePath}'");
-
-                byte[] checksumBytes = await BFFileIO.ReadAsync(checksumPath).ConfigureAwait(false);
-                if (checksumBytes == null)
-                    BFLogger.Trace(LogTag, $"No file found at '{checksumPath}'");
-                else
-                    BFLogger.Trace(LogTag, $"Read {checksumBytes.Length} byte(s) from '{checksumPath}'");
-
-                if (encryptedBytes == null && checksumBytes == null)
+                byte[] fileBytes = await BFFileIO.ReadAsync(filePath).ConfigureAwait(false);
+                if (fileBytes == null)
                 {
                     BFLogger.Trace(LogTag, $"No save file found for slot '{slotName}', treating as first launch");
                     return false;
                 }
 
-                if (encryptedBytes == null || checksumBytes == null)
+                BFLogger.Trace(LogTag, $"Read {fileBytes.Length} byte(s) from '{filePath}'");
+
+                if (fileBytes.Length < ChecksumHeaderLength)
                 {
-                    string missing = encryptedBytes == null ? "save data" : "checksum";
-                    BFLogger.Error(LogTag, $"Slot '{slotName}' is missing its {missing} file while the other is present. Save is incomplete or was interrupted mid-write.");
+                    BFLogger.Error(LogTag, $"Save file for slot '{slotName}' is only {fileBytes.Length} byte(s), smaller than the {ChecksumHeaderLength}-byte checksum header. Save is incomplete or was interrupted mid-write.");
                     return false;
                 }
+
+                byte[] checksumBytes = new byte[ChecksumHeaderLength];
+                Buffer.BlockCopy(fileBytes, 0, checksumBytes, 0, ChecksumHeaderLength);
+
+                byte[] encryptedBytes = new byte[fileBytes.Length - ChecksumHeaderLength];
+                Buffer.BlockCopy(fileBytes, ChecksumHeaderLength, encryptedBytes, 0, encryptedBytes.Length);
 
                 string expectedChecksum = System.Text.Encoding.UTF8.GetString(checksumBytes);
                 if (!BFSaveChecksum.Validate(encryptedBytes, expectedChecksum))

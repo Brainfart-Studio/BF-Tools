@@ -38,6 +38,7 @@
 - Captured state now keyed by full type name to avoid namespace collisions
 - `BFSceneLoader.LoadAsync` now returns the actual in-flight load's task when called again for a scene that's already loading, instead of a task that reports done immediately
 - `BFSceneTransitionInvoker.Invoke` and `BFDoorActivationTrigger.OnTriggerEnter2D` no longer throw when no `BFSceneTransitionController` is registered; both now log an Error and return
+- `BFSaveManager.SaveAsync` now writes a save's checksum and encrypted data as a single file with one atomic write, instead of two independent writes; a crash or process kill between the two could previously strand a save with a valid data file and a stale (or missing) checksum, permanently failing to load even though the data itself was intact. Save files written before this change are no longer readable
 
 ## [0.5.0] - Project Setup Step
 
