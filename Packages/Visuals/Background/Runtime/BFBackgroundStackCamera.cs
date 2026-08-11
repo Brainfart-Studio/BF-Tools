@@ -112,6 +112,7 @@ namespace BFTools.Visuals.Background
             outputCamera.cullingMask &= ~(1 << BFBackgroundStackManager.BackgroundLayer);
 
             outputCameraConfigured = true;
+            hasWarnedMissingCamera = false;
 
             BFLogger.Info(LogTag, $"BFBackgroundStackCamera: configured output camera '{outputCamera.name}'.", context);
         }
