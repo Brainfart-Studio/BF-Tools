@@ -3,7 +3,7 @@
 Editor-only tooling for BFTools: one-click project bootstrap and feedback-system verification.
 
 ## Version
-0.1.0
+1.0.0
 
 ## Contents
 
@@ -14,22 +14,20 @@ Editor-only tooling for BFTools: one-click project bootstrap and feedback-system
 `BF Tools > New Project Verification` creates (or opens, if it already exists) a `BFToolsTest` scene containing a camera, 3 randomly colored/sized bouncing balls, and 4 UI buttons (Hitstop, Screen Shake, Screen Flash, Haptics) wired to fire each feedback event with `eventName = "Default"`. Enter Play Mode with this scene open to visually confirm all four Feedback systems are working end-to-end.
 
 ## Dependencies
-- `com.bftools.core` @ 0.11.0
-- `com.bftools.systems` @ 0.5.0
-- `com.bftools.feedback` @ 0.7.0
+- `com.bftools.core` @ 1.0.0
+- `com.bftools.systems` @ 1.0.0
+- `com.bftools.feedback` @ 1.0.0
 - `com.unity.textmeshpro` @ 3.0.6
 - `com.unity.inputsystem` @ 1.7.0
 
 ## Installation
-
-> **Note:** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
 
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter:
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/EditorTools#development
+   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/EditorTools
    ```
 
 Editor Tools depends on `com.bftools.core`, `com.bftools.systems`, and `com.bftools.feedback`; install each the same way (see [Core's README](../Core/README.md#installation), [Systems' README](../Systems/README.md#installation), and [Feedback's README](../Feedback/README.md#installation)) if they aren't already in the project.
@@ -39,7 +37,7 @@ Add the entry directly to your project's `Packages/manifest.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.editortools": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/EditorTools#development"
+  "com.bftools.editortools": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/EditorTools"
 }
 ```
 
@@ -48,7 +46,7 @@ Reference `com.bftools.editortools` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.editortools": "0.1.0"
+  "com.bftools.editortools": "1.0.0"
 }
 ```
 

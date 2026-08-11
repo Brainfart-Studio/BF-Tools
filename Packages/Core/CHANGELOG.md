@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.0] - Production Release
+
+### Added
+- `BFTools.Core.ConfigLookup` assembly, with `BFConfigLookupBuilder` for merging config entries into a key-based lookup with duplicate-key warnings
+- `BFTools.Core.Serialization` assembly, with `BFAllowlistJsonSerializer` (Newtonsoft.Json wrapper restricted to allowlisted types), `BFTypeAllowlistBinder`, `IStateCapturable`, and `BFStateRegistry<T>` (shared registration, capture, and restore logic, extracted from Save System and Settings Manager)
+- `BFTools.Core.CameraUtility` assembly, with `BFCameraResolver` for resolving a target or main camera with one-time missing-camera warnings
+- `BFTools.Core.LayerStack` assembly, with `BFLayerStackBase<TLayerConfig, TLayer>`, `IBFLayerConfig<TLayer>`, and `IBFStackLayer`, extracted for use by config-driven visual/layer stacks
+- `BFTools.Core.SingletonGuard` assembly, with `BFActiveInstanceGuard<TOwner>` for enforcing a single active instance per owner type
+- `BFPersistentDataPath` added to `BFTools.Core.FileIO`, centralizing the default persistent data path
+
+### Fixed
+- `BFFileIO.ReadAsync` now loops until the full buffer is read, instead of assuming a single `ReadAsync` call fills it, and throws `EndOfStreamException` if the stream ends early
+
 ## [0.11.0] - Project Setup Steps
 
 ### Added

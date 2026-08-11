@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.0] - Production Release
+
+### Changed
+- Bumped `com.bftools.core` dependency to 1.0.0
+
 ## [0.7.0] - Project Setup Steps
 
 ### Added

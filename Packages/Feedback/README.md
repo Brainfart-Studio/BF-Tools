@@ -3,7 +3,7 @@
 Event-driven feedback systems: controller haptics, camera screen shake, hitstop, and screen flash.
 
 ## Version
-0.7.0
+1.0.0
 
 ## Contents
 
@@ -20,19 +20,17 @@ Brief global time freeze triggered by named events. See [Documentation~/Hitstop.
 Full-screen color flash triggered by named events. See [Documentation~/ScreenFlash.md](Documentation~/ScreenFlash.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.11.0
+- `com.bftools.core` @ 1.0.0
 - `com.unity.inputsystem` @ 1.7.0
 
 ## Installation
-
-> **Note:** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
 
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter:
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback#development
+   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback
    ```
 
 Feedback depends on `com.bftools.core`; install it the same way (see [Core's README](../Core/README.md#installation)) if it isn't already in the project.
@@ -42,7 +40,7 @@ Add the entry directly to your project's `Packages/manifest.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback#development"
+  "com.bftools.feedback": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Feedback"
 }
 ```
 
@@ -51,7 +49,7 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "0.7.0"
+  "com.bftools.feedback": "1.0.0"
 }
 ```
 

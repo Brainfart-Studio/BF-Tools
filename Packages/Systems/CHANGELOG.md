@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.0.0] - Production Release
+
+### Added
+- `BFSceneTransitionInvoker`, for triggering scene transitions without a collision trigger, with support for inline scene load requests
+- Inline scene load requests on door and preload triggers
+- Save slot discovery and deletion on `BFSaveManager`
+- Logging coverage across the scene transition routine
+- Test coverage for the scene transition invoker, inline request resolution, and `BFSavePath`'s default and override branches
+
+### Changed
+- `BFSceneLoadRequestResolver` extracted and shared across `BFSceneTransitionInvoker`, door triggers, and preload triggers for inline scene load request resolution
+- Scene load request configuration consolidated onto a single field
+- `BFSceneLoader`'s tracked-scene guard and `AwaitCompletion` logic deduplicated
+- Persistent data path default moved to Core's `BFTools.Core.FileIO`
+- Save System's allowlist JSON serializer and state registration/capture/restore logic extracted to Core's `BFTools.Core.Serialization` (`BFAllowlistJsonSerializer`, `BFStateRegistry<T>`), now shared with Settings Manager
+- Bumped `com.bftools.core` dependency to 1.0.0
+
+### Fixed
+- `BFFadeTransition` now initializes to a hidden state in `Awake` and correctly restores fader image alpha and canvas group alpha to zero by default
+- `BFSceneTransitionController` guarded against duplicate instances and an unassigned transition, and now resets `isTransitioning` when a transition faults
+- `BFSceneLoader` now rejects null or empty scene names
+- Door and preload triggers guarded against unassigned scene load requests
+- `BFSettingsManager.LoadAsync` now catches settings file read failures instead of throwing
+- Save data corruption and tamper detection now logged at Error level
+- `BFSaveManager.RegisterSlot` restricted to internal access
+- Playtime now tracked accurately instead of always saving zero
+- Save and load operations serialized per slot to prevent races
+- Redundant migration log removed from `LoadAsync`
+- `BFStateRegistry.RestoreAll` guarded against a null states dictionary
+- `BFSettingsManager.SaveAsync` and `CaptureState` failures during `SaveAsync` now caught instead of throwing
+- Save type allowlist dictionary made thread-safe
+- Save System's shared static state guarded with locks
+- Input validated on `BFSaveChecksum` and `BFSaveEncryptor`
+- Migration no longer claims a migration happened when no migration steps exist
+- Save slot names now reject unsafe characters
+- Captured state now keyed by full type name to avoid namespace collisions
+
 ## [0.5.0] - Project Setup Step
 
 ### Added
