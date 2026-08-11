@@ -2,7 +2,8 @@
     "name": "BFTools.Visuals.Background",
     "rootNamespace": "BFTools.Visuals.Background",
     "references": [
-        "BFTools.Core.Logger"
+        "BFTools.Core.Logger",
+        "BFTools.Core.CameraUtility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

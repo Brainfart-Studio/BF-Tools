@@ -1,3 +1,4 @@
+using BFTools.Core.CameraUtility;
 using BFTools.Core.Logger;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace BFTools.Visuals.Background
     {
         private const string LogTag = "Background";
 
-        private readonly Camera targetCameraOverride;
+        private readonly BFCameraResolver cameraResolver;
         private readonly Object context;
 
         private Camera backgroundCamera;
@@ -15,12 +16,12 @@ namespace BFTools.Visuals.Background
         private CameraClearFlags outputCameraOriginalClearFlags;
         private int outputCameraOriginalCullingMask;
         private bool outputCameraConfigured;
-        private bool hasWarnedMissingCamera;
 
         public BFBackgroundStackCamera(Camera targetCameraOverride, Object context)
         {
-            this.targetCameraOverride = targetCameraOverride;
             this.context = context;
+            cameraResolver = new BFCameraResolver(targetCameraOverride, context, LogTag,
+                "BFBackgroundStackCamera: no output camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise this background will never be visible.");
         }
 
         public void Init()
@@ -93,17 +94,9 @@ namespace BFTools.Visuals.Background
         // layer would otherwise be drawn twice if left in the output camera's mask.
         private void ConfigureOutputCamera()
         {
-            outputCamera = targetCameraOverride != null ? targetCameraOverride : Camera.main;
+            outputCamera = cameraResolver.Resolve();
             if (outputCamera == null)
-            {
-                if (!hasWarnedMissingCamera)
-                {
-                    BFLogger.Error(LogTag, "BFBackgroundStackCamera: no output camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise this background will never be visible.", context);
-                    hasWarnedMissingCamera = true;
-                }
-
                 return;
-            }
 
             outputCameraOriginalClearFlags = outputCamera.clearFlags;
             outputCameraOriginalCullingMask = outputCamera.cullingMask;
@@ -112,7 +105,6 @@ namespace BFTools.Visuals.Background
             outputCamera.cullingMask &= ~(1 << BFBackgroundStackManager.BackgroundLayer);
 
             outputCameraConfigured = true;
-            hasWarnedMissingCamera = false;
 
             BFLogger.Info(LogTag, $"BFBackgroundStackCamera: configured output camera '{outputCamera.name}'.", context);
         }

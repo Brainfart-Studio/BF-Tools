@@ -2,7 +2,8 @@
     "name": "BFTools.Visuals.Parallax",
     "rootNamespace": "BFTools.Visuals.Parallax",
     "references": [
-        "BFTools.Core.Logger"
+        "BFTools.Core.Logger",
+        "BFTools.Core.CameraUtility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
