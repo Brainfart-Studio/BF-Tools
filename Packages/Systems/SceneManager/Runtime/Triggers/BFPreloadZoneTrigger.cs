@@ -15,6 +15,12 @@ namespace BFTools.Systems.SceneManager
             if (!other.CompareTag(playerTag))
                 return;
 
+            if (request == null)
+            {
+                BFLogger.Error(LogTag, "No BFSceneLoadRequest assigned. Ignoring preload zone trigger.", this);
+                return;
+            }
+
             BFLogger.Debug(LogTag, $"Preload zone entered by '{other.name}'. Preloading '{request.SceneName}'.", this);
             BFSceneLoader.Preload(request.SceneName, request.LoadMode);
         }

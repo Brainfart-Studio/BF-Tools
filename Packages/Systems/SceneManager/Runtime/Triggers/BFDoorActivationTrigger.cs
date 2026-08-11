@@ -18,6 +18,12 @@ namespace BFTools.Systems.SceneManager
             if (suppressed || !other.CompareTag(playerTag))
                 return;
 
+            if (request == null)
+            {
+                BFLogger.Error(LogTag, "No BFSceneLoadRequest assigned. Ignoring door trigger.", this);
+                return;
+            }
+
             suppressed = true;
             BFLogger.Debug(LogTag, $"Door entered by '{other.name}'. Transitioning to '{request.SceneName}'.", this);
             BFServiceLocator.Get<BFSceneTransitionController>().BeginTransition(request);
