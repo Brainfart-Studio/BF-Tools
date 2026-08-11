@@ -14,5 +14,15 @@ namespace BFTools.Systems.SceneManager
         internal LoadSceneMode LoadMode => loadMode;
         internal bool ShowLoadingScreen => showLoadingScreen;
         internal float MinimumDisplayTime => minimumDisplayTime;
+
+        internal static BFSceneLoadRequest Create(string sceneName, LoadSceneMode loadMode = LoadSceneMode.Additive, bool showLoadingScreen = false, float minimumDisplayTime = 0f)
+        {
+            BFSceneLoadRequest request = CreateInstance<BFSceneLoadRequest>();
+            request.sceneName = sceneName;
+            request.loadMode = loadMode;
+            request.showLoadingScreen = showLoadingScreen;
+            request.minimumDisplayTime = minimumDisplayTime;
+            return request;
+        }
     }
 }
