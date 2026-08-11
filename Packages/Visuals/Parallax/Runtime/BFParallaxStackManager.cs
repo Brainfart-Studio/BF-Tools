@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BFTools.Core.Logger;
+using BFTools.Core.SingletonGuard;
 using UnityEngine;
 
 namespace BFTools.Visuals.Parallax
@@ -11,8 +12,6 @@ namespace BFTools.Visuals.Parallax
         [SerializeField] private List<BFParallaxStackConfig> stacks = new List<BFParallaxStackConfig>();
         [SerializeField] private Camera targetCameraOverride;
 
-        private static BFParallaxStackManager instance;
-
         private readonly List<BFParallaxStack> activeStacks = new List<BFParallaxStack>();
         private BFParallaxCameraTracker cameraTracker;
 
@@ -23,19 +22,17 @@ namespace BFTools.Visuals.Parallax
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStaticState()
         {
-            instance = null;
+            BFActiveInstanceGuard<BFParallaxStackManager>.ResetState();
         }
 
         private void OnEnable()
         {
-            if (instance != null)
+            if (!BFActiveInstanceGuard<BFParallaxStackManager>.TryActivate(this))
             {
                 BFLogger.Error(LogTag, "BFParallaxStackManager: another instance is already active. Only one is supported at a time.", this);
                 enabled = false;
                 return;
             }
-
-            instance = this;
 
             cameraTracker = new BFParallaxCameraTracker(targetCameraOverride, this);
             cameraTracker.Init();
@@ -59,7 +56,7 @@ namespace BFTools.Visuals.Parallax
 
         private void OnDisable()
         {
-            if (instance != this)
+            if (!BFActiveInstanceGuard<BFParallaxStackManager>.IsActive(this))
                 return;
 
             for (int i = 0; i < activeStacks.Count; i++)
@@ -69,7 +66,7 @@ namespace BFTools.Visuals.Parallax
             cameraTracker.Cleanup();
             cameraTracker = null;
 
-            instance = null;
+            BFActiveInstanceGuard<BFParallaxStackManager>.Deactivate(this);
 
             BFLogger.Info(LogTag, "BFParallaxStackManager: disabled and cleaned up.", this);
         }

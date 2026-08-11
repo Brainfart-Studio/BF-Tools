@@ -5,6 +5,7 @@
         "BFTools.Visuals.Background",
         "BFTools.Core.Logger",
         "BFTools.Core.Logger.TestUtilities",
+        "BFTools.Core.LayerStack",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BFTools.Core.Logger;
+using BFTools.Core.SingletonGuard;
 using UnityEngine;
 
 namespace BFTools.Visuals.Background
@@ -13,8 +14,6 @@ namespace BFTools.Visuals.Background
         [SerializeField] private List<BFBackgroundStackConfig> stacks = new List<BFBackgroundStackConfig>();
         [SerializeField] private Camera targetCameraOverride;
 
-        private static BFBackgroundStackManager instance;
-
         private readonly List<BFBackgroundStack> activeStacks = new List<BFBackgroundStack>();
         private BFBackgroundStackCamera stackCamera;
 
@@ -25,19 +24,17 @@ namespace BFTools.Visuals.Background
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStaticState()
         {
-            instance = null;
+            BFActiveInstanceGuard<BFBackgroundStackManager>.ResetState();
         }
 
         private void OnEnable()
         {
-            if (instance != null)
+            if (!BFActiveInstanceGuard<BFBackgroundStackManager>.TryActivate(this))
             {
                 BFLogger.Error(LogTag, "BFBackgroundStackManager: another instance is already active. Only one is supported at a time.", this);
                 enabled = false;
                 return;
             }
-
-            instance = this;
 
             stackCamera = new BFBackgroundStackCamera(targetCameraOverride, this);
             stackCamera.Init();
@@ -61,7 +58,7 @@ namespace BFTools.Visuals.Background
 
         private void OnDisable()
         {
-            if (instance != this)
+            if (!BFActiveInstanceGuard<BFBackgroundStackManager>.IsActive(this))
                 return;
 
             for (int i = 0; i < activeStacks.Count; i++)
@@ -71,7 +68,7 @@ namespace BFTools.Visuals.Background
             stackCamera.Cleanup();
             stackCamera = null;
 
-            instance = null;
+            BFActiveInstanceGuard<BFBackgroundStackManager>.Deactivate(this);
 
             BFLogger.Info(LogTag, "BFBackgroundStackManager: disabled and cleaned up.", this);
         }
