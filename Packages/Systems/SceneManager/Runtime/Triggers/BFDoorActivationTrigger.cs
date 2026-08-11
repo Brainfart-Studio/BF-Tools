@@ -26,9 +26,15 @@ namespace BFTools.Systems.SceneManager
                 return;
             }
 
+            if (!BFServiceLocator.TryGet(out BFSceneTransitionController controller))
+            {
+                BFLogger.Error(LogTag, "No BFSceneTransitionController is registered. Ignoring door trigger.", this);
+                return;
+            }
+
             suppressed = true;
             BFLogger.Debug(LogTag, $"Door entered by '{other.name}'. Transitioning to '{activeRequest.SceneName}'.", this);
-            BFServiceLocator.Get<BFSceneTransitionController>().BeginTransition(activeRequest);
+            controller.BeginTransition(activeRequest);
         }
 
         private void OnTriggerExit2D(Collider2D other)

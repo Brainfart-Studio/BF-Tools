@@ -36,6 +36,8 @@
 - Migration no longer claims a migration happened when no migration steps exist
 - Save slot names now reject unsafe characters
 - Captured state now keyed by full type name to avoid namespace collisions
+- `BFSceneLoader.LoadAsync` now returns the actual in-flight load's task when called again for a scene that's already loading, instead of a task that reports done immediately
+- `BFSceneTransitionInvoker.Invoke` and `BFDoorActivationTrigger.OnTriggerEnter2D` no longer throw when no `BFSceneTransitionController` is registered; both now log an Error and return
 
 ## [0.5.0] - Project Setup Step
 

@@ -20,8 +20,14 @@ namespace BFTools.Systems.SceneManager
                 return;
             }
 
+            if (!BFServiceLocator.TryGet(out BFSceneTransitionController controller))
+            {
+                BFLogger.Error(LogTag, "No BFSceneTransitionController is registered. Ignoring invoke.", this);
+                return;
+            }
+
             BFLogger.Debug(LogTag, $"Invoked. Transitioning to '{activeRequest.SceneName}'.", this);
-            BFServiceLocator.Get<BFSceneTransitionController>().BeginTransition(activeRequest);
+            controller.BeginTransition(activeRequest);
         }
     }
 }

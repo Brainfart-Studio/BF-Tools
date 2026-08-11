@@ -153,6 +153,22 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
         }
 
         [Test]
+        public void Invoke_NoControllerRegistered_LogsErrorAndDoesNotThrow()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            BFSceneTransitionInvoker invoker = CreateInvoker();
+            SetSceneName(invoker, "Level1");
+
+            bool started = false;
+            EventBus<BFSceneTransitionStartedEvent>.Subscribe(_ => started = true);
+
+            Assert.DoesNotThrow(() => invoker.Invoke());
+
+            Assert.IsFalse(started);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No BFSceneTransitionController is registered")));
+        }
+
+        [Test]
         public void Invoke_SharedRequestAndInlineRequestBothSet_PrefersSharedRequest()
         {
             CreateController();
