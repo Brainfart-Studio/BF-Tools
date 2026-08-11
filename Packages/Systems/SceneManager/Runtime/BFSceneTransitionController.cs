@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
+using BFTools.Core.SingletonGuard;
 
 namespace BFTools.Systems.SceneManager
 {
@@ -37,12 +38,23 @@ namespace BFTools.Systems.SceneManager
 
         private void Awake()
         {
+            if (!BFActiveInstanceGuard<BFSceneTransitionController>.TryActivate(this))
+            {
+                BFLogger.Warning(LogTag, "Duplicate BFSceneTransitionController detected. Destroying this instance.", this);
+                Destroy(gameObject);
+                return;
+            }
+
             BFServiceLocator.Register(this);
             BFLogger.Trace(LogTag, "Registered with ServiceLocator");
         }
 
         private void OnDestroy()
         {
+            if (!BFActiveInstanceGuard<BFSceneTransitionController>.IsActive(this))
+                return;
+
+            BFActiveInstanceGuard<BFSceneTransitionController>.Deactivate(this);
             BFServiceLocator.Unregister<BFSceneTransitionController>();
             BFLogger.Trace(LogTag, "Unregistered from ServiceLocator");
         }

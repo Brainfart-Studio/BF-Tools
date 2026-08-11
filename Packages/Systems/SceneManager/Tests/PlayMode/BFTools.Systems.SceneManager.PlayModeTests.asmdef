@@ -7,6 +7,7 @@
         "BFTools.Core.Logger",
         "BFTools.Core.Logger.TestUtilities",
         "BFTools.Core.ServiceLocator",
+        "BFTools.Core.SingletonGuard",
         "UnityEngine.TestRunner",
         "UnityEngine.UI"
     ],
