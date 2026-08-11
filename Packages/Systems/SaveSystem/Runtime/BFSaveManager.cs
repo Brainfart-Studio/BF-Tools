@@ -12,6 +12,8 @@ namespace BFTools.Systems.SaveSystem
     public static class BFSaveManager
     {
         private const string LogTag = "Save";
+        private const string SlotFilePrefix = "save_";
+        private const string SlotFileSuffix = ".dat";
 
         private static readonly BFAllowlistJsonSerializer serializer = new BFAllowlistJsonSerializer(LogTag);
         private static readonly BFStateRegistry<ISaveable> saveables = new BFStateRegistry<ISaveable>(LogTag, serializer);
@@ -86,7 +88,103 @@ namespace BFTools.Systems.SaveSystem
                 throw new ArgumentException($"Slot name '{slotName}' contains characters that are not allowed in a file name.", nameof(slotName));
             }
 
-            return $"save_{slotName}.dat";
+            return $"{SlotFilePrefix}{slotName}{SlotFileSuffix}";
+        }
+
+        public static string[] GetSlotNamesOnDisk()
+        {
+            return GetSlotNamesOnDisk(BFSavePath.DefaultDirectory);
+        }
+
+        public static string[] GetSlotNamesOnDisk(string directoryPath)
+        {
+            if (!System.IO.Directory.Exists(directoryPath))
+            {
+                BFLogger.Trace(LogTag, $"Save directory '{directoryPath}' does not exist; no slots found");
+                return Array.Empty<string>();
+            }
+
+            string[] filePaths = System.IO.Directory.GetFiles(directoryPath, $"{SlotFilePrefix}*{SlotFileSuffix}");
+            string[] slotNames = new string[filePaths.Length];
+
+            for (int i = 0; i < filePaths.Length; i++)
+            {
+                string fileName = System.IO.Path.GetFileName(filePaths[i]);
+                slotNames[i] = fileName.Substring(SlotFilePrefix.Length, fileName.Length - SlotFilePrefix.Length - SlotFileSuffix.Length);
+            }
+
+            BFLogger.Trace(LogTag, $"Found {slotNames.Length} slot(s) on disk in '{directoryPath}'");
+
+            return slotNames;
+        }
+
+        public static Task<bool> DeleteSlot(string slotName)
+        {
+            return DeleteSlot(slotName, BFSavePath.DefaultDirectory);
+        }
+
+        public static async Task<bool> DeleteSlot(string slotName, string directoryPath)
+        {
+            SemaphoreSlim slotOperationLock = GetSlotOperationLock(slotName);
+            await slotOperationLock.WaitAsync().ConfigureAwait(false);
+
+            try
+            {
+                BFLogger.Trace(LogTag, $"DeleteSlot started for slot '{slotName}'");
+
+                string filePath = System.IO.Path.Combine(directoryPath, GetFileNameForSlot(slotName));
+                string checksumPath = filePath + ".chk";
+
+                bool dataExisted = System.IO.File.Exists(filePath);
+                bool checksumExisted = System.IO.File.Exists(checksumPath);
+
+                try
+                {
+                    if (dataExisted)
+                    {
+                        System.IO.File.Delete(filePath);
+                        BFLogger.Trace(LogTag, $"Deleted '{filePath}'");
+                    }
+
+                    if (checksumExisted)
+                    {
+                        System.IO.File.Delete(checksumPath);
+                        BFLogger.Trace(LogTag, $"Deleted '{checksumPath}'");
+                    }
+                }
+                catch (Exception exception)
+                {
+                    BFLogger.Warning(LogTag, $"Failed to delete slot '{slotName}': {exception.Message}. Its on-disk files may now be partially deleted.");
+                    return false;
+                }
+
+                lock (slotsLock)
+                {
+                    for (int i = 0; i < slots.Count; i++)
+                    {
+                        if (slots[i].slotName == slotName)
+                        {
+                            slots.RemoveAt(i);
+                            BFLogger.Trace(LogTag, $"Removed slot '{slotName}' from the in-memory slot list");
+                            break;
+                        }
+                    }
+                }
+
+                if (!dataExisted && !checksumExisted)
+                {
+                    BFLogger.Trace(LogTag, $"DeleteSlot found nothing on disk for slot '{slotName}'");
+                    return false;
+                }
+
+                BFLogger.Trace(LogTag, $"DeleteSlot completed for slot '{slotName}'");
+
+                return true;
+            }
+            finally
+            {
+                slotOperationLock.Release();
+            }
         }
 
         public static Task<bool> SaveAsync(string slotName)

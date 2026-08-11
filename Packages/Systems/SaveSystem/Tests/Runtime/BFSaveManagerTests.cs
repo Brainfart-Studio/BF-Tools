@@ -211,6 +211,72 @@ namespace BFTools.Systems.SaveSystem.Tests
         }
 
         [Test]
+        public void GetSlotNamesOnDisk_DirectoryDoesNotExist_ReturnsEmptyArray()
+        {
+            string missingDir = Path.Combine(scratchDir, "does-not-exist");
+
+            string[] slotNames = BFSaveManager.GetSlotNamesOnDisk(missingDir);
+
+            Assert.IsEmpty(slotNames);
+        }
+
+        [Test]
+        public void GetSlotNamesOnDisk_NoSavesYet_ReturnsEmptyArray()
+        {
+            string[] slotNames = BFSaveManager.GetSlotNamesOnDisk(scratchDir);
+
+            Assert.IsEmpty(slotNames);
+        }
+
+        [Test]
+        public void GetSlotNamesOnDisk_AfterSavingMultipleSlots_ReturnsAllSlotNames()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            BFSaveManager.SaveAsync("Slot2", scratchDir).GetAwaiter().GetResult();
+
+            string[] slotNames = BFSaveManager.GetSlotNamesOnDisk(scratchDir);
+
+            CollectionAssert.AreEquivalent(new[] { "Slot1", "Slot2" }, slotNames);
+        }
+
+        [Test]
+        public void GetSlotNamesOnDisk_IgnoresChecksumAndKeyFiles()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            File.WriteAllBytes(Path.Combine(scratchDir, "save.key"), new byte[] { 1 });
+
+            string[] slotNames = BFSaveManager.GetSlotNamesOnDisk(scratchDir);
+
+            CollectionAssert.AreEquivalent(new[] { "Slot1" }, slotNames);
+        }
+
+        [Test]
+        public void DeleteSlot_ExistingSlot_RemovesFilesAndSlotEntryAndReturnsTrue()
+        {
+            BFSaveManager.Register(new FakeSaveable());
+            BFSaveManager.SaveAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            bool deleted = BFSaveManager.DeleteSlot("Slot1", scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsTrue(deleted);
+            Assert.IsFalse(BFSaveManager.TryGetSlot("Slot1", out _));
+            Assert.IsEmpty(BFSaveManager.GetSlotNamesOnDisk(scratchDir));
+
+            bool loaded = BFSaveManager.LoadAsync("Slot1", scratchDir).GetAwaiter().GetResult();
+            Assert.IsFalse(loaded);
+        }
+
+        [Test]
+        public void DeleteSlot_UnknownSlot_ReturnsFalse()
+        {
+            bool deleted = BFSaveManager.DeleteSlot("MissingSlot", scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsFalse(deleted);
+        }
+
+        [Test]
         public void SaveAsync_SaveableCaptureStateThrows_ReturnsFalseInsteadOfThrowing()
         {
             BFSaveManager.Register(new ThrowingCaptureSaveable());
