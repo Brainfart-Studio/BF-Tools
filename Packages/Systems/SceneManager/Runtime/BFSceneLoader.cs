@@ -20,17 +20,14 @@ namespace BFTools.Systems.SceneManager
                 return Task.CompletedTask;
             }
 
-            if (operations.ContainsKey(sceneName))
-            {
-                BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate load request.");
+            if (IsAlreadyTracked(sceneName, "load"))
                 return Task.CompletedTask;
-            }
 
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, mode);
             operations[sceneName] = operation;
             BFLogger.Debug(LogTag, $"Loading '{sceneName}' ({mode}).");
 
-            return AwaitCompletion(sceneName, operation);
+            return AwaitCompletion(operation, sceneName);
         }
 
         public static void Preload(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
@@ -41,16 +38,22 @@ namespace BFTools.Systems.SceneManager
                 return;
             }
 
-            if (operations.ContainsKey(sceneName))
-            {
-                BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate preload request.");
+            if (IsAlreadyTracked(sceneName, "preload"))
                 return;
-            }
 
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, mode);
             operation.allowSceneActivation = false;
             operations[sceneName] = operation;
             BFLogger.Debug(LogTag, $"Preloading '{sceneName}' ({mode}).");
+        }
+
+        private static bool IsAlreadyTracked(string sceneName, string actionLabel)
+        {
+            if (!operations.ContainsKey(sceneName))
+                return false;
+
+            BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate {actionLabel} request.");
+            return true;
         }
 
         public static Task ActivateAsync(string sceneName)
@@ -63,7 +66,7 @@ namespace BFTools.Systems.SceneManager
 
             BFLogger.Debug(LogTag, $"Activating '{sceneName}'.");
             operation.allowSceneActivation = true;
-            return AwaitCompletion(sceneName, operation);
+            return AwaitCompletion(operation, sceneName);
         }
 
         public static bool IsTracked(string sceneName) => operations.ContainsKey(sceneName);
@@ -92,21 +95,16 @@ namespace BFTools.Systems.SceneManager
             return AwaitCompletion(operation);
         }
 
-        private static Task AwaitCompletion(string sceneName, AsyncOperation operation)
+        private static Task AwaitCompletion(AsyncOperation operation, string sceneNameToUntrack = null)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             operation.completed += _ =>
             {
-                operations.Remove(sceneName);
+                if (sceneNameToUntrack != null)
+                    operations.Remove(sceneNameToUntrack);
+
                 tcs.SetResult(true);
             };
-            return tcs.Task;
-        }
-
-        private static Task AwaitCompletion(AsyncOperation operation)
-        {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            operation.completed += _ => tcs.SetResult(true);
             return tcs.Task;
         }
     }
