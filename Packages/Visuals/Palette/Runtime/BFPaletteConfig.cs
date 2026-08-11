@@ -15,7 +15,7 @@ namespace BFTools.Visuals.Palette
 
     public class BFPaletteConfig : ScriptableObject
     {
-        private const string LogTag = "PaletteConfig";
+        private const string LogTag = "Palette";
 
         [SerializeField] private List<BFPaletteEntry> entries = new List<BFPaletteEntry>();
 
