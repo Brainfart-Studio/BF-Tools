@@ -71,6 +71,7 @@ namespace BFTools.Systems.SceneManager
             try
             {
                 string sceneName = request.SceneName;
+                BFLogger.Debug(LogTag, $"Transition started for '{sceneName}'.", this);
 
                 EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent
                 {
@@ -78,28 +79,43 @@ namespace BFTools.Systems.SceneManager
                     showLoadingScreen = request.ShowLoadingScreen
                 });
 
+                BFLogger.Trace(LogTag, "Playing out transition.", this);
                 yield return Transition.PlayOut();
 
                 float loadStartTime = Time.time;
 
                 if (BFSceneLoader.IsTracked(sceneName))
+                {
+                    BFLogger.Debug(LogTag, $"'{sceneName}' is preloaded. Activating.", this);
                     yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
+                }
                 else
+                {
+                    BFLogger.Debug(LogTag, $"'{sceneName}' is not preloaded. Loading.", this);
                     yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
+                }
 
                 float remainingDisplayTime = request.MinimumDisplayTime - (Time.time - loadStartTime);
                 if (remainingDisplayTime > 0f)
+                {
+                    BFLogger.Trace(LogTag, $"Holding for remaining minimum display time of {remainingDisplayTime:0.###}s.", this);
                     yield return new WaitForSeconds(remainingDisplayTime);
+                }
 
                 EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
 
+                BFLogger.Trace(LogTag, "Playing in transition.", this);
                 yield return Transition.PlayIn();
 
                 if (!string.IsNullOrEmpty(currentSceneName))
+                {
+                    BFLogger.Debug(LogTag, $"Unloading previous scene '{currentSceneName}'.", this);
                     yield return WaitForTask(BFSceneLoader.UnloadAsync(currentSceneName));
+                }
 
                 currentSceneName = sceneName;
 
+                BFLogger.Debug(LogTag, $"Transition complete for '{sceneName}'.", this);
                 EventBus<BFSceneTransitionCompleteEvent>.Fire(new BFSceneTransitionCompleteEvent { sceneName = sceneName });
             }
             finally
