@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
 
@@ -13,20 +12,16 @@ namespace BFTools.Systems.SceneManager
         [SerializeField] private string playerTag = "Player";
 
         [Header("Inline Request (used when Request is unassigned)")]
-        [SerializeField] private string inlineSceneName;
-        [SerializeField] private LoadSceneMode inlineLoadMode = LoadSceneMode.Additive;
-        [SerializeField] private bool inlineShowLoadingScreen;
-        [SerializeField] private float inlineMinimumDisplayTime;
+        [SerializeField] private BFInlineSceneLoadRequest inlineRequest;
 
         private bool suppressed;
-        private BFSceneLoadRequest runtimeRequest;
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (suppressed || !other.CompareTag(playerTag))
                 return;
 
-            BFSceneLoadRequest activeRequest = ResolveRequest();
+            BFSceneLoadRequest activeRequest = inlineRequest.Resolve(request);
             if (activeRequest == null)
             {
                 BFLogger.Error(LogTag, "No BFSceneLoadRequest assigned and no inline scene name set. Ignoring door trigger.", this);
@@ -42,20 +37,6 @@ namespace BFTools.Systems.SceneManager
         {
             if (other.CompareTag(playerTag))
                 suppressed = false;
-        }
-
-        private BFSceneLoadRequest ResolveRequest()
-        {
-            if (request != null)
-                return request;
-
-            if (string.IsNullOrEmpty(inlineSceneName))
-                return null;
-
-            if (runtimeRequest == null)
-                runtimeRequest = BFSceneLoadRequest.Create(inlineSceneName, inlineLoadMode, inlineShowLoadingScreen, inlineMinimumDisplayTime);
-
-            return runtimeRequest;
         }
     }
 }
