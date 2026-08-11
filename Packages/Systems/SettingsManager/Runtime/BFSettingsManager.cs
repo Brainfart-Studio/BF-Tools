@@ -77,7 +77,17 @@ namespace BFTools.Systems.SettingsManager
             BFLogger.Trace(LogTag, "LoadAsync started");
 
             string filePath = Path.Combine(directoryPath, FileName);
-            byte[] bytes = await BFFileIO.ReadAsync(filePath).ConfigureAwait(false);
+            byte[] bytes;
+
+            try
+            {
+                bytes = await BFFileIO.ReadAsync(filePath).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                BFLogger.Warning(LogTag, $"Failed to read settings file: {exception.Message}. Using defaults.");
+                return false;
+            }
 
             if (bytes == null)
             {

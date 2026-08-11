@@ -191,5 +191,19 @@ namespace BFTools.Systems.SettingsManager.Tests
 
             Assert.IsFalse(saved);
         }
+
+        [Test]
+        public void LoadAsync_FileReadThrows_ReturnsFalseInsteadOfThrowing()
+        {
+            string filePath = Path.Combine(scratchDir, "settings.json");
+            File.WriteAllText(filePath, "{}");
+
+            using (new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                bool loaded = BFSettingsManager.LoadAsync(scratchDir).GetAwaiter().GetResult();
+
+                Assert.IsFalse(loaded);
+            }
+        }
     }
 }
