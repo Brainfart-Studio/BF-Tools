@@ -1,3 +1,12 @@
 {
-	"name": "BFTools.Feedback.ControllerLED"
+    "name": "BFTools.Feedback.ControllerLED",
+    "rootNamespace": "BFTools.Feedback.ControllerLED",
+    "references": [
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
 }
