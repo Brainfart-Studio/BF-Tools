@@ -8,5 +8,6 @@ namespace BFTools.Feedback.EditorAssetUtility.Editor
         public const int ScreenShake = BFMenuPriority.Group.Feedback + 2;
         public const int Hitstop = BFMenuPriority.Group.Feedback + 3;
         public const int ScreenFlash = BFMenuPriority.Group.Feedback + 4;
+        public const int ControllerLED = BFMenuPriority.Group.Feedback + 5;
     }
 }
