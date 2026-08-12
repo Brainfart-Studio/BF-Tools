@@ -3,7 +3,7 @@
 Event-driven feedback systems: controller haptics, camera screen shake, hitstop, screen flash, and controller LED color.
 
 ## Version
-1.1.0
+1.2.0
 
 ## Contents
 
@@ -20,10 +20,10 @@ Brief global time freeze triggered by named events. See [Documentation~/Hitstop.
 Full-screen color flash triggered by named events. See [Documentation~/ScreenFlash.md](Documentation~/ScreenFlash.md).
 
 ### Controller LED
-Gamepad LED/light bar color, set directly or triggered by named events. Includes `BFControllerLedRainbow`, a drop-in fallback effect that cycles the LED through a rainbow for projects that just want it to do something. PS4 only for now. See [Documentation~/ControllerLED.md](Documentation~/ControllerLED.md).
+Gamepad LED/light bar color, set directly or triggered by named events. Includes `BFControllerLedRainbow`, a drop-in fallback effect that cycles the LED through a rainbow for projects that just want it to do something, and `BFControllerLedColorFeeder`, which forwards colors sampled by `com.bftools.core`'s `BFScreenColorSampler` straight to the LED. PS4 only for now. See [Documentation~/ControllerLED.md](Documentation~/ControllerLED.md).
 
 ## Dependencies
-- `com.bftools.core` @ 1.0.0
+- `com.bftools.core` @ 1.1.0
 - `com.unity.inputsystem` @ 1.7.0
 
 ## Installation
@@ -52,7 +52,7 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "1.1.0"
+  "com.bftools.feedback": "1.2.0"
 }
 ```
 

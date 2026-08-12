@@ -1,11 +1,7 @@
 {
-    "name": "BFTools.Feedback.ControllerLED.Tests",
-    "rootNamespace": "BFTools.Feedback.ControllerLED.Tests",
+    "name": "BFTools.Core.ScreenColorSampler.Tests",
+    "rootNamespace": "BFTools.Core.ScreenColorSampler.Tests",
     "references": [
-        "BFTools.Feedback.ControllerLED",
-        "BFTools.Core.EventBus",
-        "BFTools.Core.Logger",
-        "BFTools.Core.Logger.TestUtilities",
         "BFTools.Core.ScreenColorSampler",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

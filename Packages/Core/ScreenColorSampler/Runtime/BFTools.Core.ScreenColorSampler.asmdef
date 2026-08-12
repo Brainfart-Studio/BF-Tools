@@ -1,0 +1,17 @@
+{
+    "name": "BFTools.Core.ScreenColorSampler",
+    "rootNamespace": "BFTools.Core.ScreenColorSampler",
+    "references": [
+        "BFTools.Core.CameraUtility",
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0] - Controller LED Color Feeder
+
+### Added
+- `BFControllerLedColorFeeder` runtime component: subscribes to a `BFScreenColorSampler` reference's `ColorSampled` event and forwards each sampled color straight to a `BFControllerLedManager` reference's `SetColor`, independent of the named-event/config path
+- Test suite covering forwarding and unsubscribe-on-disable behavior
+
+### Changed
+- Bumped `com.bftools.core` dependency to 1.1.0, required for the new `BFScreenColorSampler`
+
 ## [1.1.0] - Controller LED
 
 ### Added
