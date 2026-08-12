@@ -2,7 +2,8 @@
     "name": "BFTools.Feedback.ControllerLED",
     "rootNamespace": "BFTools.Feedback.ControllerLED",
     "references": [
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "BFTools.Core.Logger"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
