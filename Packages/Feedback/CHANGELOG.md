@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0] - Controller LED
+
+### Added
+- Scaffold Controller LED system in Feedback package
+- `IBFControllerLed` interface with `BFNoOpLed` fallback
+- `BFDualShockLed` implementation (PS4, `DualShock4GamepadHID` over HID; compiled only under `UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_WSA`, matching Unity's own guard on that type)
+- `BFControllerLedConfig` ScriptableObject (`eventName` / `color` entries)
+- `BFControllerLedManager` runtime component: direct `SetColor(Color)` / `TurnOff()` API, a list of config assets (`configs`) merged at runtime consistent with Haptics/ScreenShake/Hitstop/ScreenFlash, config-driven `BFControllerLedEvent` via EventBus, and automatic LED implementation resolution on `InputSystem.onDeviceChange`
+- `BFControllerLedRainbow` fallback effect component, cycles LED color through HSV hue over time given a `BFControllerLedManager` reference, for projects that just want the LED to do something without wiring specific colors
+- ControllerLedConfig Editor creator
+- Test suite (Config, Manager)
+
+### Changed
+- Added a `ControllerLED` entry to `BFFeedbackMenuPriority`
+
 ## [1.0.0] - Production Release
 
 ### Changed

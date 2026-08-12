@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Feedback.ControllerLED.Editor",
+    "rootNamespace": "BFTools.Feedback.ControllerLED.Editor",
+    "references": [
+        "BFTools.Feedback.ControllerLED",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Feedback.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
