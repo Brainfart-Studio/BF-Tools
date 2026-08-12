@@ -1,0 +1,24 @@
+{
+    "name": "BFTools.Core.ScreenColorSampler.Tests",
+    "rootNamespace": "BFTools.Core.ScreenColorSampler.Tests",
+    "references": [
+        "BFTools.Core.ScreenColorSampler",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
