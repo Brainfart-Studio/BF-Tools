@@ -4,13 +4,14 @@ Monorepo for BFTools, a personal Unity toolkit and game jam speed pack, built ar
 
 ## Packages
 
-### [Core](Packages/Core/README.md): `com.bftools.core` (1.0.0)
+### [Core](Packages/Core/README.md): `com.bftools.core` (1.1.0)
 Foundational systems every other package builds on.
 - **Event Bus**: generic static pub/sub system for struct-based events. See [EventBus.md](Packages/Core/Documentation~/EventBus.md).
 - **Editor Asset Utility**: shared editor-only helpers (folder creation, config asset creation, prefab variant creation) used by this repo's `Assets/Create/BFTools/...` menu creators.
 - **Logger**: tag-based logging with per-tag level overrides and pluggable sinks. See [Logger.md](Packages/Core/Documentation~/Logger.md).
 - **Project Setup**: `IBFProjectSetupStep`, `IBFSystemPrefabContributor`, and `IBFSystemPrefabConsumer` interfaces for building self-contained, auto-discovered setup tooling — any implementer anywhere in the project is picked up automatically by EditorTools' `BF Tools > New Project Setup`. See [EditorTools README](Packages/EditorTools/README.md#project-setup) for the tool that consumes these.
 - **Service Locator**: static registry for locating shared services by type at runtime. See [ServiceLocator.md](Packages/Core/Documentation~/ServiceLocator.md).
+- **Screen Color Sampler**: averages camera-rendered color within a world-space box that follows a GameObject's transform, exposed as `CurrentColor` and a `ColorSampled` event. See [ScreenColorSampler.md](Packages/Core/Documentation~/ScreenColorSampler.md).
 
 Depends on `com.unity.nuget.newtonsoft-json` (3.2.1).
 
@@ -24,15 +25,15 @@ Gameplay-facing systems built on Core.
 
 Depends on `com.bftools.core` (1.0.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (1.1.0)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (1.2.0)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
 - **Hitstop**: brief global time freeze triggered by named events. See [Hitstop.md](Packages/Feedback/Documentation~/Hitstop.md).
 - **Screen Flash**: full-screen color flash triggered by named events. See [ScreenFlash.md](Packages/Feedback/Documentation~/ScreenFlash.md).
-- **Controller LED**: gamepad LED/light bar color, set directly or triggered by named events, plus a drop-in rainbow fallback effect. PS4 only for now. See [ControllerLED.md](Packages/Feedback/Documentation~/ControllerLED.md).
+- **Controller LED**: gamepad LED/light bar color, set directly or triggered by named events, plus a drop-in rainbow fallback effect and a `BFControllerLedColorFeeder` that forwards colors from Core's `BFScreenColorSampler` straight to the LED. PS4 only for now. See [ControllerLED.md](Packages/Feedback/Documentation~/ControllerLED.md).
 
-Depends on `com.bftools.core` (1.0.0) and `com.unity.inputsystem` (1.7.0).
+Depends on `com.bftools.core` (1.1.0) and `com.unity.inputsystem` (1.7.0).
 
 ### [Visuals](Packages/Visuals/README.md): `com.bftools.visuals` (1.0.0)
 Live-editable, config-driven visual systems.
@@ -58,6 +59,7 @@ Packages/
     Logger/                  Editor/, Runtime/
     ProjectSetup/            Editor/
     ServiceLocator/          Runtime/
+    ScreenColorSampler/      Runtime/, Tests/
     Documentation~/
   Systems/                 com.bftools.systems
     EditorAssetUtility/      Editor/
