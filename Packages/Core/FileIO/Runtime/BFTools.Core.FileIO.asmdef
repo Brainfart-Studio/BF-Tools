@@ -1,0 +1,10 @@
+{
+    "name": "BFTools.Core.FileIO",
+    "rootNamespace": "BFTools.Core.FileIO",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

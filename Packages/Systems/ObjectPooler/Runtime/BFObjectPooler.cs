@@ -14,6 +14,7 @@ namespace BFTools.Systems.ObjectPooler
         private readonly Dictionary<string, Queue<GameObject>> pools = new Dictionary<string, Queue<GameObject>>();
         private readonly Dictionary<string, GameObject> prefabsByKey = new Dictionary<string, GameObject>();
         private readonly Dictionary<GameObject, string> keysByInstance = new Dictionary<GameObject, string>();
+        private readonly HashSet<GameObject> activeInstances = new HashSet<GameObject>();
 
         private void Awake()
         {
@@ -30,11 +31,33 @@ namespace BFTools.Systems.ObjectPooler
 
         private void Prewarm()
         {
+            if (config == null)
+            {
+                BFLogger.Error(LogTag, "No config assigned. Skipping prewarm.");
+                return;
+            }
+
             foreach (BFObjectPoolConfig.PoolEntry entry in config.PoolEntries)
             {
-                if (!pools.ContainsKey(entry.key))
-                    pools[entry.key] = new Queue<GameObject>();
+                if (entry.key == null)
+                {
+                    BFLogger.Error(LogTag, "Pool entry has no key assigned. Skipping.");
+                    continue;
+                }
 
+                if (entry.prefab == null)
+                {
+                    BFLogger.Error(LogTag, $"Pool entry '{entry.key}' has no prefab assigned. Skipping.");
+                    continue;
+                }
+
+                if (pools.ContainsKey(entry.key))
+                {
+                    BFLogger.Error(LogTag, $"Duplicate pool key '{entry.key}' in config. Skipping duplicate entry.");
+                    continue;
+                }
+
+                pools[entry.key] = new Queue<GameObject>();
                 prefabsByKey[entry.key] = entry.prefab;
 
                 for (int i = 0; i < entry.prewarmCount; i++)
@@ -57,7 +80,17 @@ namespace BFTools.Systems.ObjectPooler
 
         public GameObject Get(string key)
         {
-            Queue<GameObject> pool = pools[key];
+            if (key == null)
+            {
+                BFLogger.Error(LogTag, "Get called with a null key.");
+                return null;
+            }
+
+            if (!pools.TryGetValue(key, out Queue<GameObject> pool))
+            {
+                BFLogger.Error(LogTag, $"Get called with unknown key '{key}'. No pool exists for this key.");
+                return null;
+            }
 
             GameObject instance;
             if (pool.Count > 0)
@@ -71,13 +104,31 @@ namespace BFTools.Systems.ObjectPooler
             }
 
             instance.SetActive(true);
+            activeInstances.Add(instance);
             BFLogger.Trace(LogTag, $"Got instance from pool '{key}'");
             return instance;
         }
 
         public void Release(GameObject instance)
         {
-            string key = keysByInstance[instance];
+            if (instance == null)
+            {
+                BFLogger.Error(LogTag, "Release called with a null instance.");
+                return;
+            }
+
+            if (!keysByInstance.TryGetValue(instance, out string key))
+            {
+                BFLogger.Error(LogTag, $"Release called with an instance not tracked by this pooler: '{instance.name}'.");
+                return;
+            }
+
+            if (!activeInstances.Remove(instance))
+            {
+                BFLogger.Error(LogTag, $"Release called with an instance already released to pool '{key}': '{instance.name}'.");
+                return;
+            }
+
             instance.SetActive(false);
             pools[key].Enqueue(instance);
             BFLogger.Trace(LogTag, $"Released instance to pool '{key}'");

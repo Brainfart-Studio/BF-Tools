@@ -4,7 +4,8 @@
     "references": [
         "BFTools.Core.Logger",
         "BFTools.Core.EventBus",
-        "BFTools.Core.ServiceLocator"
+        "BFTools.Core.ServiceLocator",
+        "BFTools.Core.SingletonGuard"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

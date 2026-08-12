@@ -17,12 +17,14 @@ namespace BFTools.Systems.SceneManager.Tests
         public void SetUp()
         {
             GetOperations().Clear();
+            GetPendingLoadTasks().Clear();
         }
 
         [TearDown]
         public void TearDown()
         {
             GetOperations().Clear();
+            GetPendingLoadTasks().Clear();
             BFLoggerTestUtility.ResetState();
         }
 
@@ -30,6 +32,13 @@ namespace BFTools.Systems.SceneManager.Tests
         {
             return (Dictionary<string, AsyncOperation>)typeof(BFSceneLoader)
                 .GetField("operations", BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
+        }
+
+        private static Dictionary<string, Task> GetPendingLoadTasks()
+        {
+            return (Dictionary<string, Task>)typeof(BFSceneLoader)
+                .GetField("pendingLoadTasks", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
         }
 
@@ -46,7 +55,7 @@ namespace BFTools.Systems.SceneManager.Tests
         }
 
         [Test]
-        public void LoadAsync_SceneAlreadyTracked_LogsDebugAndReturnsCompletedTaskWithoutStartingNewLoad()
+        public void LoadAsync_ScenePreloadedWithNoPendingLoadTask_LogsDebugAndReturnsCompletedTaskWithoutStartingNewLoad()
         {
             SpyLoggerSink spy = InitializeLogging();
             GetOperations()["Level1"] = null;
@@ -55,6 +64,21 @@ namespace BFTools.Systems.SceneManager.Tests
 
             Assert.IsTrue(task.IsCompleted);
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("already loading or loaded")));
+        }
+
+        [Test]
+        public void LoadAsync_SceneAlreadyLoading_ReturnsSameInFlightTaskInsteadOfCompletedTask()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            GetOperations()["Level1"] = null;
+            TaskCompletionSource<bool> inFlight = new TaskCompletionSource<bool>();
+            GetPendingLoadTasks()["Level1"] = inFlight.Task;
+
+            Task task = BFSceneLoader.LoadAsync("Level1");
+
+            Assert.AreSame(inFlight.Task, task);
+            Assert.IsFalse(task.IsCompleted);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("is already loading. Returning the in-flight load's task")));
         }
 
         [Test]

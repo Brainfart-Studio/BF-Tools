@@ -70,24 +70,7 @@ namespace BFTools.Feedback.ScreenFlash.Editor
                 return;
             }
 
-            SerializedObject so = new SerializedObject(component);
-            SerializedProperty arrayProp = so.FindProperty("configs");
-            if (arrayProp == null)
-            {
-                BFLogger.Error(LogTag, $"{nameof(BFScreenFlash)} has no 'configs' field.");
-                return;
-            }
-
-            for (int i = 0; i < arrayProp.arraySize; i++)
-            {
-                if (arrayProp.GetArrayElementAtIndex(i).objectReferenceValue == config)
-                    return;
-            }
-
-            arrayProp.InsertArrayElementAtIndex(arrayProp.arraySize);
-            arrayProp.GetArrayElementAtIndex(arrayProp.arraySize - 1).objectReferenceValue = config;
-            so.ApplyModifiedProperties();
-            EditorUtility.SetDirty(component);
+            BFEditorAssetUtility.AssignConfigIfMissing(component, "configs", config);
         }
     }
 }

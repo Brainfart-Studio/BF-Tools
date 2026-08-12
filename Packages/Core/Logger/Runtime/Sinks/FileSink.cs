@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using BFTools.Core.FileIO;
 using UnityEngine;
 
 namespace BFTools.Core.Logger
@@ -14,12 +15,23 @@ namespace BFTools.Core.Logger
         private readonly string logFilePath;
         private readonly string previousLogFilePath;
 
+        private bool disabledAfterFailure;
+
         public FileSink()
         {
             string logDirectory = Path.Combine(Application.persistentDataPath, "Logs");
-            Directory.CreateDirectory(logDirectory);
             logFilePath = Path.Combine(logDirectory, LogFileName);
             previousLogFilePath = Path.Combine(logDirectory, PreviousLogFileName);
+
+            try
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+            catch (Exception exception)
+            {
+                disabledAfterFailure = true;
+                Debug.LogWarning($"[FileSink] Failed to create log directory '{logDirectory}'. File logging is disabled for this session. {exception}");
+            }
         }
 
         public void Write(LogLevel level, string[] tags, string message, UnityEngine.Object context, bool includeStackTrace)
@@ -27,15 +39,26 @@ namespace BFTools.Core.Logger
             if (level < LogLevel.Warning)
                 return;
 
-            RotateIfNeeded();
+            if (disabledAfterFailure)
+                return;
 
-            string tagText = tags != null && tags.Length > 0 ? string.Join(",", tags) : string.Empty;
-            string line = $"{DateTime.UtcNow:O} [{level}] [{tagText}] {message}";
+            try
+            {
+                RotateIfNeeded();
 
-            if (includeStackTrace)
-                line += Environment.NewLine + Environment.StackTrace;
+                string tagText = tags != null && tags.Length > 0 ? string.Join(",", tags) : string.Empty;
+                string line = $"{DateTime.UtcNow:O} [{level}] [{tagText}] {message}";
 
-            File.AppendAllText(logFilePath, line + Environment.NewLine, Encoding.UTF8);
+                if (includeStackTrace)
+                    line += Environment.NewLine + Environment.StackTrace;
+
+                File.AppendAllText(logFilePath, line + Environment.NewLine, Encoding.UTF8);
+            }
+            catch (Exception exception)
+            {
+                disabledAfterFailure = true;
+                Debug.LogWarning($"[FileSink] Failed to write to log file '{logFilePath}'. File logging is disabled for this session. {exception}");
+            }
         }
 
         private void RotateIfNeeded()
@@ -46,10 +69,7 @@ namespace BFTools.Core.Logger
             if (new FileInfo(logFilePath).Length < MaxFileSizeBytes)
                 return;
 
-            if (File.Exists(previousLogFilePath))
-                File.Delete(previousLogFilePath);
-
-            File.Move(logFilePath, previousLogFilePath);
+            BFAtomicFile.Replace(logFilePath, previousLogFilePath);
         }
     }
 }

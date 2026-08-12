@@ -2,7 +2,9 @@
     "name": "BFTools.Systems.SaveSystem",
     "rootNamespace": "BFTools.Systems.SaveSystem",
     "references": [
-        "BFTools.Core.Logger"
+        "BFTools.Core.Logger",
+        "BFTools.Core.FileIO",
+        "BFTools.Core.Serialization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

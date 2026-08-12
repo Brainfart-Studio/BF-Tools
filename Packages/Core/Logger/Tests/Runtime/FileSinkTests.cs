@@ -1,19 +1,25 @@
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using BFTools.Core.Logger;
 
 namespace BFTools.Core.Logger.Tests
 {
     public class FileSinkTests
     {
+        private const long MaxFileSizeBytes = 1 * 1024 * 1024;
+
+        private string logDirectory;
         private string logFilePath;
         private string previousLogFilePath;
 
         [SetUp]
         public void SetUp()
         {
-            string logDirectory = Path.Combine(Application.persistentDataPath, "Logs");
+            logDirectory = Path.Combine(Application.persistentDataPath, "Logs");
             logFilePath = Path.Combine(logDirectory, "bftools.log");
             previousLogFilePath = Path.Combine(logDirectory, "bftools.log.bak");
             DeleteLogFiles();
@@ -27,8 +33,11 @@ namespace BFTools.Core.Logger.Tests
 
         private void DeleteLogFiles()
         {
-            if (File.Exists(logFilePath))
+            if (Directory.Exists(logFilePath))
+                Directory.Delete(logFilePath, true);
+            else if (File.Exists(logFilePath))
                 File.Delete(logFilePath);
+
             if (File.Exists(previousLogFilePath))
                 File.Delete(previousLogFilePath);
         }
@@ -95,6 +104,94 @@ namespace BFTools.Core.Logger.Tests
 
             string[] lines = File.ReadAllLines(logFilePath);
             Assert.Greater(lines.Length, 1);
+        }
+
+        [Test]
+        public void Write_ExistingFileBelowMaxSize_DoesNotRotate()
+        {
+            File.WriteAllText(logFilePath, "existing content" + System.Environment.NewLine, Encoding.UTF8);
+            FileSink sink = new FileSink();
+
+            sink.Write(LogLevel.Warning, new[] { "Tag" }, "new message", null, false);
+
+            Assert.IsFalse(File.Exists(previousLogFilePath));
+            string content = File.ReadAllText(logFilePath);
+            StringAssert.Contains("existing content", content);
+            StringAssert.Contains("new message", content);
+        }
+
+        [Test]
+        public void Write_ExistingFileAtOrAboveMaxSize_RotatesToBackupBeforeAppending()
+        {
+            WriteFileOfSize(logFilePath, MaxFileSizeBytes, "old content");
+            FileSink sink = new FileSink();
+
+            sink.Write(LogLevel.Warning, new[] { "Tag" }, "new message", null, false);
+
+            Assert.IsTrue(File.Exists(previousLogFilePath));
+            StringAssert.Contains("old content", File.ReadAllText(previousLogFilePath));
+
+            string newContent = File.ReadAllText(logFilePath);
+            StringAssert.DoesNotContain("old content", newContent);
+            StringAssert.Contains("new message", newContent);
+        }
+
+        [Test]
+        public void Write_RotationWithExistingBackup_ReplacesOldBackup()
+        {
+            File.WriteAllText(previousLogFilePath, "stale backup content", Encoding.UTF8);
+            WriteFileOfSize(logFilePath, MaxFileSizeBytes, "current content");
+            FileSink sink = new FileSink();
+
+            sink.Write(LogLevel.Warning, new[] { "Tag" }, "new message", null, false);
+
+            string backupContent = File.ReadAllText(previousLogFilePath);
+            StringAssert.DoesNotContain("stale backup content", backupContent);
+            StringAssert.Contains("current content", backupContent);
+        }
+
+        private static void WriteFileOfSize(string path, long minimumSizeBytes, string marker)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(marker).Append(System.Environment.NewLine);
+            builder.Append('a', (int)minimumSizeBytes);
+            File.WriteAllText(path, builder.ToString(), Encoding.UTF8);
+        }
+
+        [Test]
+        public void Constructor_LogDirectoryBlockedByFile_DoesNotThrowAndDisablesFileLogging()
+        {
+            if (Directory.Exists(logDirectory))
+                Directory.Delete(logDirectory, true);
+            File.WriteAllText(logDirectory, "blocking file");
+
+            try
+            {
+                LogAssert.Expect(LogType.Warning, new Regex("Failed to create log directory"));
+
+                FileSink sink = null;
+                Assert.DoesNotThrow(() => sink = new FileSink());
+                Assert.DoesNotThrow(() => sink.Write(LogLevel.Warning, new[] { "Tag" }, "message", null, false));
+
+                Assert.IsFalse(File.Exists(logFilePath));
+            }
+            finally
+            {
+                File.Delete(logDirectory);
+                Directory.CreateDirectory(logDirectory);
+            }
+        }
+
+        [Test]
+        public void Write_LogFilePathBlockedByDirectory_DoesNotThrowAndDisablesFurtherWrites()
+        {
+            FileSink sink = new FileSink();
+            Directory.CreateDirectory(logFilePath);
+
+            LogAssert.Expect(LogType.Warning, new Regex("Failed to write to log file"));
+            Assert.DoesNotThrow(() => sink.Write(LogLevel.Warning, new[] { "Tag" }, "first", null, false));
+
+            Assert.DoesNotThrow(() => sink.Write(LogLevel.Warning, new[] { "Tag" }, "second", null, false));
         }
     }
 }

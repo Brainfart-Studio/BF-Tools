@@ -32,8 +32,8 @@ EventBus<PlayerDiedEvent>.Fire(new PlayerDiedEvent { PlayerId = 1 });
 
 - One static subscriber list per closed generic type `T`. `EventBus<PlayerDiedEvent>` and `EventBus<EnemySpawnedEvent>` are entirely separate lists.
 - `T : struct` constraint enforces value-type event data, avoiding shared mutable event objects.
-- `Subscribe` checks `Contains` before adding to prevent duplicate registration.
-- `Fire` iterates in reverse order, so a handler can unsubscribe itself (or another) during invocation without breaking iteration.
+- `Subscribe` checks `Contains` before adding to prevent duplicate registration. A `null` handler is rejected with a `Warning` log and ignored. A handler that's already subscribed also logs a `Warning` and is ignored.
+- `Fire` invokes a snapshot (`ToArray()`) of the subscriber list, taken at the start of the call, in reverse order. Because the snapshot is independent of the live list, a handler can safely `Subscribe` or `Unsubscribe` any handler, including one not yet invoked in that pass, without skipping or double-invoking other subscribers.
 - `Clear()` empties all subscribers for that `T`, useful for scene transitions or teardown, but must be called explicitly (e.g. from a bootstrapper), as it's not automatic.
 
 ## Notes

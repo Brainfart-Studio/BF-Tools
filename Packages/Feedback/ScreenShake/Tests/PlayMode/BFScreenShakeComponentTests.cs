@@ -203,6 +203,50 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
             Assert.IsFalse(spy.Entries.Exists(e => e.Message.Contains("Triggered shake")));
         }
 
+        [UnityTest]
+        public IEnumerator OnDisable_DuringActiveShake_RestoresOriginalPosition()
+        {
+            Camera camera = CreateMainCamera();
+            Vector3 originalPosition = camera.transform.localPosition;
+            BFScreenShakeConfig config = CreateConfig(("Explosion", 0.5f, 1f));
+            createdAssets.Add(config);
+            CreateScreenShake(config);
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            yield return null;
+
+            Assert.AreNotEqual(originalPosition, camera.transform.localPosition,
+                "Shake should have applied an offset before the component is disabled.");
+
+            go.SetActive(false);
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "Disabling the component mid-shake should restore the camera's original position.");
+        }
+
+        [UnityTest]
+        public IEnumerator Fire_WhileAlreadyActive_RestoresOriginalPositionBeforeApplyingNewShake()
+        {
+            Camera camera = CreateMainCamera();
+            Vector3 originalPosition = camera.transform.localPosition;
+            BFScreenShakeConfig config = CreateConfig(("Explosion", 0.5f, 1f));
+            createdAssets.Add(config);
+            CreateScreenShake(config);
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            yield return null;
+
+            Assert.AreNotEqual(originalPosition, camera.transform.localPosition,
+                "First shake should have applied an offset before the second trigger.");
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "Re-triggering mid-shake should restore the camera to its true original position before the new shake starts, not treat the offset position as the new baseline.");
+        }
+
         [Test]
         public void OnSceneLoaded_ReResolvesMainCameraTarget()
         {
@@ -216,6 +260,35 @@ namespace BFTools.Feedback.ScreenShake.PlayModeTests
             InvokeOnSceneLoaded(screenShake);
 
             Assert.AreEqual(camera.transform, GetTarget(screenShake));
+        }
+
+        [UnityTest]
+        public IEnumerator OnSceneLoaded_DuringActiveShake_CancelsShakeAndRestoresPreviousTarget()
+        {
+            Camera camera = CreateMainCamera();
+            Vector3 originalPosition = camera.transform.localPosition;
+            BFScreenShakeConfig config = CreateConfig(("Explosion", 0.5f, 1f));
+            createdAssets.Add(config);
+            BFScreenShake screenShake = CreateScreenShake(config);
+
+            EventBus<BFScreenShakeEvent>.Fire(new BFScreenShakeEvent { eventName = "Explosion" });
+
+            yield return null;
+
+            Assert.AreNotEqual(originalPosition, camera.transform.localPosition,
+                "Shake should have applied an offset before the scene load happens.");
+
+            cameraGo.tag = "Untagged";
+            InvokeOnSceneLoaded(screenShake);
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "Cancelling the shake on scene load should restore the previous target's original position.");
+            Assert.IsNull(GetTarget(screenShake));
+
+            yield return null;
+
+            Assert.AreEqual(originalPosition, camera.transform.localPosition,
+                "The cancelled shake coroutine must not resume and move the old target on a later frame.");
         }
     }
 }

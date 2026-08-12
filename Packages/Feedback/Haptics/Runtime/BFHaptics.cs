@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using BFTools.Core.ConfigLookup;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 
@@ -18,6 +19,7 @@ namespace BFTools.Feedback.Haptics
 
         [SerializeField] private List<BFHapticsConfig> configs = new List<BFHapticsConfig>();
         private Dictionary<string, BFHapticsEntry> lookup;
+        private Coroutine activeTrigger;
 
         private void OnEnable()
         {
@@ -28,28 +30,33 @@ namespace BFTools.Feedback.Haptics
         private void OnDisable()
         {
             EventBus<BFHapticsEvent>.Unsubscribe(OnHapticsEvent);
+            CancelActiveTrigger();
+        }
+
+        private void CancelActiveTrigger()
+        {
+            if (activeTrigger == null)
+                return;
+
+            StopCoroutine(activeTrigger);
+            activeTrigger = null;
+            Gamepad.current?.SetMotorSpeeds(0f, 0f);
         }
 
         private void BuildLookup()
         {
-            lookup = new Dictionary<string, BFHapticsEntry>();
+            lookup = BFConfigLookupBuilder.Merge(MergedEntries(), entry => entry.eventName, LogTag, name, "eventName", this);
+        }
+
+        private IEnumerable<BFHapticsEntry> MergedEntries()
+        {
             foreach (var cfg in configs)
             {
                 if (cfg == null)
                     continue;
                 foreach (var entry in cfg.Entries)
-                {
-                    if (lookup.ContainsKey(entry.eventName))
-                    {
-                        BFLogger.Warning(LogTag,
-                            $"Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
-                            this);
-                    }
-                    lookup[entry.eventName] = entry;
-                }
+                    yield return entry;
             }
-
-            BFLogger.Debug(LogTag, $"Built lookup with {lookup.Count} entrie(s) on '{name}'.", this);
         }
 
         private void OnHapticsEvent(BFHapticsEvent evt)
@@ -70,14 +77,17 @@ namespace BFTools.Feedback.Haptics
                 BFLogger.Trace(LogTag, "No gamepad connected, skipping haptics trigger.", this);
                 return;
             }
+            CancelActiveTrigger();
+
             gamepad.SetMotorSpeeds(intensity, intensity);
             BFLogger.Trace(LogTag, $"Triggered haptics intensity={intensity} duration={duration}", this);
-            StartCoroutine(StopAfter(duration));
+            activeTrigger = StartCoroutine(StopAfter(duration));
         }
 
         private IEnumerator StopAfter(float duration)
         {
             yield return new WaitForSeconds(duration);
+            activeTrigger = null;
             Gamepad.current?.SetMotorSpeeds(0f, 0f);
         }
     }

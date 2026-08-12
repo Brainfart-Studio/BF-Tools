@@ -11,11 +11,24 @@ namespace BFTools.Systems.SceneManager
         private const string LogTag = "SceneManager";
 
         private static readonly Dictionary<string, AsyncOperation> operations = new Dictionary<string, AsyncOperation>();
+        private static readonly Dictionary<string, Task> pendingLoadTasks = new Dictionary<string, Task>();
 
         public static Task LoadAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                BFLogger.Error(LogTag, "Load requested with a null or empty scene name. Ignoring.");
+                return Task.CompletedTask;
+            }
+
             if (operations.ContainsKey(sceneName))
             {
+                if (pendingLoadTasks.TryGetValue(sceneName, out Task pendingTask))
+                {
+                    BFLogger.Debug(LogTag, $"'{sceneName}' is already loading. Returning the in-flight load's task instead of starting a new one.");
+                    return pendingTask;
+                }
+
                 BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate load request.");
                 return Task.CompletedTask;
             }
@@ -24,21 +37,35 @@ namespace BFTools.Systems.SceneManager
             operations[sceneName] = operation;
             BFLogger.Debug(LogTag, $"Loading '{sceneName}' ({mode}).");
 
-            return AwaitCompletion(sceneName, operation);
+            Task loadTask = AwaitCompletion(operation, sceneName);
+            pendingLoadTasks[sceneName] = loadTask;
+            return loadTask;
         }
 
         public static void Preload(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
-            if (operations.ContainsKey(sceneName))
+            if (string.IsNullOrEmpty(sceneName))
             {
-                BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate preload request.");
+                BFLogger.Error(LogTag, "Preload requested with a null or empty scene name. Ignoring.");
                 return;
             }
+
+            if (IsAlreadyTracked(sceneName, "preload"))
+                return;
 
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, mode);
             operation.allowSceneActivation = false;
             operations[sceneName] = operation;
             BFLogger.Debug(LogTag, $"Preloading '{sceneName}' ({mode}).");
+        }
+
+        private static bool IsAlreadyTracked(string sceneName, string actionLabel)
+        {
+            if (!operations.ContainsKey(sceneName))
+                return false;
+
+            BFLogger.Debug(LogTag, $"'{sceneName}' is already loading or loaded. Ignoring duplicate {actionLabel} request.");
+            return true;
         }
 
         public static Task ActivateAsync(string sceneName)
@@ -51,7 +78,7 @@ namespace BFTools.Systems.SceneManager
 
             BFLogger.Debug(LogTag, $"Activating '{sceneName}'.");
             operation.allowSceneActivation = true;
-            return AwaitCompletion(sceneName, operation);
+            return AwaitCompletion(operation, sceneName);
         }
 
         public static bool IsTracked(string sceneName) => operations.ContainsKey(sceneName);
@@ -80,21 +107,19 @@ namespace BFTools.Systems.SceneManager
             return AwaitCompletion(operation);
         }
 
-        private static Task AwaitCompletion(string sceneName, AsyncOperation operation)
+        private static Task AwaitCompletion(AsyncOperation operation, string sceneNameToUntrack = null)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             operation.completed += _ =>
             {
-                operations.Remove(sceneName);
+                if (sceneNameToUntrack != null)
+                {
+                    operations.Remove(sceneNameToUntrack);
+                    pendingLoadTasks.Remove(sceneNameToUntrack);
+                }
+
                 tcs.SetResult(true);
             };
-            return tcs.Task;
-        }
-
-        private static Task AwaitCompletion(AsyncOperation operation)
-        {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            operation.completed += _ => tcs.SetResult(true);
             return tcs.Task;
         }
     }

@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace BFTools.Systems.SceneManager
 {
-    public class BFSceneLoadRequest : ScriptableObject
+    [Serializable]
+    public class BFSceneLoadRequest
     {
         [SerializeField] private string sceneName;
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Additive;
@@ -14,5 +16,6 @@ namespace BFTools.Systems.SceneManager
         internal LoadSceneMode LoadMode => loadMode;
         internal bool ShowLoadingScreen => showLoadingScreen;
         internal float MinimumDisplayTime => minimumDisplayTime;
+        internal bool HasSceneName => !string.IsNullOrEmpty(sceneName);
     }
 }

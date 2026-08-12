@@ -7,6 +7,8 @@ namespace BFTools.Systems.GlobalBootstrapper
     {
         private const string LogTag = "GlobalBootstrapper";
 
+        private static System.Func<GameObject, GameObject> instantiateFunc = prefab => Object.Instantiate(prefab);
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
@@ -17,15 +19,37 @@ namespace BFTools.Systems.GlobalBootstrapper
                 return;
             }
 
-            int spawned = 0;
-            foreach (GameObject prefab in config.SystemPrefabs)
+            GameObject[] prefabs = config.SystemPrefabs;
+            if (prefabs == null)
             {
+                BFLogger.Error(LogTag, "GlobalBootstrapConfig has a null SystemPrefabs array.");
+                return;
+            }
+
+            BFLogger.Trace(LogTag, $"Loaded GlobalBootstrapConfig with {prefabs.Length} prefab entr{(prefabs.Length == 1 ? "y" : "ies")}.");
+
+            int spawned = 0;
+            for (int i = 0; i < prefabs.Length; i++)
+            {
+                GameObject prefab = prefabs[i];
                 if (prefab == null)
+                {
+                    BFLogger.Warning(LogTag, $"Skipped null prefab entry at index {i}.");
                     continue;
-                GameObject instance = Object.Instantiate(prefab);
-                instance.transform.SetParent(null); // ensure root-level, required for DontDestroyOnLoad
-                Object.DontDestroyOnLoad(instance);
-                spawned++;
+                }
+
+                try
+                {
+                    GameObject instance = instantiateFunc(prefab);
+                    instance.transform.SetParent(null); // ensure root-level, required for DontDestroyOnLoad
+                    Object.DontDestroyOnLoad(instance);
+                    spawned++;
+                    BFLogger.Debug(LogTag, $"Instantiated system prefab '{prefab.name}'.");
+                }
+                catch (System.Exception ex)
+                {
+                    BFLogger.Error(LogTag, $"Failed to instantiate system prefab '{prefab.name}': {ex.Message}");
+                }
             }
 
             BFLogger.Info(LogTag, $"Spawned {spawned} system prefab(s).");

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.0] - Production Release
+
+### Changed
+- Background and Parallax camera resolution now shared via Core's `BFCameraResolver` (extracted from `BFBackgroundStackCamera` and `BFParallaxCameraTracker`), including its one-time missing-camera warning that resets once the camera resolves
+- `BFBackgroundStack` and `BFParallaxStack` now build on Core's `BFLayerStackBase<TLayerConfig, TLayer>`, with Core's `BFActiveInstanceGuard<TOwner>` enforcing the single-active-instance rule for their stack managers
+- Bumped `com.bftools.core` dependency to 1.0.0
+
+### Fixed
+- `BFPalette` and `BFPaletteConfig` gained Info-level lifecycle logging, and `BFPaletteConfig` logging unified under a single tag
+
 ## [0.6.2] - Menu Priority Ownership
 
 ### Changed

@@ -3,7 +3,7 @@
 Visual systems for BFTools. Live-editable, config-driven color palettes, plus layered background and parallax scrolling systems.
 
 ## Version
-0.6.2
+1.0.0
 
 ## Contents
 
@@ -17,18 +17,16 @@ Layered background rendering. Composite gradient, aurora ribbon, and twinkling s
 Layered parallax scrolling. Move a stack of sprite layers at different rates relative to the camera, with per-layer looping and one-way movement lock. See [Documentation~/Parallax.md](Documentation~/Parallax.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.10.0
+- `com.bftools.core` @ 1.0.0
 
 ## Installation
-
-> **Note.** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
 
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter this URL.
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Visuals#development
+   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Visuals
    ```
 
 Visuals depends on `com.bftools.core`; install it the same way (see [Core's README](../Core/README.md#installation)) if it isn't already in the project.
@@ -38,7 +36,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.visuals": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Visuals#development"
+  "com.bftools.visuals": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Visuals"
 }
 ```
 
@@ -47,7 +45,7 @@ Reference `com.bftools.visuals` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.visuals": "0.6.2"
+  "com.bftools.visuals": "1.0.0"
 }
 ```
 

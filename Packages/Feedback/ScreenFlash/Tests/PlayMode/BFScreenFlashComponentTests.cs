@@ -124,6 +124,28 @@ namespace BFTools.Feedback.ScreenFlash.PlayModeTests
         }
 
         [Test]
+        public void OnEnable_NoFlashImageAssigned_LogsWarningAndFireSkipsGracefully()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            BFScreenFlashConfig config = CreateConfig(("Damage", Color.red, 0.1f, 1));
+            createdAssets.Add(config);
+
+            go = new GameObject("ScreenFlash");
+            go.SetActive(false);
+            BFScreenFlash screenFlash = go.AddComponent<BFScreenFlash>();
+            typeof(BFScreenFlash)
+                .GetField("configs", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(screenFlash, new List<BFScreenFlashConfig> { config });
+            go.SetActive(true);
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Warning && e.Message.Contains("No flashImage assigned")));
+
+            Assert.DoesNotThrow(() => EventBus<BFScreenFlashEvent>.Fire(new BFScreenFlashEvent { eventName = "Damage" }));
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("No flashImage assigned, skipping screen flash trigger")));
+        }
+
+        [Test]
         public void Fire_KnownEventName_ImmediatelyBeginsFading()
         {
             BFScreenFlashConfig config = CreateConfig(("Damage", Color.red, 5f, 1));
@@ -188,6 +210,26 @@ namespace BFTools.Feedback.ScreenFlash.PlayModeTests
 
             Assert.AreEqual(Color.white, flashImage.color);
             Assert.IsFalse(spy.Entries.Exists(e => e.Tags != null && System.Array.IndexOf(e.Tags, "ScreenFlash") >= 0));
+        }
+
+        [UnityTest]
+        public IEnumerator OnDisable_DuringActiveFlash_ResetsAlphaToZero()
+        {
+            BFScreenFlashConfig config = CreateConfig(("Damage", Color.red, 1f, 1));
+            createdAssets.Add(config);
+            CreateScreenFlash(config);
+
+            EventBus<BFScreenFlashEvent>.Fire(new BFScreenFlashEvent { eventName = "Damage" });
+
+            yield return null;
+
+            Assert.Greater(flashImage.color.a, 0f,
+                "Flash should still be mid-fade before the component is disabled.");
+
+            go.SetActive(false);
+
+            Assert.AreEqual(0f, flashImage.color.a,
+                "Disabling the component mid-flash should reset the flash image's alpha to zero.");
         }
     }
 }

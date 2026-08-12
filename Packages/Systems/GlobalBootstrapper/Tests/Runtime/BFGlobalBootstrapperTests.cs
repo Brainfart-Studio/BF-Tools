@@ -25,6 +25,25 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
         {
             CleanupRoot();
             BFLoggerTestUtility.ResetState();
+            ResetInstantiateFunc();
+        }
+
+        private static readonly FieldInfo InstantiateFuncField =
+            typeof(BFGlobalBootstrapper).GetField("instantiateFunc", BindingFlags.NonPublic | BindingFlags.Static);
+
+        private static void ResetInstantiateFunc()
+        {
+            InstantiateFuncField.SetValue(null, (System.Func<GameObject, GameObject>)Object.Instantiate);
+        }
+
+        private static GameObject CreatePrefab(string name)
+        {
+            EnsureFolder(Root);
+
+            GameObject go = new GameObject(name);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(go, $"{Root}/{name}.prefab");
+            Object.DestroyImmediate(go);
+            return prefab;
         }
 
         private static void CleanupRoot()
@@ -95,10 +114,59 @@ namespace BFTools.Systems.GlobalBootstrapper.Tests
         [Test]
         public void Initialize_NullPrefabEntries_AreSkipped()
         {
-            InitializeLogging();
+            SpyLoggerSink spy = InitializeLogging();
             CreateConfigAsset(null, null);
 
             Assert.DoesNotThrow(InvokeInitialize);
+            Assert.AreEqual(2, spy.Entries.FindAll(e => e.Level == LogLevel.Warning && e.Message.Contains("Skipped null prefab entry")).Count);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 0 system prefab(s).")));
+        }
+
+        [Test]
+        public void Initialize_NullSystemPrefabsArray_LogsErrorAndDoesNotThrow()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            EnsureFolder($"{Root}/Resources/{ConfigResourcePath.Substring(0, ConfigResourcePath.LastIndexOf('/'))}");
+
+            BFGlobalBootstrapperConfig config = ScriptableObject.CreateInstance<BFGlobalBootstrapperConfig>();
+            typeof(BFGlobalBootstrapperConfig)
+                .GetField("systemPrefabs", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(config, null);
+
+            AssetDatabase.CreateAsset(config, $"{Root}/Resources/{ConfigResourcePath}.asset");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            Assert.DoesNotThrow(InvokeInitialize);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null SystemPrefabs array")));
+        }
+
+        [Test]
+        public void Initialize_PrefabInstantiationThrows_LogsErrorAndContinuesRemaining()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            GameObject failingPrefab = CreatePrefab("FailingPrefab");
+            GameObject goodPrefab = CreatePrefab("GoodPrefab");
+            CreateConfigAsset(failingPrefab, goodPrefab);
+
+            InstantiateFuncField.SetValue(null, (System.Func<GameObject, GameObject>)(prefab =>
+            {
+                if (prefab.name == "FailingPrefab")
+                    throw new System.InvalidOperationException("simulated instantiation failure");
+
+                return Object.Instantiate(prefab);
+            }));
+
+            Assert.DoesNotThrow(InvokeInitialize);
+
+            GameObject instance = GameObject.Find("GoodPrefab(Clone)");
+            if (instance != null)
+                Object.DestroyImmediate(instance);
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error &&
+                e.Message.Contains("Failed to instantiate system prefab 'FailingPrefab'") &&
+                e.Message.Contains("simulated instantiation failure")));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Info && e.Message.Contains("Spawned 1 system prefab(s).")));
         }
     }
 }

@@ -1,11 +1,9 @@
-using UnityEngine;
+using BFTools.Core.LayerStack;
 
 namespace BFTools.Visuals.Background
 {
-    public interface IBFBackgroundLayer
+    public interface IBFBackgroundLayer : IBFStackLayer
     {
-        void Init(Transform parent, int sortingOrder);
         void Tick(float dt);
-        void Cleanup();
     }
 }

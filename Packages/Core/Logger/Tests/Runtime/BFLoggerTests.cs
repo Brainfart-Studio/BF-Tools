@@ -1,6 +1,8 @@
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 using BFTools.Core.Logger;
 using BFTools.Core.Logger.TestUtilities;
 
@@ -203,6 +205,30 @@ namespace BFTools.Core.Logger.Tests
             BFLogger.Error("Tag", "message");
 
             Assert.IsTrue(spy.Entries[0].IncludeStackTrace);
+        }
+
+        [Test]
+        public void Initialize_NoSinks_FallsBackToConsoleSinkAndLogsWarning()
+        {
+            BFLoggerConfig config = CreateConfig();
+
+            LogAssert.Expect(LogType.Warning, new Regex("Initialize was called with no sinks"));
+            BFLogger.Initialize(config);
+
+            LogAssert.Expect(LogType.Log, new Regex("hello"));
+            BFLogger.Info("Tag", "hello");
+        }
+
+        [Test]
+        public void Initialize_NullSinksArray_FallsBackToConsoleSinkAndLogsWarning()
+        {
+            BFLoggerConfig config = CreateConfig();
+
+            LogAssert.Expect(LogType.Warning, new Regex("Initialize was called with no sinks"));
+            BFLogger.Initialize(config, null);
+
+            LogAssert.Expect(LogType.Log, new Regex("hello"));
+            BFLogger.Info("Tag", "hello");
         }
     }
 }

@@ -1,12 +1,10 @@
-using UnityEngine;
+using BFTools.Core.FileIO;
 
 namespace BFTools.Systems.SaveSystem
 {
     public static class BFSavePath
     {
-        private static string directoryOverride;
-
-        public static string DefaultDirectory => directoryOverride ?? Application.persistentDataPath;
+        public static string DefaultDirectory => BFPersistentDataPath.Directory;
 
         public static string KeyFilePath => System.IO.Path.Combine(DefaultDirectory, "save.key");
     }

@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Core.CameraUtility",
+    "rootNamespace": "BFTools.Core.CameraUtility",
+    "references": [
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

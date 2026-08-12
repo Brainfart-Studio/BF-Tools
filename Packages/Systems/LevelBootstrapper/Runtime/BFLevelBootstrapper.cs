@@ -9,6 +9,8 @@ namespace BFTools.Systems.LevelBootstrapper
 
         [SerializeField] private BFLevelBootstrapConfig config;
 
+        private static System.Func<GameObject, GameObject> instantiateFunc = prefab => Object.Instantiate(prefab);
+
         private void Awake()
         {
             if (config == null)
@@ -17,13 +19,35 @@ namespace BFTools.Systems.LevelBootstrapper
                 return;
             }
 
-            int spawned = 0;
-            foreach (GameObject prefab in config.PrefabsToInstantiate)
+            GameObject[] prefabs = config.PrefabsToInstantiate;
+            if (prefabs == null)
             {
+                BFLogger.Error(LogTag, "LevelBootstrapConfig has a null PrefabsToInstantiate array.", this);
+                return;
+            }
+
+            BFLogger.Trace(LogTag, $"Loaded LevelBootstrapConfig with {prefabs.Length} prefab entr{(prefabs.Length == 1 ? "y" : "ies")}.", this);
+
+            int spawned = 0;
+            for (int i = 0; i < prefabs.Length; i++)
+            {
+                GameObject prefab = prefabs[i];
                 if (prefab == null)
+                {
+                    BFLogger.Warning(LogTag, $"Skipped null prefab entry at index {i}.", this);
                     continue;
-                Instantiate(prefab);
-                spawned++;
+                }
+
+                try
+                {
+                    instantiateFunc(prefab);
+                    spawned++;
+                    BFLogger.Debug(LogTag, $"Instantiated prefab '{prefab.name}'.", this);
+                }
+                catch (System.Exception ex)
+                {
+                    BFLogger.Error(LogTag, $"Failed to instantiate prefab '{prefab.name}': {ex.Message}", this);
+                }
             }
 
             BFLogger.Info(LogTag, $"Spawned {spawned} prefab(s).", this);

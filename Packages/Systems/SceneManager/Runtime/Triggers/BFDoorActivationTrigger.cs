@@ -8,7 +8,8 @@ namespace BFTools.Systems.SceneManager
     {
         private const string LogTag = "SceneManager";
 
-        [SerializeField] private BFSceneLoadRequest request;
+        [SerializeField] private BFSceneLoadRequest request = new BFSceneLoadRequest();
+        [SerializeField] private BFSceneLoadRequestAsset sharedRequest;
         [SerializeField] private string playerTag = "Player";
 
         private bool suppressed;
@@ -18,9 +19,22 @@ namespace BFTools.Systems.SceneManager
             if (suppressed || !other.CompareTag(playerTag))
                 return;
 
+            BFSceneLoadRequest activeRequest = BFSceneLoadRequestResolver.Resolve(request, sharedRequest);
+            if (activeRequest == null)
+            {
+                BFLogger.Error(LogTag, "No scene name configured. Ignoring door trigger.", this);
+                return;
+            }
+
+            if (!BFServiceLocator.TryGet(out BFSceneTransitionController controller))
+            {
+                BFLogger.Error(LogTag, "No BFSceneTransitionController is registered. Ignoring door trigger.", this);
+                return;
+            }
+
             suppressed = true;
-            BFLogger.Debug(LogTag, $"Door entered by '{other.name}'. Transitioning to '{request.SceneName}'.", this);
-            BFServiceLocator.Get<BFSceneTransitionController>().BeginTransition(request);
+            BFLogger.Debug(LogTag, $"Door entered by '{other.name}'. Transitioning to '{activeRequest.SceneName}'.", this);
+            controller.BeginTransition(activeRequest);
         }
 
         private void OnTriggerExit2D(Collider2D other)

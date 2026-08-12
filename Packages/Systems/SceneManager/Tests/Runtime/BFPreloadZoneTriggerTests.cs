@@ -40,30 +40,50 @@ namespace BFTools.Systems.SceneManager.Tests
                 .GetValue(null);
         }
 
-        private BFSceneLoadRequest CreateRequest(string sceneName)
-        {
-            BFSceneLoadRequest request = ScriptableObject.CreateInstance<BFSceneLoadRequest>();
-            typeof(BFSceneLoadRequest)
-                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(request, sceneName);
-            createdObjects.Add(request);
-            return request;
-        }
-
-        private BFPreloadZoneTrigger CreateTrigger(BFSceneLoadRequest request, string playerTag = "Player")
+        private BFPreloadZoneTrigger CreateTrigger(string playerTag = "Player")
         {
             GameObject go = new GameObject("PreloadZoneTrigger");
             go.SetActive(false);
             BFPreloadZoneTrigger trigger = go.AddComponent<BFPreloadZoneTrigger>();
-            typeof(BFPreloadZoneTrigger)
-                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
-                .SetValue(trigger, request);
             typeof(BFPreloadZoneTrigger)
                 .GetField("playerTag", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(trigger, playerTag);
             go.SetActive(true);
             createdObjects.Add(go);
             return trigger;
+        }
+
+        private static void SetSceneName(BFPreloadZoneTrigger trigger, string sceneName)
+        {
+            object request = typeof(BFPreloadZoneTrigger)
+                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(trigger);
+
+            request.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(request, sceneName);
+        }
+
+        private BFSceneLoadRequestAsset CreateSharedRequestAsset(string sceneName)
+        {
+            BFSceneLoadRequestAsset asset = ScriptableObject.CreateInstance<BFSceneLoadRequestAsset>();
+            object request = typeof(BFSceneLoadRequestAsset)
+                .GetField("request", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(asset);
+
+            request.GetType()
+                .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(request, sceneName);
+
+            createdObjects.Add(asset);
+            return asset;
+        }
+
+        private static void SetSharedRequest(BFPreloadZoneTrigger trigger, BFSceneLoadRequestAsset asset)
+        {
+            typeof(BFPreloadZoneTrigger)
+                .GetField("sharedRequest", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(trigger, asset);
         }
 
         private Collider2D CreateCollider(string tag)
@@ -98,8 +118,8 @@ namespace BFTools.Systems.SceneManager.Tests
         public void OnTriggerEnter2D_NonPlayerTag_DoesNotPreload()
         {
             SpyLoggerSink spy = InitializeLogging();
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFPreloadZoneTrigger trigger = CreateTrigger(request);
+            BFPreloadZoneTrigger trigger = CreateTrigger();
+            SetSceneName(trigger, "Level1");
             Collider2D other = CreateCollider("Untagged");
 
             InvokeOnTriggerEnter2D(trigger, other);
@@ -113,14 +133,41 @@ namespace BFTools.Systems.SceneManager.Tests
         {
             SpyLoggerSink spy = InitializeLogging();
             GetOperations()["Level1"] = null;
-            BFSceneLoadRequest request = CreateRequest("Level1");
-            BFPreloadZoneTrigger trigger = CreateTrigger(request);
+            BFPreloadZoneTrigger trigger = CreateTrigger();
+            SetSceneName(trigger, "Level1");
             Collider2D player = CreateCollider("Player");
 
             InvokeOnTriggerEnter2D(trigger, player);
 
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("Preload zone entered by") && e.Message.Contains("Level1")));
             Assert.IsTrue(spy.Entries.Exists(e => e.Message.Contains("already loading or loaded")));
+        }
+
+        [Test]
+        public void OnTriggerEnter2D_NoSceneNameConfigured_LogsErrorAndDoesNotPreload()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            BFPreloadZoneTrigger trigger = CreateTrigger();
+            Collider2D player = CreateCollider("Player");
+
+            InvokeOnTriggerEnter2D(trigger, player);
+
+            Assert.AreEqual(0, GetOperations().Count);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No scene name configured")));
+        }
+
+        [Test]
+        public void OnTriggerEnter2D_SharedRequestAndInlineRequestBothSet_PrefersSharedRequest()
+        {
+            BFPreloadZoneTrigger trigger = CreateTrigger();
+            SetSceneName(trigger, "Level1");
+            SetSharedRequest(trigger, CreateSharedRequestAsset("Level2"));
+            Collider2D player = CreateCollider("Player");
+
+            InvokeOnTriggerEnter2D(trigger, player);
+
+            Assert.IsTrue(BFSceneLoader.IsTracked("Level2"));
+            Assert.IsFalse(BFSceneLoader.IsTracked("Level1"));
         }
     }
 }

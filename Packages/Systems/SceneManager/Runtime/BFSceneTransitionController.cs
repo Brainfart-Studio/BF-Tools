@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 using BFTools.Core.ServiceLocator;
+using BFTools.Core.SingletonGuard;
 
 namespace BFTools.Systems.SceneManager
 {
@@ -37,12 +38,23 @@ namespace BFTools.Systems.SceneManager
 
         private void Awake()
         {
+            if (!BFActiveInstanceGuard<BFSceneTransitionController>.TryActivate(this))
+            {
+                BFLogger.Warning(LogTag, "Duplicate BFSceneTransitionController detected. Destroying this instance.", this);
+                Destroy(gameObject);
+                return;
+            }
+
             BFServiceLocator.Register(this);
             BFLogger.Trace(LogTag, "Registered with ServiceLocator");
         }
 
         private void OnDestroy()
         {
+            if (!BFActiveInstanceGuard<BFSceneTransitionController>.IsActive(this))
+                return;
+
+            BFActiveInstanceGuard<BFSceneTransitionController>.Deactivate(this);
             BFServiceLocator.Unregister<BFSceneTransitionController>();
             BFLogger.Trace(LogTag, "Unregistered from ServiceLocator");
         }
@@ -55,44 +67,73 @@ namespace BFTools.Systems.SceneManager
                 return;
             }
 
+            if (transition == null)
+            {
+                BFLogger.Error(LogTag, "No transition assigned. Ignoring transition request.", this);
+                return;
+            }
+
             StartCoroutine(TransitionRoutine(request));
         }
 
         private IEnumerator TransitionRoutine(BFSceneLoadRequest request)
         {
             isTransitioning = true;
-            string sceneName = request.SceneName;
 
-            EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent
+            try
             {
-                sceneName = sceneName,
-                showLoadingScreen = request.ShowLoadingScreen
-            });
+                string sceneName = request.SceneName;
+                BFLogger.Debug(LogTag, $"Transition started for '{sceneName}'.", this);
 
-            yield return Transition.PlayOut();
+                EventBus<BFSceneTransitionStartedEvent>.Fire(new BFSceneTransitionStartedEvent
+                {
+                    sceneName = sceneName,
+                    showLoadingScreen = request.ShowLoadingScreen
+                });
 
-            float loadStartTime = Time.time;
+                BFLogger.Trace(LogTag, "Playing out transition.", this);
+                yield return Transition.PlayOut();
 
-            if (BFSceneLoader.IsTracked(sceneName))
-                yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
-            else
-                yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
+                float loadStartTime = Time.time;
 
-            float remainingDisplayTime = request.MinimumDisplayTime - (Time.time - loadStartTime);
-            if (remainingDisplayTime > 0f)
-                yield return new WaitForSeconds(remainingDisplayTime);
+                if (BFSceneLoader.IsTracked(sceneName))
+                {
+                    BFLogger.Debug(LogTag, $"'{sceneName}' is preloaded. Activating.", this);
+                    yield return WaitForTask(BFSceneLoader.ActivateAsync(sceneName));
+                }
+                else
+                {
+                    BFLogger.Debug(LogTag, $"'{sceneName}' is not preloaded. Loading.", this);
+                    yield return WaitForTask(BFSceneLoader.LoadAsync(sceneName, request.LoadMode));
+                }
 
-            EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
+                float remainingDisplayTime = request.MinimumDisplayTime - (Time.time - loadStartTime);
+                if (remainingDisplayTime > 0f)
+                {
+                    BFLogger.Trace(LogTag, $"Holding for remaining minimum display time of {remainingDisplayTime:0.###}s.", this);
+                    yield return new WaitForSeconds(remainingDisplayTime);
+                }
 
-            yield return Transition.PlayIn();
+                EventBus<BFSceneLoadedEvent>.Fire(new BFSceneLoadedEvent { sceneName = sceneName });
 
-            if (!string.IsNullOrEmpty(currentSceneName))
-                yield return WaitForTask(BFSceneLoader.UnloadAsync(currentSceneName));
+                BFLogger.Trace(LogTag, "Playing in transition.", this);
+                yield return Transition.PlayIn();
 
-            currentSceneName = sceneName;
-            isTransitioning = false;
+                if (!string.IsNullOrEmpty(currentSceneName))
+                {
+                    BFLogger.Debug(LogTag, $"Unloading previous scene '{currentSceneName}'.", this);
+                    yield return WaitForTask(BFSceneLoader.UnloadAsync(currentSceneName));
+                }
 
-            EventBus<BFSceneTransitionCompleteEvent>.Fire(new BFSceneTransitionCompleteEvent { sceneName = sceneName });
+                currentSceneName = sceneName;
+
+                BFLogger.Debug(LogTag, $"Transition complete for '{sceneName}'.", this);
+                EventBus<BFSceneTransitionCompleteEvent>.Fire(new BFSceneTransitionCompleteEvent { sceneName = sceneName });
+            }
+            finally
+            {
+                isTransitioning = false;
+            }
         }
 
         private static IEnumerator WaitForTask(Task task)

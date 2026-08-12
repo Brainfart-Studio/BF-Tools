@@ -6,6 +6,7 @@ using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 using BFTools.Core.Logger.TestUtilities;
 using BFTools.Core.ServiceLocator;
+using BFTools.Core.SingletonGuard;
 using BFTools.Systems.SceneManager;
 using Assert = NUnit.Framework.Assert;
 
@@ -36,6 +37,7 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             EventBus<BFSceneLoadedEvent>.Clear();
             EventBus<BFSceneTransitionCompleteEvent>.Clear();
             BFServiceLocator.Unregister<BFSceneTransitionController>();
+            BFActiveInstanceGuard<BFSceneTransitionController>.ResetState();
 
             if (go != null)
                 Object.Destroy(go);
@@ -70,9 +72,21 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             return controller;
         }
 
-        private BFSceneLoadRequest CreateRequest(string sceneName, bool showLoadingScreen = false)
+        private BFSceneTransitionController CreateSecondaryController()
         {
-            BFSceneLoadRequest request = ScriptableObject.CreateInstance<BFSceneLoadRequest>();
+            GameObject secondaryGo = new GameObject("SecondarySceneTransitionController");
+            secondaryGo.SetActive(false);
+
+            BFSceneTransitionController secondaryController = secondaryGo.AddComponent<BFSceneTransitionController>();
+
+            secondaryGo.SetActive(true);
+            createdObjects.Add(secondaryGo);
+            return secondaryController;
+        }
+
+        private static BFSceneLoadRequest CreateRequest(string sceneName, bool showLoadingScreen = false)
+        {
+            BFSceneLoadRequest request = new BFSceneLoadRequest();
             typeof(BFSceneLoadRequest)
                 .GetField("sceneName", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(request, sceneName);
@@ -80,7 +94,6 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
                 .GetField("showLoadingScreen", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(request, showLoadingScreen);
 
-            createdObjects.Add(request);
             return request;
         }
 
@@ -113,6 +126,28 @@ namespace BFTools.Systems.SceneManager.PlayModeTests
             go = null;
 
             Assert.Throws<KeyNotFoundException>(() => BFServiceLocator.Get<BFSceneTransitionController>());
+        }
+
+        [Test]
+        public void Awake_DuplicateInstance_LogsWarningAndDoesNotBecomeActiveInstance()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+            controller = CreateController();
+
+            BFSceneTransitionController duplicate = CreateSecondaryController();
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Warning && e.Message.Contains("Duplicate BFSceneTransitionController")));
+            Assert.IsFalse(BFActiveInstanceGuard<BFSceneTransitionController>.IsActive(duplicate));
+        }
+
+        [Test]
+        public void Awake_DuplicateInstance_OriginalRemainsRegistered()
+        {
+            controller = CreateController();
+
+            CreateSecondaryController();
+
+            Assert.AreSame(controller, BFServiceLocator.Get<BFSceneTransitionController>());
         }
 
         [Test]

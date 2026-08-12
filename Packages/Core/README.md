@@ -3,7 +3,7 @@
 Foundational systems for BFTools, covering logging, event communication, and shared editor tooling used by the rest of the library.
 
 ## Version
-0.11.0
+1.0.0
 
 ## Contents
 
@@ -22,26 +22,42 @@ Tag-based logging with per-tag level overrides and pluggable sinks. See [Documen
 ### Service Locator
 Static registry for locating shared services by type at runtime. See [Documentation~/ServiceLocator.md](Documentation~/ServiceLocator.md).
 
+### Config Lookup
+`BFConfigLookupBuilder`, merging a set of config entries into a key-based lookup with duplicate-key warnings.
+
+### Serialization
+`BFAllowlistJsonSerializer`, `BFTypeAllowlistBinder`, `IStateCapturable`, and `BFStateRegistry<T>`, shared allowlisted JSON (de)serialization and state registration/capture/restore logic used by Save System and Settings Manager.
+
+### Camera Utility
+`BFCameraResolver`, resolving a target or main camera with one-time missing-camera warnings.
+
+### Layer Stack
+`BFLayerStackBase<TLayerConfig, TLayer>`, `IBFLayerConfig<TLayer>`, and `IBFStackLayer`, shared base logic for config-driven visual/layer stacks.
+
+### Singleton Guard
+`BFActiveInstanceGuard<TOwner>`, enforcing a single active instance per owner type.
+
+### File IO
+`BFFileIO`, `BFAtomicFile`, and `BFPersistentDataPath`, shared async file read/write, atomic writes, and default persistent data path resolution.
+
 ## Dependencies
-None.
+- `com.unity.nuget.newtonsoft-json` @ 3.2.1 (Serialization)
 
 ## Installation
-
-> **Note.** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
 
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter this URL.
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core#development
+   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core
    ```
 
 ### Via manifest.json
 Add the entry directly to your project's `Packages/manifest.json`.
 ```json
 "dependencies": {
-  "com.bftools.core": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core#development"
+  "com.bftools.core": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Core"
 }
 ```
 
@@ -49,7 +65,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Systems/package.json](../Systems/package.json) for an example).
 ```json
 "dependencies": {
-  "com.bftools.core": "0.11.0"
+  "com.bftools.core": "1.0.0"
 }
 ```
 

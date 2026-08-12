@@ -14,6 +14,7 @@ Static, tag-based logging with per-tag level overrides, pluggable sinks, and a c
    BFLogger.Initialize(loggerConfig, new UnityConsoleSink(), new FileSink());
    ```
    If you skip this, the first log call auto-loads `BFLoggerConfig` from `Resources/BFTools/BFLoggerConfig` and defaults to a single `UnityConsoleSink`. If no config asset exists at that path, a default config (`Info` global minimum, no overrides, no allowlist) is used and a warning is logged once.
+   If you call `Initialize` yourself with no sinks (an empty or `null` `activeSinks` array), it falls back to a single `UnityConsoleSink` and logs a warning, so log calls never go silently unheard.
 
 ## Usage
 ```csharp
@@ -29,6 +30,7 @@ Every level (`Trace`, `Debug`, `Info`, `Warning`, `Error`, `Critical`) has a sin
 - If the resolved level check passes and (when enabled) the allowlist check passes, the message is dispatched to every active sink.
 - `UnityConsoleSink` color-codes by level and routes to `Debug.LogFormat` as `Log`/`Warning`/`Error` depending on level; the message is passed as a format argument (not the format string), so braces in message content can't throw.
 - `FileSink` only writes `Warning` and above, to `<persistentDataPath>/Logs/bftools.log`, rotating to `bftools.log.bak` (previous backup deleted) once the active file hits 1 MB.
+- If `FileSink` can't create its log directory or fails to write (disk full, locked file, permissions), it logs a warning once and disables itself for the rest of the session instead of throwing. It never crashes a caller just because disk logging failed.
 - `Trace` and `Debug` calls are stripped entirely from non-development, non-editor builds via `[Conditional]`. Call sites (and their arguments) don't exist in release builds, so don't rely on their side effects.
 
 ## Notes

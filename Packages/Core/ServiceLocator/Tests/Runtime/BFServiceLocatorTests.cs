@@ -35,9 +35,10 @@ namespace BFTools.Core.ServiceLocator.Tests
         }
 
         [Test]
-        public void Get_UnregisteredType_ThrowsKeyNotFoundException()
+        public void Get_UnregisteredType_ThrowsKeyNotFoundExceptionNamingTheType()
         {
-            Assert.Throws<KeyNotFoundException>(() => BFServiceLocator.Get<FakeServiceA>());
+            KeyNotFoundException ex = Assert.Throws<KeyNotFoundException>(() => BFServiceLocator.Get<FakeServiceA>());
+            StringAssert.Contains(nameof(FakeServiceA), ex.Message);
         }
 
         [Test]
@@ -51,6 +52,20 @@ namespace BFTools.Core.ServiceLocator.Tests
             FakeServiceA resolved = BFServiceLocator.Get<FakeServiceA>();
 
             Assert.AreSame(second, resolved);
+        }
+
+        [Test]
+        public void Register_SameTypeTwice_DoesNotThrow()
+        {
+            BFServiceLocator.Register(new FakeServiceA { Value = 1 });
+            Assert.DoesNotThrow(() => BFServiceLocator.Register(new FakeServiceA { Value = 2 }));
+        }
+
+        [Test]
+        public void Register_NullService_DoesNotThrowAndIsNotRegistered()
+        {
+            Assert.DoesNotThrow(() => BFServiceLocator.Register<FakeServiceA>(null));
+            Assert.IsFalse(BFServiceLocator.IsRegistered<FakeServiceA>());
         }
 
         [Test]
@@ -79,6 +94,42 @@ namespace BFTools.Core.ServiceLocator.Tests
 
             Assert.AreSame(a, BFServiceLocator.Get<FakeServiceA>());
             Assert.AreSame(b, BFServiceLocator.Get<FakeServiceB>());
+        }
+
+        [Test]
+        public void IsRegistered_ReflectsRegistrationState()
+        {
+            Assert.IsFalse(BFServiceLocator.IsRegistered<FakeServiceA>());
+
+            BFServiceLocator.Register(new FakeServiceA());
+            Assert.IsTrue(BFServiceLocator.IsRegistered<FakeServiceA>());
+
+            BFServiceLocator.Unregister<FakeServiceA>();
+            Assert.IsFalse(BFServiceLocator.IsRegistered<FakeServiceA>());
+        }
+
+        [Test]
+        public void TryGet_Registered_ReturnsTrueAndInstance()
+        {
+            FakeServiceA service = new FakeServiceA { Value = 3 };
+            BFServiceLocator.Register(service);
+
+            bool found = BFServiceLocator.TryGet(out FakeServiceA resolved);
+
+            Assert.IsTrue(found);
+            Assert.AreSame(service, resolved);
+        }
+
+        [Test]
+        public void TryGet_Unregistered_ReturnsFalseAndDoesNotThrow()
+        {
+            bool found = true;
+            FakeServiceA resolved = null;
+
+            Assert.DoesNotThrow(() => found = BFServiceLocator.TryGet(out resolved));
+
+            Assert.IsFalse(found);
+            Assert.IsNull(resolved);
         }
     }
 }

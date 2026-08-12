@@ -3,6 +3,8 @@
     "rootNamespace": "BFTools.Systems.SaveSystem.Tests",
     "references": [
         "BFTools.Systems.SaveSystem",
+        "BFTools.Core.FileIO",
+        "BFTools.Core.Serialization",
         "BFTools.Core.Logger",
         "BFTools.Core.Logger.TestUtilities",
         "UnityEngine.TestRunner",
@@ -15,8 +17,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "Newtonsoft.Json.dll"
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

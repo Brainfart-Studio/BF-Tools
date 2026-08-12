@@ -19,11 +19,25 @@ Unregister (e.g. on teardown):
 BFServiceLocator.Unregister<IAudioService>();
 ```
 
+Check for or fetch an optional service without relying on a caught exception:
+```csharp
+if (BFServiceLocator.IsRegistered<IAudioService>())
+{
+    // ...
+}
+
+if (BFServiceLocator.TryGet(out IAudioService audio))
+{
+    audio.Play();
+}
+```
+
 ## How it works
 
 - One dictionary keyed by `Type`, mapping to the last-registered instance for that type.
-- `Register<T>` overwrites any existing entry for `T` rather than throwing on duplicate registration.
+- `Register<T>` overwrites any existing entry for `T` rather than throwing on duplicate registration, logging a `Warning` when a previous instance is replaced. A `null` service is rejected with a `Warning` log and ignored rather than being stored.
 - `Get<T>` casts the stored instance back to `T` and returns it.
+- `TryGet<T>` and `IsRegistered<T>` are the graceful alternatives to `Get<T>` for services that may not be registered; neither throws.
 - `Unregister<T>` removes the entry for `T` if present; removing an unregistered type is a no-op.
 - Each call logs a `Trace`-level message under the `ServiceLocator` tag.
 

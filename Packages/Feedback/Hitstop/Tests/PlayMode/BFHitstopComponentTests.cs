@@ -180,5 +180,23 @@ namespace BFTools.Feedback.Hitstop.PlayModeTests
             Assert.AreEqual(1f, Time.timeScale);
             Assert.IsFalse(spy.Entries.Exists(e => e.Message.Contains("Triggered hitstop")));
         }
+
+        [Test]
+        public void OnDisable_DuringActiveHitstop_RestoresTimeScale()
+        {
+            BFHitstopConfig config = CreateConfig(("BigHit", 0.2f, 1f));
+            createdAssets.Add(config);
+            CreateHitstop(config);
+
+            EventBus<BFHitstopEvent>.Fire(new BFHitstopEvent { eventName = "BigHit" });
+
+            Assert.AreEqual(0.2f, Time.timeScale,
+                "Hitstop should have applied the timescale before the component is disabled.");
+
+            go.SetActive(false);
+
+            Assert.AreEqual(1f, Time.timeScale,
+                "Disabling the component mid-hitstop should restore Time.timeScale to 1.");
+        }
     }
 }

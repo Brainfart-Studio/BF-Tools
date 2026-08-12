@@ -1,4 +1,4 @@
-using BFTools.Core.Logger;
+using BFTools.Core.CameraUtility;
 using UnityEngine;
 
 namespace BFTools.Visuals.Parallax
@@ -7,17 +7,15 @@ namespace BFTools.Visuals.Parallax
     {
         private const string LogTag = "Parallax";
 
-        private readonly Camera targetCameraOverride;
-        private readonly Object context;
+        private readonly BFCameraResolver cameraResolver;
 
         private Camera trackedCamera;
         private Vector3 startPosition;
-        private bool hasWarnedMissingCamera;
 
         public BFParallaxCameraTracker(Camera targetCameraOverride, Object context)
         {
-            this.targetCameraOverride = targetCameraOverride;
-            this.context = context;
+            cameraResolver = new BFCameraResolver(targetCameraOverride, context, LogTag,
+                "BFParallaxCameraTracker: no camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise parallax layers will never move.");
         }
 
         public void Init()
@@ -48,19 +46,9 @@ namespace BFTools.Visuals.Parallax
 
         private void ResolveCamera()
         {
-            trackedCamera = targetCameraOverride != null ? targetCameraOverride : Camera.main;
-            if (trackedCamera == null)
-            {
-                if (!hasWarnedMissingCamera)
-                {
-                    BFLogger.Error(LogTag, "BFParallaxCameraTracker: no camera found. Assign a Camera to Target Camera Override, or tag a camera MainCamera in the scene - otherwise parallax layers will never move.", context);
-                    hasWarnedMissingCamera = true;
-                }
-
-                return;
-            }
-
-            startPosition = trackedCamera.transform.position;
+            trackedCamera = cameraResolver.Resolve();
+            if (trackedCamera != null)
+                startPosition = trackedCamera.transform.position;
         }
     }
 }

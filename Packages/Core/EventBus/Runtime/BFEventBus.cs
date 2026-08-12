@@ -12,10 +12,20 @@ namespace BFTools.Core.EventBus
 
         public static void Subscribe(Action<T> handler)
         {
+            if (handler == null)
+            {
+                BFLogger.Warning(LogTag, $"Subscribe called with null handler for {typeof(T).Name}, ignoring");
+                return;
+            }
+
             if (!subscribers.Contains(handler))
             {
                 subscribers.Add(handler);
                 BFLogger.Trace(LogTag, $"Subscribed {handler.Method.Name} to {typeof(T).Name}");
+            }
+            else
+            {
+                BFLogger.Warning(LogTag, $"{handler.Method.Name} is already subscribed to {typeof(T).Name}, ignoring duplicate Subscribe call");
             }
         }
 
@@ -29,8 +39,9 @@ namespace BFTools.Core.EventBus
         {
             BFLogger.Debug(LogTag, $"Fired {typeof(T).Name} to {subscribers.Count} subscriber(s)");
 
-            for (int i = subscribers.Count - 1; i >= 0; i--)
-                subscribers[i]?.Invoke(eventData);
+            Action<T>[] snapshot = subscribers.ToArray();
+            for (int i = snapshot.Length - 1; i >= 0; i--)
+                snapshot[i]?.Invoke(eventData);
         }
 
         public static void Clear()

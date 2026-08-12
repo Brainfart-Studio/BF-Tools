@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEditor;
@@ -13,6 +15,11 @@ namespace BFTools.Core.EditorAssetUtility.Tests
 
         private class FakeConfig : ScriptableObject
         {
+        }
+
+        private class FakeConsumer : MonoBehaviour
+        {
+            [SerializeField] private List<Object> configs = new List<Object>();
         }
 
         [SetUp]
@@ -97,6 +104,26 @@ namespace BFTools.Core.EditorAssetUtility.Tests
         }
 
         [Test]
+        public void CreateConfigAsset_NullFolderPath_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("folderPath is null or empty"));
+
+            FakeConfig result = BFEditorAssetUtility.CreateConfigAsset<FakeConfig>(null, "FakeConfig.asset");
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void CreateConfigAsset_EmptyAssetName_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("assetName is null or empty"));
+
+            FakeConfig result = BFEditorAssetUtility.CreateConfigAsset<FakeConfig>(Root, string.Empty);
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
         public void CreateConfigAsset_MalformedFolderPath_ReturnsNull()
         {
             string badFolder = $"{Root}//BadFolder";
@@ -134,6 +161,26 @@ namespace BFTools.Core.EditorAssetUtility.Tests
         }
 
         [Test]
+        public void CreatePrefabVariant_NullFolderPath_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("folderPath is null or empty"));
+
+            GameObject result = BFEditorAssetUtility.CreatePrefabVariant($"{Root}/Base.prefab", null, "Variant.prefab");
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void CreatePrefabVariant_EmptyAssetName_ReturnsNull()
+        {
+            LogAssert.Expect(LogType.Error, new Regex("assetName is null or empty"));
+
+            GameObject result = BFEditorAssetUtility.CreatePrefabVariant($"{Root}/Base.prefab", Root, string.Empty);
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
         public void CreatePrefabVariant_MissingBasePrefab_ReturnsNull()
         {
             LogAssert.Expect(LogType.Error, new Regex("base prefab not found"));
@@ -141,6 +188,82 @@ namespace BFTools.Core.EditorAssetUtility.Tests
             GameObject result = BFEditorAssetUtility.CreatePrefabVariant($"{Root}/DoesNotExist.prefab", Root, "Variant.prefab");
 
             Assert.IsNull(result);
+        }
+
+        private static List<Object> GetConfigs(FakeConsumer consumer)
+        {
+            return (List<Object>)typeof(FakeConsumer)
+                .GetField("configs", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(consumer);
+        }
+
+        [Test]
+        public void AssignConfigIfMissing_NotAlreadyPresent_AddsToList()
+        {
+            GameObject go = new GameObject("Consumer");
+            FakeConsumer consumer = go.AddComponent<FakeConsumer>();
+            FakeConfig config = ScriptableObject.CreateInstance<FakeConfig>();
+
+            BFEditorAssetUtility.AssignConfigIfMissing(consumer, "configs", config);
+
+            Assert.AreEqual(1, GetConfigs(consumer).Count);
+            Assert.AreSame(config, GetConfigs(consumer)[0]);
+
+            Object.DestroyImmediate(go);
+            Object.DestroyImmediate(config);
+        }
+
+        [Test]
+        public void AssignConfigIfMissing_AlreadyPresent_DoesNotAddDuplicate()
+        {
+            GameObject go = new GameObject("Consumer");
+            FakeConsumer consumer = go.AddComponent<FakeConsumer>();
+            FakeConfig config = ScriptableObject.CreateInstance<FakeConfig>();
+
+            BFEditorAssetUtility.AssignConfigIfMissing(consumer, "configs", config);
+            BFEditorAssetUtility.AssignConfigIfMissing(consumer, "configs", config);
+
+            Assert.AreEqual(1, GetConfigs(consumer).Count);
+
+            Object.DestroyImmediate(go);
+            Object.DestroyImmediate(config);
+        }
+
+        [Test]
+        public void AssignConfigIfMissing_NullTarget_LogsError()
+        {
+            FakeConfig config = ScriptableObject.CreateInstance<FakeConfig>();
+            LogAssert.Expect(LogType.Error, new Regex("target is null"));
+
+            Assert.DoesNotThrow(() => BFEditorAssetUtility.AssignConfigIfMissing(null, "configs", config));
+
+            Object.DestroyImmediate(config);
+        }
+
+        [Test]
+        public void AssignConfigIfMissing_NullConfig_LogsError()
+        {
+            GameObject go = new GameObject("Consumer");
+            FakeConsumer consumer = go.AddComponent<FakeConsumer>();
+            LogAssert.Expect(LogType.Error, new Regex("config is null"));
+
+            Assert.DoesNotThrow(() => BFEditorAssetUtility.AssignConfigIfMissing(consumer, "configs", null));
+
+            Object.DestroyImmediate(go);
+        }
+
+        [Test]
+        public void AssignConfigIfMissing_UnknownFieldName_LogsError()
+        {
+            GameObject go = new GameObject("Consumer");
+            FakeConsumer consumer = go.AddComponent<FakeConsumer>();
+            FakeConfig config = ScriptableObject.CreateInstance<FakeConfig>();
+            LogAssert.Expect(LogType.Error, new Regex("has no 'missingField' field"));
+
+            Assert.DoesNotThrow(() => BFEditorAssetUtility.AssignConfigIfMissing(consumer, "missingField", config));
+
+            Object.DestroyImmediate(go);
+            Object.DestroyImmediate(config);
         }
     }
 }

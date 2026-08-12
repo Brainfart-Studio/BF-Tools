@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using BFTools.Core.ConfigLookup;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
 
@@ -26,47 +27,63 @@ namespace BFTools.Feedback.ScreenFlash
         {
             BuildLookup();
             EventBus<BFScreenFlashEvent>.Subscribe(OnScreenFlashEvent);
+
+            if (flashImage == null)
+                BFLogger.Warning(LogTag, "No flashImage assigned; unable to render flashes.", this);
         }
 
         private void OnDisable()
         {
             EventBus<BFScreenFlashEvent>.Unsubscribe(OnScreenFlashEvent);
+            CancelActiveFlash();
+        }
+
+        private void CancelActiveFlash()
+        {
+            if (activeFlash == null)
+                return;
+
+            StopCoroutine(activeFlash);
+            activeFlash = null;
+            if (flashImage != null)
+            {
+                Color c = flashImage.color;
+                flashImage.color = new Color(c.r, c.g, c.b, 0f);
+            }
         }
 
         private void BuildLookup()
         {
-            lookup = new Dictionary<string, BFScreenFlashEntry>();
+            lookup = BFConfigLookupBuilder.Merge(MergedEntries(), entry => entry.eventName, LogTag, name, "eventName", this);
+        }
+
+        private IEnumerable<BFScreenFlashEntry> MergedEntries()
+        {
             foreach (var cfg in configs)
             {
                 if (cfg == null)
                     continue;
 
                 foreach (var entry in cfg.Entries)
-                {
-                    if (lookup.ContainsKey(entry.eventName))
-                    {
-                        BFLogger.Warning(LogTag,
-                            $"Duplicate eventName '{entry.eventName}' across assigned configs on '{name}'. Last one wins.",
-                            this);
-                    }
-                    lookup[entry.eventName] = entry;
-                }
+                    yield return entry;
             }
-
-            BFLogger.Debug(LogTag, $"Built lookup with {lookup.Count} entrie(s) on '{name}'.", this);
         }
 
         private void OnScreenFlashEvent(BFScreenFlashEvent evt)
         {
+            if (flashImage == null)
+            {
+                BFLogger.Trace(LogTag, $"No flashImage assigned, skipping screen flash trigger for eventName '{evt.eventName}'.", this);
+                return;
+            }
+
             if (lookup == null || !lookup.TryGetValue(evt.eventName, out BFScreenFlashEntry entry))
             {
                 BFLogger.Trace(LogTag, $"No screen flash entry found for eventName '{evt.eventName}'.", this);
                 return;
             }
 
-            if (activeFlash != null)
-                StopCoroutine(activeFlash);
-
+            CancelActiveFlash();
             activeFlash = StartCoroutine(FlashRoutine(entry));
         }
 

@@ -170,5 +170,145 @@ namespace BFTools.Systems.ObjectPooler.Tests
 
             Assert.Throws<KeyNotFoundException>(() => BFServiceLocator.Get<BFObjectPooler>());
         }
+
+        [Test]
+        public void Prewarm_NullConfig_LogsErrorAndStillRegisters()
+        {
+            SpyLoggerSink spy = InitializeLogging();
+
+            BFObjectPooler pooler = CreatePooler(null);
+
+            Assert.AreSame(pooler, BFServiceLocator.Get<BFObjectPooler>());
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("No config assigned")));
+        }
+
+        [Test]
+        public void Prewarm_EntryWithNullKey_LogsErrorAndSkipsEntry()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig((null, bulletPrefab, 1), ("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            SpyLoggerSink spy = InitializeLogging();
+            BFObjectPooler pooler = null;
+
+            Assert.DoesNotThrow(() => pooler = CreatePooler(config));
+
+            Assert.AreEqual(1, GetPoolCount(pooler, "Bullet"));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("no key assigned")));
+        }
+
+        [Test]
+        public void Prewarm_EntryWithNullPrefab_LogsErrorAndSkipsEntry()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Broken", null, 1), ("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            BFObjectPooler pooler = CreatePooler(config);
+
+            Assert.AreEqual(1, GetPoolCount(pooler, "Bullet"));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("'Broken'") && e.Message.Contains("no prefab")));
+        }
+
+        [Test]
+        public void Prewarm_DuplicateKey_LogsErrorAndSkipsDuplicateEntry()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1), ("Bullet", bulletPrefab, 3));
+            createdAssets.Add(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            BFObjectPooler pooler = CreatePooler(config);
+
+            Assert.AreEqual(1, GetPoolCount(pooler, "Bullet"));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("Duplicate pool key 'Bullet'")));
+        }
+
+        [Test]
+        public void Get_UnknownKey_LogsErrorAndReturnsNull()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            GameObject instance = pooler.Get("Missing");
+
+            Assert.IsNull(instance);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("unknown key 'Missing'")));
+        }
+
+        [Test]
+        public void Release_UntrackedInstance_LogsErrorAndDoesNotThrow()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            GameObject stray = new GameObject("Stray");
+            createdAssets.Add(stray);
+            SpyLoggerSink spy = InitializeLogging();
+
+            Assert.DoesNotThrow(() => pooler.Release(stray));
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("not tracked by this pooler")));
+        }
+
+        [Test]
+        public void Get_NullKey_LogsErrorAndReturnsNull()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            GameObject instance = null;
+            Assert.DoesNotThrow(() => instance = pooler.Get(null));
+
+            Assert.IsNull(instance);
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null key")));
+        }
+
+        [Test]
+        public void Release_NullInstance_LogsErrorAndDoesNotThrow()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            SpyLoggerSink spy = InitializeLogging();
+
+            Assert.DoesNotThrow(() => pooler.Release(null));
+
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("null instance")));
+        }
+
+        [Test]
+        public void Release_AlreadyReleasedInstance_LogsErrorAndDoesNotDuplicateInPool()
+        {
+            GameObject bulletPrefab = new GameObject("Bullet");
+            createdAssets.Add(bulletPrefab);
+            BFObjectPoolConfig config = CreateConfig(("Bullet", bulletPrefab, 1));
+            createdAssets.Add(config);
+            BFObjectPooler pooler = CreatePooler(config);
+            GameObject instance = pooler.Get("Bullet");
+            pooler.Release(instance);
+            SpyLoggerSink spy = InitializeLogging();
+
+            Assert.DoesNotThrow(() => pooler.Release(instance));
+
+            Assert.AreEqual(1, GetPoolCount(pooler, "Bullet"));
+            Assert.IsTrue(spy.Entries.Exists(e => e.Level == LogLevel.Error && e.Message.Contains("already released")));
+        }
     }
 }

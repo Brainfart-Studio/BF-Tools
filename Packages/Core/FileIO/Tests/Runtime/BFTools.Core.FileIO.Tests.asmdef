@@ -1,0 +1,24 @@
+{
+    "name": "BFTools.Core.FileIO.Tests",
+    "rootNamespace": "BFTools.Core.FileIO.Tests",
+    "references": [
+        "BFTools.Core.FileIO",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

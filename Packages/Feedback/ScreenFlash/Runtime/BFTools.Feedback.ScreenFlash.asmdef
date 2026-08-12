@@ -2,6 +2,7 @@
     "name": "BFTools.Feedback.ScreenFlash",
     "rootNamespace": "BFTools.Feedback.ScreenFlash",
     "references": [
+        "BFTools.Core.ConfigLookup",
         "BFTools.Core.EventBus",
         "BFTools.Core.Logger"
     ],

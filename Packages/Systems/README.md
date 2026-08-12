@@ -3,7 +3,7 @@
 Gameplay-facing systems for BFTools, built on Core's Logger, Event Bus, and Service Locator: bootstrapping, scene management, object pooling, and save/load.
 
 ## Version
-0.5.0
+1.0.0
 
 ## Contents
 
@@ -23,19 +23,17 @@ Additive scene loading and transitions, orchestrated through a config asset, a s
 ISettingsProvider-based state capture/restore, saved as plain JSON to a single shared settings file. See [Documentation~/SettingsManager.md](Documentation~/SettingsManager.md).
 
 ## Dependencies
-- `com.bftools.core` @ 0.11.0
+- `com.bftools.core` @ 1.0.0
 - `com.unity.nuget.newtonsoft-json` @ 3.2.1 (Save System)
 
 ## Installation
-
-> **Note.** This package is still under development and hasn't been merged to `main` yet, so the URLs below point at the `development` branch. Once it goes live on `main`, drop the `#development` segment (or switch it to a release tag) and update this README accordingly.
 
 ### Via Package Manager (git URL)
 1. Open **Window > Package Manager**.
 2. Click **+ > Add package from git URL...**
 3. Enter this URL.
    ```
-   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Systems#development
+   https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Systems
    ```
 
 Systems depends on `com.bftools.core`; install it the same way (see [Core's README](../Core/README.md#installation)) if it isn't already in the project.
@@ -45,7 +43,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.systems": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Systems#development"
+  "com.bftools.systems": "https://github.com/Brainfart-Studio/BF-Tools.git?path=Packages/Systems"
 }
 ```
 
@@ -54,7 +52,7 @@ Reference `com.bftools.systems` from a dependent package's `package.json`.
 
 ```json
 "dependencies": {
-  "com.bftools.systems": "0.5.0"
+  "com.bftools.systems": "1.0.0"
 }
 ```
 

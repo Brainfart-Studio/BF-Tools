@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.0] - Production Release
+
+### Changed
+- Bumped `com.bftools.core`, `com.bftools.systems`, and `com.bftools.feedback` dependencies to 1.0.0
+
 ## [0.1.0] - Project Setup and Project Verification
 
 ### Added

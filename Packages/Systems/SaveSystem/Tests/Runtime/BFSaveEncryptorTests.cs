@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using BFTools.Systems.SaveSystem;
 using Assert = NUnit.Framework.Assert;
@@ -6,6 +7,24 @@ namespace BFTools.Systems.SaveSystem.Tests
 {
     public class BFSaveEncryptorTests
     {
+        [Test]
+        public void Encrypt_NullPlainText_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => BFSaveEncryptor.Encrypt(null));
+        }
+
+        [Test]
+        public void Decrypt_NullCipherBytes_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => BFSaveEncryptor.Decrypt(null));
+        }
+
+        [Test]
+        public void Decrypt_CipherBytesShorterThanIvLength_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => BFSaveEncryptor.Decrypt(new byte[] { 1, 2, 3 }));
+        }
+
         [Test]
         public void Encrypt_Decrypt_RoundTripsOriginalPlainText()
         {

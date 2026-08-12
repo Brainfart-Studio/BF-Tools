@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -36,6 +35,13 @@ namespace BFTools.Systems.SettingsManager.Tests
             public void RestoreState(object state) => State = (FakeState)state;
         }
 
+        private class ThrowingCaptureSettingsProvider : ISettingsProvider
+        {
+            public Type StateType => typeof(FakeState);
+            public object CaptureState() => throw new InvalidOperationException("Capture failed");
+            public void RestoreState(object state) { }
+        }
+
         private string scratchDir;
 
         [SetUp]
@@ -64,23 +70,38 @@ namespace BFTools.Systems.SettingsManager.Tests
         {
             Type managerType = typeof(BFSettingsManager);
 
-            List<ISettingsProvider> providers = (List<ISettingsProvider>)managerType
+            object providersRegistry = managerType
                 .GetField("providers", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
-            providers.Clear();
+            ClearRegistry(providersRegistry);
+        }
 
-            HashSet<Type> registeredStateTypes = (HashSet<Type>)managerType
-                .GetField("registeredStateTypes", BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
-            registeredStateTypes.Clear();
+        private static void ClearRegistry(object registry)
+        {
+            Type registryType = registry.GetType();
+
+            object items = registryType
+                .GetField("items", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+            items.GetType().GetMethod("Clear").Invoke(items, null);
+
+            object registeredStateTypes = registryType
+                .GetField("registeredStateTypes", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+            registeredStateTypes.GetType().GetMethod("Clear").Invoke(registeredStateTypes, null);
         }
 
         private static int GetProvidersCount()
         {
-            List<ISettingsProvider> providers = (List<ISettingsProvider>)typeof(BFSettingsManager)
+            object registry = typeof(BFSettingsManager)
                 .GetField("providers", BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);
-            return providers.Count;
+
+            object items = registry.GetType()
+                .GetField("items", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(registry);
+
+            return (int)items.GetType().GetProperty("Count").GetValue(items);
         }
 
         private static SpyLoggerSink InitializeLogging()
@@ -159,6 +180,30 @@ namespace BFTools.Systems.SettingsManager.Tests
 
             Assert.IsTrue(loaded);
             Assert.AreEqual(99, otherProvider.State.value);
+        }
+
+        [Test]
+        public void SaveAsync_ProviderCaptureStateThrows_ReturnsFalseInsteadOfThrowing()
+        {
+            BFSettingsManager.Register(new ThrowingCaptureSettingsProvider());
+
+            bool saved = BFSettingsManager.SaveAsync(scratchDir).GetAwaiter().GetResult();
+
+            Assert.IsFalse(saved);
+        }
+
+        [Test]
+        public void LoadAsync_FileReadThrows_ReturnsFalseInsteadOfThrowing()
+        {
+            string filePath = Path.Combine(scratchDir, "settings.json");
+            File.WriteAllText(filePath, "{}");
+
+            using (new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                bool loaded = BFSettingsManager.LoadAsync(scratchDir).GetAwaiter().GetResult();
+
+                Assert.IsFalse(loaded);
+            }
         }
     }
 }
