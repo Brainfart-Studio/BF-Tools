@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0] - Screen Color Sampler
+
+### Added
+- `BFTools.Core.ScreenColorSampler` assembly, with `BFScreenColorSampler`: samples a world-space box relative to a GameObject's `transform.position` (offset + width/height in world units), projects it into the resolved camera's viewport, and averages the color of that region via a downsampled `RenderTexture` and `AsyncGPUReadback`, exposed as `CurrentColor` and a `ColorSampled` event
+- Wire gizmo, drawn around the sampled box in the scene view when the object is selected
+- Test suite covering world-space corner math, viewport projection (including the all-corners-behind-camera case), and `RenderTexture` lifecycle
+
 ## [1.0.0] - Production Release
 
 ### Added

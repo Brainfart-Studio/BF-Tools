@@ -3,7 +3,7 @@
 Foundational systems for BFTools, covering logging, event communication, and shared editor tooling used by the rest of the library.
 
 ## Version
-1.0.0
+1.1.0
 
 ## Contents
 
@@ -30,6 +30,9 @@ Static registry for locating shared services by type at runtime. See [Documentat
 
 ### Camera Utility
 `BFCameraResolver`, resolving a target or main camera with one-time missing-camera warnings.
+
+### Screen Color Sampler
+`BFScreenColorSampler`, averaging camera-rendered color within a world-space box that follows a GameObject's transform, exposed as `CurrentColor` and a `ColorSampled` event. See [Documentation~/ScreenColorSampler.md](Documentation~/ScreenColorSampler.md).
 
 ### Layer Stack
 `BFLayerStackBase<TLayerConfig, TLayer>`, `IBFLayerConfig<TLayer>`, and `IBFStackLayer`, shared base logic for config-driven visual/layer stacks.
@@ -65,7 +68,7 @@ Add the entry directly to your project's `Packages/manifest.json`.
 Reference `com.bftools.core` from a dependent package's `package.json` (see [Packages/Systems/package.json](../Systems/package.json) for an example).
 ```json
 "dependencies": {
-  "com.bftools.core": "1.0.0"
+  "com.bftools.core": "1.1.0"
 }
 ```
 
