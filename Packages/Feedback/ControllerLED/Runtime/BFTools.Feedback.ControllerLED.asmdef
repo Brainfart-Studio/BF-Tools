@@ -5,7 +5,8 @@
         "Unity.InputSystem",
         "BFTools.Core.Logger",
         "BFTools.Core.EventBus",
-        "BFTools.Core.ConfigLookup"
+        "BFTools.Core.ConfigLookup",
+        "BFTools.Core.ScreenColorSampler"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
