@@ -24,12 +24,13 @@ Gameplay-facing systems built on Core.
 
 Depends on `com.bftools.core` (1.0.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (1.0.0)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (1.1.0)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
 - **Hitstop**: brief global time freeze triggered by named events. See [Hitstop.md](Packages/Feedback/Documentation~/Hitstop.md).
 - **Screen Flash**: full-screen color flash triggered by named events. See [ScreenFlash.md](Packages/Feedback/Documentation~/ScreenFlash.md).
+- **Controller LED**: gamepad LED/light bar color, set directly or triggered by named events, plus a drop-in rainbow fallback effect. PS4 only for now. See [ControllerLED.md](Packages/Feedback/Documentation~/ControllerLED.md).
 
 Depends on `com.bftools.core` (1.0.0) and `com.unity.inputsystem` (1.7.0).
 
@@ -73,6 +74,7 @@ Packages/
     ScreenShake/              Editor/, Runtime/, Prefabs/
     Hitstop/                 Editor/, Runtime/, Prefabs/
     ScreenFlash/             Editor/, Runtime/, Prefabs/
+    ControllerLED/           Editor/, Runtime/, Tests/
     Documentation~/
   Visuals/                 com.bftools.visuals
     EditorAssetUtility/      Editor/
