@@ -37,6 +37,16 @@ ledManager.SetColor(Color.HSVToRGB(hue, 1f, 1f));
 ```
 `cyclesPerSecond` controls how fast it loops (0.2 = one full loop every 5 seconds). It talks to the manager through the same public `SetColor` API as everything else, so it can be swapped out for real color logic later without touching anything downstream.
 
+## Color feeder
+`BFControllerLedColorFeeder` wires an ambient color source straight to the LED. Assign a `BFScreenColorSampler` reference (`com.bftools.core`) and a `BFControllerLedManager` reference; it subscribes to the sampler's `ColorSampled` event in `OnEnable` and forwards every sampled color to `ledManager.SetColor`, unsubscribing in `OnDisable`:
+```csharp
+private void OnColorSampled(Color color)
+{
+    ledManager.SetColor(color);
+}
+```
+It's a thin adapter with no logic of its own, the sampling and averaging live entirely in `BFScreenColorSampler`; see [ScreenColorSampler.md](../../Core/Documentation~/ScreenColorSampler.md). Like the rainbow fallback, it talks to the manager only through the public `SetColor` API, so it can run alongside (and fight with, if both are active) `BFControllerLedRainbow` or manual `SetColor` calls.
+
 ## Notes
 - PS4 support only. PS5 (`DualSenseGamepadHID`) and Xbox aren't implemented; add another `IBFControllerLed` implementation and a branch in `BFControllerLedManager.ResolveLed` to extend.
 - Most Xbox controllers don't expose a public per-title LED API at all, there's likely nothing to wrap there.
