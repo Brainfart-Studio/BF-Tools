@@ -3,7 +3,9 @@
     "rootNamespace": "BFTools.Feedback.ControllerLED",
     "references": [
         "Unity.InputSystem",
-        "BFTools.Core.Logger"
+        "BFTools.Core.Logger",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.ConfigLookup"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
