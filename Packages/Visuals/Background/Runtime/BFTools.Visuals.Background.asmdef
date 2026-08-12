@@ -1,0 +1,15 @@
+{
+    "name": "BFTools.Visuals.Background",
+    "rootNamespace": "BFTools.Visuals.Background",
+    "references": [
+        "BFTools.Core.Logger",
+        "BFTools.Core.CameraUtility",
+        "BFTools.Core.LayerStack",
+        "BFTools.Core.SingletonGuard"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

@@ -1,0 +1,17 @@
+{
+    "name": "BFTools.Systems.ObjectPooler",
+    "rootNamespace": "BFTools.Systems.ObjectPooler",
+    "references": [
+        "BFTools.Core.Logger",
+        "BFTools.Core.ServiceLocator"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

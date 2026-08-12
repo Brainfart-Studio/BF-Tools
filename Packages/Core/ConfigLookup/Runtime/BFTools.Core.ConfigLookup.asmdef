@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Core.ConfigLookup",
+    "rootNamespace": "BFTools.Core.ConfigLookup",
+    "references": [
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Visuals.Parallax.Editor",
+    "rootNamespace": "BFTools.Visuals.Parallax.Editor",
+    "references": [
+        "BFTools.Visuals.Parallax",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Visuals.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

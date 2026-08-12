@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Visuals.Background.Editor",
+    "rootNamespace": "BFTools.Visuals.Background.Editor",
+    "references": [
+        "BFTools.Visuals.Background",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Visuals.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

@@ -1,0 +1,26 @@
+{
+    "name": "BFTools.Systems.LevelBootstrapper.Tests",
+    "rootNamespace": "BFTools.Systems.LevelBootstrapper.Tests",
+    "references": [
+        "BFTools.Systems.LevelBootstrapper",
+        "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,15 @@
+{
+    "name": "BFTools.EditorTools.ProjectSetup.Editor",
+    "rootNamespace": "BFTools.EditorTools.ProjectSetup.Editor",
+    "references": [
+        "BFTools.Core.Logger",
+        "BFTools.Core.ProjectSetup.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

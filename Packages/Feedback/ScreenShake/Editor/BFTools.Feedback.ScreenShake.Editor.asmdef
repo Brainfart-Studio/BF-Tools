@@ -1,0 +1,18 @@
+{
+    "name": "BFTools.Feedback.ScreenShake.Editor",
+    "rootNamespace": "BFTools.Feedback.ScreenShake.Editor",
+    "references": [
+        "BFTools.Feedback.ScreenShake",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Feedback.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger",
+        "BFTools.Core.ProjectSetup.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

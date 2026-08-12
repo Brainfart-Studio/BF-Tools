@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Systems.LevelBootstrapper.Editor",
+    "rootNamespace": "BFTools.Systems.LevelBootstrapper.Editor",
+    "references": [
+        "BFTools.Systems.LevelBootstrapper",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Systems.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

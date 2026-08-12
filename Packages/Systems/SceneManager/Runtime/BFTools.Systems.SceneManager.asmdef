@@ -1,0 +1,19 @@
+{
+    "name": "BFTools.Systems.SceneManager",
+    "rootNamespace": "BFTools.Systems.SceneManager",
+    "references": [
+        "BFTools.Core.Logger",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.ServiceLocator",
+        "BFTools.Core.SingletonGuard"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

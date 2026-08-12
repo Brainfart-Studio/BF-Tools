@@ -1,0 +1,20 @@
+{
+    "name": "BFTools.Systems.SaveSystem",
+    "rootNamespace": "BFTools.Systems.SaveSystem",
+    "references": [
+        "BFTools.Core.Logger",
+        "BFTools.Core.FileIO",
+        "BFTools.Core.Serialization"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

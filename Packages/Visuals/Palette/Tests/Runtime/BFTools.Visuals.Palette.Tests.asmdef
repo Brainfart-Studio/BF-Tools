@@ -1,0 +1,27 @@
+{
+    "name": "BFTools.Visuals.Palette.Tests",
+    "rootNamespace": "BFTools.Visuals.Palette.Tests",
+    "references": [
+        "BFTools.Visuals.Palette",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

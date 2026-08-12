@@ -1,0 +1,27 @@
+{
+    "name": "BFTools.Visuals.Parallax.Tests",
+    "rootNamespace": "BFTools.Visuals.Parallax.Tests",
+    "references": [
+        "BFTools.Visuals.Parallax",
+        "BFTools.Core.Logger",
+        "BFTools.Core.Logger.TestUtilities",
+        "BFTools.Core.LayerStack",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

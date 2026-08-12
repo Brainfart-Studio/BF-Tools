@@ -1,0 +1,32 @@
+using System.Collections.Generic;
+using UnityEngine;
+using BFTools.Core.Logger;
+
+namespace BFTools.Core.Logger.TestUtilities
+{
+    public class SpyLoggerSink : IBFLoggerSink
+    {
+        public struct Entry
+        {
+            public LogLevel Level;
+            public string[] Tags;
+            public string Message;
+            public Object Context;
+            public bool IncludeStackTrace;
+        }
+
+        public readonly List<Entry> Entries = new List<Entry>();
+
+        public void Write(LogLevel level, string[] tags, string message, Object context, bool includeStackTrace)
+        {
+            Entries.Add(new Entry
+            {
+                Level = level,
+                Tags = tags,
+                Message = message,
+                Context = context,
+                IncludeStackTrace = includeStackTrace
+            });
+        }
+    }
+}

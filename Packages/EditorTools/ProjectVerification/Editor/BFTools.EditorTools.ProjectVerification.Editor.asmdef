@@ -1,0 +1,18 @@
+{
+    "name": "BFTools.EditorTools.ProjectVerification.Editor",
+    "rootNamespace": "BFTools.EditorTools.ProjectVerification.Editor",
+    "references": [
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger",
+        "BFTools.EditorTools.ProjectVerification",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

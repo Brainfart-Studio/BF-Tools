@@ -1,0 +1,14 @@
+{
+    "name": "BFTools.Feedback.EditorAssetUtility.Editor",
+    "rootNamespace": "BFTools.Feedback.EditorAssetUtility.Editor",
+    "references": [
+        "BFTools.Core.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
