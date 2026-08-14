@@ -10,5 +10,6 @@ namespace BFTools.Feedback.EditorAssetUtility.Editor
         public const int ScreenFlash = BFMenuPriority.Group.Feedback + 4;
         public const int ControllerLED = BFMenuPriority.Group.Feedback + 5;
         public const int Vignette = BFMenuPriority.Group.Feedback + 6;
+        public const int SloMo = BFMenuPriority.Group.Feedback + 7;
     }
 }
