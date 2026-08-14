@@ -1,6 +1,7 @@
 using BFTools.Core.ConfigLookup;
 using BFTools.Core.EventBus;
 using BFTools.Core.Logger;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,42 +18,61 @@ namespace BFTools.Feedback.Vignette
         private const string LogTag = "Vignette";
 
         [SerializeField] private List<BFVignetteConfig> configs = new List<BFVignetteConfig>();
-        [SerializeField] private Image vignetteImage;
+        [SerializeField] private List<Image> vignetteImages = new List<Image>();
 
         private Dictionary<string, BFVignetteEntry> lookup;
-        private Coroutine activeVignette;
-        private BFVignetteLayer layer;
+        private List<LayerSlot> slots;
 
         private void OnEnable()
         {
             BuildLookup();
             EventBus<BFVignetteEvent>.Subscribe(OnVignetteEvent);
-
-            if (vignetteImage == null)
-                BFLogger.Warning(LogTag, "No vignetteImage assigned; unable to render vignettes.", this);
-            else
-                layer = new BFVignetteLayer(vignetteImage);
+            BuildSlots();
         }
 
         private void OnDisable()
         {
             EventBus<BFVignetteEvent>.Unsubscribe(OnVignetteEvent);
-            CancelActiveVignette();
+            CancelAllLayers();
         }
 
         private void OnDestroy()
         {
-            layer?.DestroyBakedAssets();
-        }
-
-        private void CancelActiveVignette()
-        {
-            if (activeVignette == null)
+            if (slots == null)
                 return;
 
-            StopCoroutine(activeVignette);
-            activeVignette = null;
-            layer?.Cancel();
+            foreach (var slot in slots)
+                slot.Layer.DestroyBakedAssets();
+        }
+
+        private void BuildSlots()
+        {
+            slots = new List<LayerSlot>();
+
+            foreach (var image in vignetteImages)
+            {
+                if (image != null)
+                    slots.Add(new LayerSlot(new BFVignetteLayer(image)));
+            }
+
+            if (slots.Count == 0)
+                BFLogger.Warning(LogTag, "No vignette layer images assigned; unable to render vignettes.", this);
+        }
+
+        private void CancelAllLayers()
+        {
+            if (slots == null)
+                return;
+
+            foreach (var slot in slots)
+            {
+                if (slot.Routine == null)
+                    continue;
+
+                StopCoroutine(slot.Routine);
+                slot.Routine = null;
+                slot.Layer.Cancel();
+            }
         }
 
         private void BuildLookup()
@@ -74,9 +94,9 @@ namespace BFTools.Feedback.Vignette
 
         private void OnVignetteEvent(BFVignetteEvent evt)
         {
-            if (layer == null)
+            if (slots == null || slots.Count == 0)
             {
-                BFLogger.Trace(LogTag, $"No vignetteImage assigned, skipping vignette trigger for eventName '{evt.eventName}'.", this);
+                BFLogger.Trace(LogTag, $"No vignette layers configured, skipping vignette trigger for eventName '{evt.eventName}'.", this);
                 return;
             }
 
@@ -89,8 +109,38 @@ namespace BFTools.Feedback.Vignette
             if (entry.blendMode != BFVignetteBlendMode.AlphaBlend)
                 BFLogger.Warning(LogTag, $"Blend mode '{entry.blendMode}' is not implemented yet; falling back to AlphaBlend for eventName '{evt.eventName}'.", this);
 
-            CancelActiveVignette();
-            activeVignette = StartCoroutine(layer.Play(entry, current => ResolveLiveEntry(evt.eventName, current)));
+            LayerSlot slot = FindFreeOrOldestSlot();
+
+            if (slot.Routine != null)
+            {
+                StopCoroutine(slot.Routine);
+                slot.Layer.Cancel();
+            }
+
+            slot.StartTime = Time.time;
+            slot.Routine = StartCoroutine(PlaySlot(slot, evt.eventName, entry));
+        }
+
+        private LayerSlot FindFreeOrOldestSlot()
+        {
+            LayerSlot oldest = null;
+
+            foreach (var slot in slots)
+            {
+                if (slot.Routine == null)
+                    return slot;
+
+                if (oldest == null || slot.StartTime < oldest.StartTime)
+                    oldest = slot;
+            }
+
+            return oldest;
+        }
+
+        private IEnumerator PlaySlot(LayerSlot slot, string eventName, BFVignetteEntry entry)
+        {
+            yield return slot.Layer.Play(entry, current => ResolveLiveEntry(eventName, current));
+            slot.Routine = null;
         }
 
         private BFVignetteEntry ResolveLiveEntry(string eventName, BFVignetteEntry fallback)
@@ -113,6 +163,18 @@ namespace BFTools.Feedback.Vignette
             }
 
             return found;
+        }
+
+        private class LayerSlot
+        {
+            public readonly BFVignetteLayer Layer;
+            public Coroutine Routine;
+            public float StartTime;
+
+            public LayerSlot(BFVignetteLayer layer)
+            {
+                Layer = layer;
+            }
         }
     }
 }
