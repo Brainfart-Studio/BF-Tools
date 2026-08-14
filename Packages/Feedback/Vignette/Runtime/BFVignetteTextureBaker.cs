@@ -4,9 +4,9 @@ namespace BFTools.Feedback.Vignette
 {
     public static class BFVignetteTextureBaker
     {
-        public static Texture2D Bake(float radius, float softness, float roundness, float aspect, float[] profileAngles, float[] profileValues, int resolution = 256)
+        public static Texture2D Bake(float radius, float softness, float roundness, float aspect, float[] profileAngles, float[] profileValues, bool useGradient, Gradient gradient, int resolution = 256)
         {
-            var texture = new Texture2D(resolution, resolution, TextureFormat.Alpha8, false)
+            var texture = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false)
             {
                 name = "BFVignetteMask",
                 wrapMode = TextureWrapMode.Clamp,
@@ -28,8 +28,22 @@ namespace BFTools.Feedback.Vignette
 
                     float waveRadius = Mathf.Max(radius + SampleProfile(profileAngles, profileValues, angle), 0f);
                     float edge = Mathf.Max(waveRadius + softness, waveRadius + 0.0001f);
-                    float mask = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(waveRadius, edge, dist));
-                    pixels[y * resolution + x] = new Color32(255, 255, 255, (byte)(mask * 255f));
+                    float falloff = Mathf.InverseLerp(waveRadius, edge, dist);
+                    float mask = Mathf.SmoothStep(0f, 1f, falloff);
+
+                    if (useGradient && gradient != null)
+                    {
+                        Color sample = gradient.Evaluate(falloff);
+                        pixels[y * resolution + x] = new Color32(
+                            (byte)(sample.r * 255f),
+                            (byte)(sample.g * 255f),
+                            (byte)(sample.b * 255f),
+                            (byte)(mask * sample.a * 255f));
+                    }
+                    else
+                    {
+                        pixels[y * resolution + x] = new Color32(255, 255, 255, (byte)(mask * 255f));
+                    }
                 }
             }
 

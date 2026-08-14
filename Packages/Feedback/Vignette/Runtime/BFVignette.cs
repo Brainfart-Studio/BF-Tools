@@ -32,6 +32,8 @@ namespace BFTools.Feedback.Vignette
         private float bakedAspect = -1f;
         private float[] bakedProfileAngles;
         private float[] bakedProfileValues;
+        private bool bakedUseGradient;
+        private Gradient bakedGradient;
 
         private float[] profileAngles;
         private float[] profileValues;
@@ -234,14 +236,16 @@ namespace BFTools.Feedback.Vignette
                 !Mathf.Approximately(bakedRoundness, entry.roundness) ||
                 !Mathf.Approximately(bakedAspect, aspect) ||
                 !ReferenceEquals(bakedProfileAngles, profileAngles) ||
-                !ReferenceEquals(bakedProfileValues, profileValues);
+                !ReferenceEquals(bakedProfileValues, profileValues) ||
+                bakedUseGradient != entry.useGradient ||
+                (entry.useGradient && !ReferenceEquals(bakedGradient, entry.colorGradient));
 
             if (!maskChanged)
                 return;
 
             DestroyBakedAssets();
 
-            bakedTexture = BFVignetteTextureBaker.Bake(entry.radius, entry.softness, entry.roundness, aspect, profileAngles, profileValues);
+            bakedTexture = BFVignetteTextureBaker.Bake(entry.radius, entry.softness, entry.roundness, aspect, profileAngles, profileValues, entry.useGradient, entry.colorGradient);
             bakedSprite = Sprite.Create(bakedTexture, new Rect(0f, 0f, bakedTexture.width, bakedTexture.height), Vector2.one * 0.5f);
             bakedRadius = entry.radius;
             bakedSoftness = entry.softness;
@@ -249,6 +253,8 @@ namespace BFTools.Feedback.Vignette
             bakedAspect = aspect;
             bakedProfileAngles = profileAngles;
             bakedProfileValues = profileValues;
+            bakedUseGradient = entry.useGradient;
+            bakedGradient = entry.colorGradient;
 
             vignetteImage.sprite = bakedSprite;
         }
@@ -263,6 +269,13 @@ namespace BFTools.Feedback.Vignette
 
             bakedSprite = null;
             bakedTexture = null;
+        }
+
+        private static Color TintFor(BFVignetteEntry entry, float alpha)
+        {
+            return entry.useGradient
+                ? new Color(1f, 1f, 1f, alpha)
+                : new Color(entry.color.r, entry.color.g, entry.color.b, alpha);
         }
 
         private IEnumerator VignetteRoutine(string eventName, BFVignetteEntry entry)
@@ -280,11 +293,11 @@ namespace BFTools.Feedback.Vignette
                     ? entry.intensityCurve.Evaluate(t / entry.duration)
                     : 1f;
                 float alpha = entry.intensity * Mathf.Clamp01(curveValue);
-                vignetteImage.color = new Color(entry.color.r, entry.color.g, entry.color.b, alpha);
+                vignetteImage.color = TintFor(entry, alpha);
                 yield return null;
             }
 
-            vignetteImage.color = new Color(entry.color.r, entry.color.g, entry.color.b, 0f);
+            vignetteImage.color = TintFor(entry, 0f);
             activeVignette = null;
         }
     }

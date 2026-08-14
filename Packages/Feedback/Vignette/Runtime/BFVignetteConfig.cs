@@ -18,6 +18,8 @@ namespace BFTools.Feedback.Vignette
         [Range(0f, 1f)] public float radius;
         [Range(0f, 1f)] public float softness;
         public Color color;
+        public bool useGradient;
+        public Gradient colorGradient;
         [Range(0f, 1f)] public float roundness;
         public float frequency;
         public float amplitude;
