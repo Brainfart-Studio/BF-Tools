@@ -1,0 +1,14 @@
+{
+    "name": "BFTools.Feedback.SloMo",
+    "rootNamespace": "BFTools.Feedback.SloMo",
+    "references": [
+        "BFTools.Core.ConfigLookup",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.0] - SloMo
+
+### Added
+- Scaffold SloMo system in Feedback package: `BFSloMoConfig` ScriptableObject, `BFSloMo` runtime component, base SloMo prefab
+- SloMoConfig and SloMo prefab variant Editor creators
+- Test suite: `BFSloMoConfigTests` (EditMode), `BFSloMoComponentTests` (PlayMode)
+- SloMo documentation (`Documentation~/SloMo.md`)
+
+### Changed
+- Added a `SloMo` entry to `BFFeedbackMenuPriority`
+
 ## [1.3.0] - Vignette
 
 ### Added
