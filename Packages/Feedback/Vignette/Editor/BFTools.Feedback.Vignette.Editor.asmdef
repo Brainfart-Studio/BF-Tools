@@ -1,0 +1,18 @@
+{
+    "name": "BFTools.Feedback.Vignette.Editor",
+    "rootNamespace": "BFTools.Feedback.Vignette.Editor",
+    "references": [
+        "BFTools.Feedback.Vignette",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Feedback.EditorAssetUtility.Editor",
+        "BFTools.Core.Logger",
+        "BFTools.Core.ProjectSetup.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
