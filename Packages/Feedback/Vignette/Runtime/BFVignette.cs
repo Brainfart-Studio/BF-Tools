@@ -1,10 +1,9 @@
-using BFTools.Core.ConfigLookup;
-using BFTools.Core.EventBus;
-using BFTools.Core.Logger;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using BFTools.Core.ConfigLookup;
+using BFTools.Core.EventBus;
+using BFTools.Core.Logger;
 using Image = UnityEngine.UI.Image;
 
 namespace BFTools.Feedback.Vignette
@@ -102,7 +101,24 @@ namespace BFTools.Feedback.Vignette
             ApplyMask(entry);
 
             CancelActiveVignette();
-            activeVignette = StartCoroutine(VignetteRoutine(entry));
+            activeVignette = StartCoroutine(VignetteRoutine(evt.eventName, entry));
+        }
+
+        private bool TryGetLiveEntry(string eventName, out BFVignetteEntry entry)
+        {
+            entry = default;
+            bool found = false;
+
+            foreach (var cfg in configs)
+            {
+                if (cfg != null && cfg.TryGetEntry(eventName, out BFVignetteEntry candidate))
+                {
+                    entry = candidate;
+                    found = true;
+                }
+            }
+
+            return found;
         }
 
         private void ApplyMask(BFVignetteEntry entry)
@@ -142,11 +158,16 @@ namespace BFTools.Feedback.Vignette
             bakedTexture = null;
         }
 
-        private IEnumerator VignetteRoutine(BFVignetteEntry entry)
+        private IEnumerator VignetteRoutine(string eventName, BFVignetteEntry entry)
         {
             float t = 0f;
             while (t < entry.duration)
             {
+                if (TryGetLiveEntry(eventName, out BFVignetteEntry liveEntry))
+                    entry = liveEntry;
+
+                ApplyMask(entry);
+
                 t += Time.deltaTime;
                 float curveValue = entry.intensityCurve != null && entry.intensityCurve.length > 0
                     ? entry.intensityCurve.Evaluate(t / entry.duration)
