@@ -14,6 +14,7 @@ namespace BFTools.Feedback.Vignette
             };
 
             float xScale = Mathf.Lerp(Mathf.Max(aspect, 0.0001f), 1f, Mathf.Clamp01(roundness));
+            float cornerDist = Mathf.Sqrt(xScale * xScale + 1f);
 
             var pixels = new Color32[resolution * resolution];
             for (int y = 0; y < resolution; y++)
@@ -28,12 +29,13 @@ namespace BFTools.Feedback.Vignette
 
                     float waveRadius = Mathf.Max(radius + SampleProfile(profileAngles, profileValues, angle), 0f);
                     float edge = Mathf.Max(waveRadius + softness, waveRadius + 0.0001f);
-                    float falloff = Mathf.InverseLerp(waveRadius, edge, dist);
-                    float mask = Mathf.SmoothStep(0f, 1f, falloff);
+                    float alphaFalloff = Mathf.InverseLerp(waveRadius, edge, dist);
+                    float mask = Mathf.SmoothStep(0f, 1f, alphaFalloff);
 
                     if (useGradient && gradient != null)
                     {
-                        Color sample = gradient.Evaluate(falloff);
+                        float gradientT = Mathf.InverseLerp(waveRadius, Mathf.Max(cornerDist, edge), dist);
+                        Color sample = gradient.Evaluate(gradientT);
                         pixels[y * resolution + x] = new Color32(
                             (byte)(sample.r * 255f),
                             (byte)(sample.g * 255f),
