@@ -1,8 +1,8 @@
 {
     "name": "com.bftools.feedback",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "displayName": "BFTools Feedback",
-    "description": "Feedback systems for BFTools: Haptics, Screen Shake, Screen Flash, Time Stop, Controller LED.",
+    "description": "Feedback systems for BFTools: Haptics, Screen Shake, Screen Flash, Time Stop, Slow Motion, Controller LED.",
     "unity": "2022.3",
     "author": {
         "name": "Brainfart Studio"
