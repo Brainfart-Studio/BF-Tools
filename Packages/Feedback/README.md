@@ -3,7 +3,7 @@
 Event-driven feedback systems: controller haptics, camera screen shake, hitstop, screen flash, and controller LED color.
 
 ## Version
-1.2.0
+1.3.0
 
 ## Contents
 
@@ -21,6 +21,9 @@ Full-screen color flash triggered by named events. See [Documentation~/ScreenFla
 
 ### Controller LED
 Gamepad LED/light bar color, set directly or triggered by named events. Includes `BFControllerLedRainbow`, a drop-in fallback effect that cycles the LED through a rainbow for projects that just want it to do something, and `BFControllerLedColorFeeder`, which forwards colors sampled by `com.bftools.core`'s `BFScreenColorSampler` straight to the LED. PS4 only for now. See [Documentation~/ControllerLED.md](Documentation~/ControllerLED.md).
+
+### Vignette
+Full-screen radial mask, tinted and faded in/out over time, triggered by named events. Supports a wavy (non-circular) edge and multiple simultaneous/layered triggers. See [Documentation~/Vignette.md](Documentation~/Vignette.md).
 
 ## Dependencies
 - `com.bftools.core` @ 1.1.0
@@ -52,9 +55,9 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "1.2.0"
+  "com.bftools.feedback": "1.3.0"
 }
 ```
 
 ### Note on embedding
-Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.feedback`), which is what the editor tooling's hardcoded asset paths (e.g. the Haptics, Screen Shake, Hitstop, Screen Flash, and Controller LED config/prefab creators) expect. A directly embedded folder is mounted by its on-disk name (`Feedback`) instead, which will break those paths.
+Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.feedback`), which is what the editor tooling's hardcoded asset paths (e.g. the Haptics, Screen Shake, Hitstop, Screen Flash, Controller LED, and Vignette config/prefab creators) expect. A directly embedded folder is mounted by its on-disk name (`Feedback`) instead, which will break those paths.

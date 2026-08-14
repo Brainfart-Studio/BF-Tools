@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.3.0] - Vignette
+
+### Added
+- Scaffold Vignette system in Feedback package: `BFVignetteConfig` ScriptableObject, `BFVignette` runtime component, `BFVignetteTextureBaker`, base Vignette prefab
+- Angular wave ripple profile on the vignette mask edge (`frequency`, `waveCrest`/`waveTrough`, `spacingVariance`, `waveHeightVariance`, `jaggedness`); a new random seed is picked per trigger, so the same config produces a different-looking wave shape each time it fires
+- Gradient color support (`useGradient` / `colorGradient`), sampled across the full mask radius
+- Custom Inspector for `BFVignetteConfig` so new entries added via the list's `+` button get real default values instead of all-zero fields
+- Layer pool (`vignetteImages`) on `BFVignette` so multiple vignettes can play/layer simultaneously; when every layer is busy, the longest-running one is reused instead of dropping the trigger
+- VignetteConfig and Vignette prefab variant Editor creators
+- Test suite: `BFVignetteConfigTests`, `BFVignetteTextureBakerTests` (EditMode), `BFVignetteComponentTests` (PlayMode)
+- Vignette documentation (`Documentation~/Vignette.md`)
+
+### Changed
+- `BFVignetteEntry` changed from a struct to a class so its fields can carry real defaults
+- Vignette wave-shape fields renamed from amplitude-based naming (`amplitude`, `amplitudeVariance`) to `waveCrest`/`waveTrough`/`waveHeightVariance`
+- Vignette mask `radius` and `softness` constrained to 0–1
+
+### Fixed
+- Vignette gradient now samples across the full mask radius instead of just the softness band
+- Vignette routine re-reads live config values every frame instead of only at trigger time
+- Resolved an ambiguous `Image` type reference in `BFVignette`
+
 ## [1.2.0] - Controller LED Color Feeder
 
 ### Added
