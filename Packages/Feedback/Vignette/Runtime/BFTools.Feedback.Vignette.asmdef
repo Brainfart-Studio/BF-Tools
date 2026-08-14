@@ -1,7 +1,11 @@
 {
     "name": "BFTools.Feedback.Vignette",
     "rootNamespace": "BFTools.Feedback.Vignette",
-    "references": [],
+    "references": [
+        "BFTools.Core.ConfigLookup",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
