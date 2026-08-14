@@ -43,6 +43,7 @@ namespace BFTools.Feedback.Vignette
         private float rolledSpacingVariance = float.NaN;
         private float rolledWaveHeightVariance = float.NaN;
         private float rolledJaggedness = float.NaN;
+        private int waveSeed;
 
         private void OnEnable()
         {
@@ -112,6 +113,7 @@ namespace BFTools.Feedback.Vignette
             if (entry.blendMode != BFVignetteBlendMode.AlphaBlend)
                 BFLogger.Warning(LogTag, $"Blend mode '{entry.blendMode}' is not implemented yet; falling back to AlphaBlend for eventName '{evt.eventName}'.", this);
 
+            waveSeed = Random.Range(0, 1000000);
             RollWaveProfile(entry);
             ApplyMask(entry);
 
@@ -176,14 +178,14 @@ namespace BFTools.Feedback.Vignette
             {
                 float spacingValue = 1f;
                 if (entry.spacingVariance > 0f)
-                    spacingValue += (SeededRandom(i * 133 + frequency * 7) - 0.5f) * entry.spacingVariance * 1.5f;
+                    spacingValue += (SeededRandom(i * 133 + frequency * 7 + waveSeed) - 0.5f) * entry.spacingVariance * 1.5f;
 
                 spacing[i] = Mathf.Max(0.2f, spacingValue);
                 total += spacing[i];
 
                 float heightScaleValue = 1f;
                 if (entry.waveHeightVariance > 0f)
-                    heightScaleValue += (SeededRandom(i * 317 + frequency * 13) - 0.5f) * entry.waveHeightVariance * 0.9f;
+                    heightScaleValue += (SeededRandom(i * 317 + frequency * 13 + waveSeed) - 0.5f) * entry.waveHeightVariance * 0.9f;
 
                 heightScales[i] = Mathf.Max(0.1f, heightScaleValue);
             }
@@ -207,7 +209,7 @@ namespace BFTools.Feedback.Vignette
 
                     if (entry.jaggedness > 0f)
                     {
-                        float noise = SeededRandom(Mathf.FloorToInt(theta * 79f) + frequency * 11);
+                        float noise = SeededRandom(Mathf.FloorToInt(theta * 79f) + frequency * 11 + waveSeed);
                         wave += (noise - 0.5f) * entry.jaggedness * Mathf.Abs(halfSpread);
                     }
 
