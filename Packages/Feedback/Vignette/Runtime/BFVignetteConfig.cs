@@ -15,11 +15,11 @@ namespace BFTools.Feedback.Vignette
     {
         public string eventName;
         [Range(0f, 1f)] public float intensity;
-        public float radius;
-        public float softness;
+        [Range(0f, 1.5f)] public float radius;
+        [Range(0f, 1.5f)] public float softness;
         public Color color;
         [Range(0f, 1f)] public float roundness;
-        public float duration;
+        [Min(0.01f)] public float duration;
         public AnimationCurve intensityCurve;
         public BFVignetteBlendMode blendMode;
     }
