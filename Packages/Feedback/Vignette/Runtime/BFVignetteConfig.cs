@@ -11,7 +11,7 @@ namespace BFTools.Feedback.Vignette
     }
 
     [Serializable]
-    public struct BFVignetteEntry
+    public class BFVignetteEntry
     {
         [Header("Trigger")]
         [Tooltip("Event name this entry responds to when raised on the BFVignetteEvent bus.")]
@@ -19,9 +19,9 @@ namespace BFTools.Feedback.Vignette
 
         [Header("Appearance")]
         [Range(0f, 1f), Tooltip("Peak alpha applied to the vignette at full intensity.")]
-        public float intensity;
+        public float intensity = 1f;
         [Tooltip("Solid tint applied to the vignette when Use Gradient is disabled.")]
-        public Color color;
+        public Color color = Color.red;
         [Tooltip("Samples Color Gradient across the mask instead of using a single solid color.")]
         public bool useGradient;
         [Tooltip("Gradient sampled across the vignette mask when Use Gradient is enabled.")]
@@ -31,11 +31,11 @@ namespace BFTools.Feedback.Vignette
 
         [Header("Mask Shape")]
         [Range(0f, 1f), Tooltip("Base radius of the vignette mask, relative to screen size.")]
-        public float radius;
+        public float radius = 0.75f;
         [Range(0f, 1f), Tooltip("How gradual the mask's edge fades from opaque to transparent.")]
-        public float softness;
+        public float softness = 0.5f;
         [Range(0f, 1f), Tooltip("How circular vs. rectangular the mask silhouette is.")]
-        public float roundness;
+        public float roundness = 1f;
 
         [Header("Wave Shape")]
         [Tooltip("How many wave cycles appear around the mask's edge.")]
@@ -53,9 +53,9 @@ namespace BFTools.Feedback.Vignette
 
         [Header("Timing")]
         [Tooltip("How long the vignette plays before fading out, in seconds.")]
-        public float duration;
+        public float duration = 0.5f;
         [Tooltip("Shapes the vignette's alpha over the course of Duration. Evaluated from 0 to 1.")]
-        public AnimationCurve intensityCurve;
+        public AnimationCurve intensityCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
     }
 
     public class BFVignetteConfig : ScriptableObject
@@ -77,6 +77,11 @@ namespace BFTools.Feedback.Vignette
 
             entry = default;
             return false;
+        }
+
+        public void AddEntry()
+        {
+            entries.Add(new BFVignetteEntry());
         }
     }
 }
