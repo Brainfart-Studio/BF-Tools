@@ -22,9 +22,10 @@ namespace BFTools.Feedback.Vignette
         public Gradient colorGradient;
         [Range(0f, 1f)] public float roundness;
         public float frequency;
-        public float amplitude;
+        public float waveCrest;
+        public float waveTrough;
         [Range(0f, 1f)] public float spacingVariance;
-        [Range(0f, 1f)] public float amplitudeVariance;
+        [Range(0f, 1f)] public float waveHeightVariance;
         [Range(0f, 1f)] public float jaggedness;
         public float duration;
         public AnimationCurve intensityCurve;

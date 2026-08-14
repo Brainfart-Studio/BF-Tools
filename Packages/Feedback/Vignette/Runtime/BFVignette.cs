@@ -38,9 +38,10 @@ namespace BFTools.Feedback.Vignette
         private float[] profileAngles;
         private float[] profileValues;
         private float rolledFrequency = float.NaN;
-        private float rolledAmplitude = float.NaN;
+        private float rolledWaveCrest = float.NaN;
+        private float rolledWaveTrough = float.NaN;
         private float rolledSpacingVariance = float.NaN;
-        private float rolledAmplitudeVariance = float.NaN;
+        private float rolledWaveHeightVariance = float.NaN;
         private float rolledJaggedness = float.NaN;
 
         private void OnEnable()
@@ -138,31 +139,37 @@ namespace BFTools.Feedback.Vignette
         private void RollWaveProfile(BFVignetteEntry entry)
         {
             int frequency = Mathf.Max(1, Mathf.RoundToInt(entry.frequency));
-            bool perfectWave = Mathf.Approximately(entry.spacingVariance, 0f) && Mathf.Approximately(entry.amplitudeVariance, 0f) && Mathf.Approximately(entry.jaggedness, 0f);
+            bool perfectWave = Mathf.Approximately(entry.spacingVariance, 0f) && Mathf.Approximately(entry.waveHeightVariance, 0f) && Mathf.Approximately(entry.jaggedness, 0f);
 
             profileAngles = new float[ProfileSteps];
             profileValues = new float[ProfileSteps];
+
+            float topBase = entry.waveCrest * 0.25f;
+            float bottomBase = entry.waveTrough * 0.25f;
+            float midBase = (topBase + bottomBase) * 0.5f;
+            float halfSpreadBase = (topBase - bottomBase) * 0.5f;
 
             for (int i = 0; i < ProfileSteps; i++)
             {
                 float theta = (i / (float)ProfileSteps) * Mathf.PI * 2f;
                 profileAngles[i] = theta;
                 profileValues[i] = perfectWave
-                    ? Mathf.Sin(theta * frequency) * (entry.amplitude * 0.25f)
-                    : EvaluateVariableWave(theta, frequency, entry);
+                    ? midBase + Mathf.Sin(theta * frequency) * halfSpreadBase
+                    : EvaluateVariableWave(theta, frequency, entry, topBase, bottomBase);
             }
 
             rolledFrequency = entry.frequency;
-            rolledAmplitude = entry.amplitude;
+            rolledWaveCrest = entry.waveCrest;
+            rolledWaveTrough = entry.waveTrough;
             rolledSpacingVariance = entry.spacingVariance;
-            rolledAmplitudeVariance = entry.amplitudeVariance;
+            rolledWaveHeightVariance = entry.waveHeightVariance;
             rolledJaggedness = entry.jaggedness;
         }
 
-        private float EvaluateVariableWave(float theta, int frequency, BFVignetteEntry entry)
+        private float EvaluateVariableWave(float theta, int frequency, BFVignetteEntry entry, float topBase, float bottomBase)
         {
             var spacing = new float[frequency];
-            var amplitudes = new float[frequency];
+            var heightScales = new float[frequency];
             float total = 0f;
 
             for (int i = 0; i < frequency; i++)
@@ -174,11 +181,11 @@ namespace BFTools.Feedback.Vignette
                 spacing[i] = Mathf.Max(0.2f, spacingValue);
                 total += spacing[i];
 
-                float amplitudeValue = 1f;
-                if (entry.amplitudeVariance > 0f)
-                    amplitudeValue += (SeededRandom(i * 317 + frequency * 13) - 0.5f) * entry.amplitudeVariance * 1.8f;
+                float heightScaleValue = 1f;
+                if (entry.waveHeightVariance > 0f)
+                    heightScaleValue += (SeededRandom(i * 317 + frequency * 13) - 0.5f) * entry.waveHeightVariance * 0.9f;
 
-                amplitudes[i] = Mathf.Max(0f, amplitudeValue);
+                heightScales[i] = Mathf.Max(0.1f, heightScaleValue);
             }
 
             float scale = frequency / total;
@@ -190,12 +197,18 @@ namespace BFTools.Feedback.Vignette
                 if (theta >= cursor && theta < cursor + span)
                 {
                     float progress = (theta - cursor) / span;
-                    float wave = Mathf.Sin(progress * Mathf.PI * 2f) * entry.amplitude * 0.25f * amplitudes[i];
+
+                    float currentTop = topBase * heightScales[i];
+                    float currentBottom = bottomBase + (topBase - currentTop);
+                    float mid = (currentTop + currentBottom) * 0.5f;
+                    float halfSpread = (currentTop - currentBottom) * 0.5f;
+
+                    float wave = mid + Mathf.Sin(progress * Mathf.PI * 2f) * halfSpread;
 
                     if (entry.jaggedness > 0f)
                     {
                         float noise = SeededRandom(Mathf.FloorToInt(theta * 79f) + frequency * 11);
-                        wave += (noise - 0.5f) * entry.jaggedness * entry.amplitude * 0.35f;
+                        wave += (noise - 0.5f) * entry.jaggedness * Mathf.Abs(halfSpread);
                     }
 
                     return wave;
@@ -217,9 +230,10 @@ namespace BFTools.Feedback.Vignette
         {
             return profileAngles == null ||
                 !Mathf.Approximately(rolledFrequency, entry.frequency) ||
-                !Mathf.Approximately(rolledAmplitude, entry.amplitude) ||
+                !Mathf.Approximately(rolledWaveCrest, entry.waveCrest) ||
+                !Mathf.Approximately(rolledWaveTrough, entry.waveTrough) ||
                 !Mathf.Approximately(rolledSpacingVariance, entry.spacingVariance) ||
-                !Mathf.Approximately(rolledAmplitudeVariance, entry.amplitudeVariance) ||
+                !Mathf.Approximately(rolledWaveHeightVariance, entry.waveHeightVariance) ||
                 !Mathf.Approximately(rolledJaggedness, entry.jaggedness);
         }
 
