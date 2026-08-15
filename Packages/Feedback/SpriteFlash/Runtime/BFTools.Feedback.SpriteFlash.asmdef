@@ -1,0 +1,14 @@
+{
+    "name": "BFTools.Feedback.SpriteFlash",
+    "rootNamespace": "BFTools.Feedback.SpriteFlash",
+    "references": [
+        "BFTools.Core.ConfigLookup",
+        "BFTools.Core.EventBus",
+        "BFTools.Core.Logger"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
