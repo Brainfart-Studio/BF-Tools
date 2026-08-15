@@ -1,9 +1,9 @@
 # BFTools Feedback (`com.bftools.feedback`)
 
-Event-driven feedback systems: controller haptics, camera screen shake, hitstop, screen flash, and controller LED color.
+Event-driven feedback systems: controller haptics, camera screen shake, hitstop, screen flash, sprite flash, and controller LED color.
 
 ## Version
-1.4.0
+1.5.0
 
 ## Contents
 
@@ -18,6 +18,9 @@ Brief global time freeze triggered by named events. See [Documentation~/Hitstop.
 
 ### Screen Flash
 Full-screen color flash triggered by named events. See [Documentation~/ScreenFlash.md](Documentation~/ScreenFlash.md).
+
+### Sprite Flash
+Per-actor `SpriteRenderer` on/off blink triggered by named events, for a classic "take damage" flash. Attaches directly to any GameObject with a `SpriteRenderer`, the same way `com.bftools.visuals`' `BFPalette` does. See [Documentation~/SpriteFlash.md](Documentation~/SpriteFlash.md).
 
 ### Controller LED
 Gamepad LED/light bar color, set directly or triggered by named events. Includes `BFControllerLedRainbow`, a drop-in fallback effect that cycles the LED through a rainbow for projects that just want it to do something, and `BFControllerLedColorFeeder`, which forwards colors sampled by `com.bftools.core`'s `BFScreenColorSampler` straight to the LED. PS4 only for now. See [Documentation~/ControllerLED.md](Documentation~/ControllerLED.md).
@@ -58,9 +61,9 @@ Reference `com.bftools.feedback` from a dependent package's `package.json`:
 
 ```json
 "dependencies": {
-  "com.bftools.feedback": "1.4.0"
+  "com.bftools.feedback": "1.5.0"
 }
 ```
 
 ### Note on embedding
-Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.feedback`), which is what the editor tooling's hardcoded asset paths (e.g. the Haptics, Screen Shake, Hitstop, Screen Flash, Controller LED, Vignette, and SloMo config/prefab creators) expect. A directly embedded folder is mounted by its on-disk name (`Feedback`) instead, which will break those paths.
+Install via git URL (or as a registry/UPM dependency) rather than copying this folder directly into a project's `Packages/` directory. Git/UPM installs are mounted by the package's `name` (`com.bftools.feedback`), which is what the editor tooling's hardcoded asset paths (e.g. the Haptics, Screen Shake, Hitstop, Screen Flash, Sprite Flash, Controller LED, Vignette, and SloMo config/prefab creators) expect. A directly embedded folder is mounted by its on-disk name (`Feedback`) instead, which will break those paths.

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0] - Sprite Flash
+
+### Added
+- Scaffold Sprite Flash system in Feedback package: `BFSpriteFlashConfig` ScriptableObject, `BFSpriteFlash` runtime component
+- `BFSpriteFlash` attaches directly to any GameObject with a `SpriteRenderer` (`[RequireComponent]`), toggling `enabled` on/off for a config-defined interval/count rather than a global overlay
+- SpriteFlashConfig Editor creator
+- Test suite: `BFSpriteFlashConfigTests` (EditMode), `BFSpriteFlashComponentTests` (PlayMode)
+- Sprite Flash documentation (`Documentation~/SpriteFlash.md`)
+
+### Changed
+- Added a `SpriteFlash` entry to `BFFeedbackMenuPriority`
+
 ## [1.4.0] - SloMo
 
 ### Added

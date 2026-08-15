@@ -25,12 +25,13 @@ Gameplay-facing systems built on Core.
 
 Depends on `com.bftools.core` (1.0.0) and `com.unity.nuget.newtonsoft-json` (3.2.1).
 
-### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (1.4.0)
+### [Feedback](Packages/Feedback/README.md): `com.bftools.feedback` (1.5.0)
 Event-driven player feedback.
 - **Haptics**: controller rumble triggered by named events. See [Haptics.md](Packages/Feedback/Documentation~/Haptics.md).
 - **Screen Shake**: camera shake triggered by named events. See [ScreenShake.md](Packages/Feedback/Documentation~/ScreenShake.md).
 - **Hitstop**: brief global time freeze triggered by named events. See [Hitstop.md](Packages/Feedback/Documentation~/Hitstop.md).
 - **Screen Flash**: full-screen color flash triggered by named events. See [ScreenFlash.md](Packages/Feedback/Documentation~/ScreenFlash.md).
+- **Sprite Flash**: per-actor `SpriteRenderer` on/off blink triggered by named events, attached directly to the actor rather than a global overlay. See [SpriteFlash.md](Packages/Feedback/Documentation~/SpriteFlash.md).
 - **Controller LED**: gamepad LED/light bar color, set directly or triggered by named events, plus a drop-in rainbow fallback effect and a `BFControllerLedColorFeeder` that forwards colors from Core's `BFScreenColorSampler` straight to the LED. PS4 only for now. See [ControllerLED.md](Packages/Feedback/Documentation~/ControllerLED.md).
 - **Vignette**: full-screen radial mask, tinted and faded in/out over time, triggered by named events, with a wavy (non-circular) edge and support for multiple simultaneous/layered triggers. See [Vignette.md](Packages/Feedback/Documentation~/Vignette.md).
 - **SloMo**: sustained slow motion triggered by named events, eased in and out over a config-defined curve. See [SloMo.md](Packages/Feedback/Documentation~/SloMo.md).
@@ -78,6 +79,7 @@ Packages/
     ScreenShake/              Editor/, Runtime/, Prefabs/
     Hitstop/                 Editor/, Runtime/, Prefabs/
     ScreenFlash/             Editor/, Runtime/, Prefabs/
+    SpriteFlash/             Editor/, Runtime/, Tests/
     ControllerLED/           Editor/, Runtime/, Tests/
     Vignette/                Editor/, Runtime/, Prefabs/, Tests/
     SloMo/                   Editor/, Runtime/, Prefabs/, Tests/
