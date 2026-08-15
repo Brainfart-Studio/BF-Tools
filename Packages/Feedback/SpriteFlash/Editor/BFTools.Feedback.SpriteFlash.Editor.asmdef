@@ -1,0 +1,16 @@
+{
+    "name": "BFTools.Feedback.SpriteFlash.Editor",
+    "rootNamespace": "BFTools.Feedback.SpriteFlash.Editor",
+    "references": [
+        "BFTools.Feedback.SpriteFlash",
+        "BFTools.Core.EditorAssetUtility.Editor",
+        "BFTools.Feedback.EditorAssetUtility.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": []
+}
